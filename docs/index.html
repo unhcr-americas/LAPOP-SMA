@@ -60,7 +60,16 @@
       <a href="articles/Clusters.html">Cluster Analysis</a>
     </li>
     <li>
+      <a href="articles/Community_Activity_index.html">Community Activity index</a>
+    </li>
+    <li>
       <a href="articles/Correlation.html">Verify correlations</a>
+    </li>
+    <li>
+      <a href="articles/Fear_index.html">Fear index</a>
+    </li>
+    <li>
+      <a href="articles/Possession_index.html">Possession index</a>
     </li>
     <li>
       <a href="articles/Prediction.html">Prediction Models</a>
@@ -72,85 +81,28 @@
       <a href="articles/Spatial_heterogeneity.html">Spatial heterogeneity</a>
     </li>
     <li>
+      <a href="articles/Sympathy_with_government_critics_index.html">Sympathy with government critics index</a>
+    </li>
+    <li>
+      <a href="articles/Transparency_index.html">Transparency index</a>
+    </li>
+    <li>
       <a href="articles/Trends.html">Trends analysis of Binomial variable</a>
     </li>
     <li>
-      <a href="articles/authority/authoritarianism.html">Authoritarianism index</a>
+      <a href="articles/Trust_in_Government_index.html">Trust in Government index</a>
     </li>
     <li>
-      <a href="articles/authority/authoritarianism_HND.html">Authoritarianism index</a>
+      <a href="articles/Wealth_index.html">Wealth index</a>
     </li>
     <li>
       <a href="articles/bribes.html">Statistics on bribery</a>
     </li>
     <li>
-      <a href="articles/community/community.html">Community Activity index</a>
-    </li>
-    <li>
-      <a href="articles/community/community_HND.html">Community Activity index</a>
-    </li>
-    <li>
-      <a href="articles/critics/crit-ts.html">Political tolerance time series</a>
-    </li>
-    <li>
-      <a href="articles/critics/crit.html">Sympathy with government critics index</a>
-    </li>
-    <li>
       <a href="articles/data-quality.html">Calculating some high-level data quality points</a>
     </li>
     <li>
-      <a href="articles/fear/fear-categorical.html">Fear and unordered categorical variables</a>
-    </li>
-    <li>
-      <a href="articles/fear/fear-geo.html">Geography of fear</a>
-    </li>
-    <li>
-      <a href="articles/fear/fear.html">Fear index</a>
-    </li>
-    <li>
-      <a href="articles/fear/fear_GTM.html">Fear index</a>
-    </li>
-    <li>
-      <a href="articles/fear/fear_HND.html">Fear index</a>
-    </li>
-    <li>
-      <a href="articles/fear/fear_SLV.html">Fear index</a>
-    </li>
-    <li>
-      <a href="articles/fear/fear_correlations.html">binary</a>
-    </li>
-    <li>
       <a href="articles/fear_being_victim.html">Out of fear of being a crime victim</a>
-    </li>
-    <li>
-      <a href="articles/possession/wealth_posessions.html">Wealth index</a>
-    </li>
-    <li>
-      <a href="articles/transparency/transparency_HND.html">Honduras transparency index</a>
-    </li>
-    <li>
-      <a href="articles/trust/trust-correlations.html">UNKNOWN TITLE</a>
-    </li>
-    <li>
-      <a href="articles/trust/trust-ts.html">Trust in government time series</a>
-    </li>
-    <li>
-      <a href="articles/trust/trust.html">Trust in Government Index</a>
-    </li>
-    <li>
-      <a href="articles/trust/trust_GTM.html">Trust in Government Index</a>
-    </li>
-    <li>
-      <a href="articles/trust/trust_HND.html">Trust in Government Index</a>
-    </li>
-    <li>
-      <a href="articles/trust/trust_SLV.html">Trust in Government Index</a>
-    </li>
-    <li>
-      <a href="articles/wealth/wealth-ts.html">Wealth time series</a>
-    </li>
-    <li>
-      <a href="articles/wealth/wealth.html">Wealth index</a>
     </li>
   </ul>
 </li>
@@ -188,6 +140,7 @@
 <li><a href="https://github.com/carmen-canedo/LAPOP-predictive-models">LAPOP-predictive-models</a></li>
 </ul>
 <p>The scripts from those various repository were re-organized in an R package in order to ease analysis reproducibility.</p>
+<p>This package also aims at building capacity of humanitarian data analyst in operations</p>
 <div id="key-research-question" class="section level2">
 <h2 class="hasAnchor">
 <a href="#key-research-question" class="anchor"></a>Key Research question</h2>
@@ -224,16 +177,20 @@
 <div id="vignettes" class="section level2">
 <h2 class="hasAnchor">
 <a href="#vignettes" class="anchor"></a>Vignettes</h2>
-<p>Vignettes are R Markdown file (.rmd) that runs interactively. It does not require any additional installation, as it is a built-in function in R Studio. For an in-depth tutorial, visit this <a href="https://bookdown.org/yihui/rmarkdown/notebook.html">R Notebook Guide</a>. There are also <a href="https://www.rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf">cheat sheets</a> available for how to use R Markdown. Once data have been downloaded, you can then knit the vignettes</p>
-<pre class="{r}"><code><a href="reference/get_dataLAPOP.html">AmericasBarometer::get_dataLAPOP()</a></code></pre>
-<div class="sourceCode" id="cb4"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a><span class="op">*</span><span class="st"> </span>Authoritarianism index <span class="st">`</span><span class="dt">aut_idx</span><span class="st">`</span></span>
-<span id="cb4-2"><a href="#cb4-2"></a><span class="op">*</span><span class="st"> </span>Community Activity index <span class="st">`</span><span class="dt">ca_idx</span><span class="st">`</span></span>
-<span id="cb4-3"><a href="#cb4-3"></a><span class="op">*</span><span class="st"> </span>Sympathy with government critics index <span class="st">`</span><span class="dt">crit_idx</span><span class="st">`</span></span>
-<span id="cb4-4"><a href="#cb4-4"></a><span class="op">*</span><span class="st"> </span>Fear index <span class="st">`</span><span class="dt">fear_idx</span><span class="st">`</span></span>
-<span id="cb4-5"><a href="#cb4-5"></a><span class="op">*</span><span class="st"> </span>Transparency index <span class="st">`</span><span class="dt">tr_idx</span><span class="st">`</span></span>
-<span id="cb4-6"><a href="#cb4-6"></a><span class="op">*</span><span class="st"> </span>Trust <span class="cf">in</span> Government Index <span class="st">`</span><span class="dt">tr_idx</span><span class="st">`</span></span>
-<span id="cb4-7"><a href="#cb4-7"></a><span class="op">*</span><span class="st"> </span>Wealth index <span class="st">`</span><span class="dt">w_idx</span><span class="st">`</span></span>
-<span id="cb4-8"><a href="#cb4-8"></a><span class="op">*</span><span class="st"> </span>Possession index <span class="st">`</span><span class="dt">p_idx</span><span class="st">`</span></span></code></pre></div>
+<p>Vignettes are R Markdown file (.rmd) that runs interactively. It does not require any additional installation, as it is a built-in function in R Studio. For an in-depth tutorial, visit this <a href="https://bookdown.org/yihui/rmarkdown/notebook.html">R Notebook Guide</a>. There are also <a href="https://www.rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf">cheat sheets</a> available for how to use R Markdown.</p>
+<p>Once data have been downloaded, you can then knit the vignettes</p>
+<pre class="{r}"><code>AmericasBarometer::refreshVignettes()</code></pre>
+<p>This will generate the full package documentation in the <code>docs</code> folder</p>
+<ul>
+<li><p>Authoritarianism index <code>aut_idx</code></p></li>
+<li><p>Community Activity index <code>ca_idx</code></p></li>
+<li><p>Sympathy with government critics index <code>crit_idx</code></p></li>
+<li><p>Fear index <code>fear_idx</code></p></li>
+<li><p>Transparency index <code>tr_idx</code></p></li>
+<li><p>Trust in Government Index <code>tr_idx</code></p></li>
+<li><p>Wealth index <code>w_idx</code></p></li>
+<li><p>Possession index <code>p_idx</code></p></li>
+</ul>
 <p>In addition the following are also available:</p>
 <ul>
 <li>Verify correlations</li>
@@ -253,15 +210,15 @@
 <p>The package:</p>
 <ol>
 <li><p>Pull survey data - download all of the merged files that exist for each country individually from the <a href="http://datasets.americasbarometer.org/database/index.php">LAPOP Datasets</a>. Because of the <a href="datasets.americasbarometer.org/database/agreement.html">dataset licence</a>, data are not included in the package</p></li>
-<li>
-<p>Map and merge all survey from different year and country. This implies:</p>
+<li><p>Map and merge all survey from different year and country. This implies:</p></li>
+</ol>
 <ul>
 <li>Adding Wave Column: Creates a column that contains the correct wave for datasets.</li>
 <li>Creating Unique ID: Makes a unique ID for merged country files that follows the unique ID of 2016/17 files.</li>
 <li>Lengthening and Joining: Lengthens countries into tidy format &amp; Joins the questions and category columns by column_name</li>
 <li>Finding Common Questions: Flag questions that are asked across all countries</li>
 </ul>
-</li>
+<ol>
 <li><p>Generate a series of indices, calculated for each region based on common variable to explore trends and statistical clusters. Each of the following index are explained in a dedicated vignette (see below)</p></li>
 <li><p>Generate a series of pre-built charts to display the results and get ground ready for Joint Data Interpretation by subject mater expert</p></li>
 </ol>

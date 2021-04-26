@@ -12,6 +12,8 @@ This projects build from analysis of other shared repositories:
  
 The scripts from those various repository were re-organized in an R package in order to ease analysis reproducibility.
 
+This package also aims at building capacity of humanitarian data analyst in operations
+
 ## Key Research question
 
 * What influence the perception of being forcibly displaced
@@ -48,21 +50,29 @@ AmericasBarometer::get_dataLAPOP()
 ## Vignettes
 
 Vignettes are R Markdown file (.rmd) that runs interactively. It does not require any additional installation, as it is a built-in function in R Studio. For an in-depth tutorial, visit this [R Notebook Guide](https://bookdown.org/yihui/rmarkdown/notebook.html). There are also [cheat sheets](https://www.rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf) available for how to use R Markdown.
+
 Once data have been downloaded, you can then knit the vignettes 
 ```{r}
-AmericasBarometer::get_dataLAPOP()
+AmericasBarometer::refreshVignettes()
 ```
 
+This will generate the full package documentation in the `docs` folder
 
-
-    * Authoritarianism index `aut_idx`
-    * Community Activity index `ca_idx`
-    * Sympathy with government critics index `crit_idx`
-    * Fear index `fear_idx`
-    * Transparency index `tr_idx`
-    * Trust in Government Index `tr_idx`
-    * Wealth index `w_idx`
-    * Possession index `p_idx`
+ * Authoritarianism index `aut_idx`  
+    
+ * Community Activity index `ca_idx`  
+    
+ * Sympathy with government critics index `crit_idx`  
+    
+ * Fear index `fear_idx`  
+    
+ * Transparency index `tr_idx`   
+    
+ * Trust in Government Index `tr_idx`  
+    
+ * Wealth index `w_idx`  
+    
+ * Possession index `p_idx`
     
 In addition the following are also available:
 
@@ -84,10 +94,10 @@ The package:
  1. Pull survey data - download all of the merged files that exist for each country individually from the [LAPOP Datasets](http://datasets.americasbarometer.org/database/index.php). Because of the [dataset licence](datasets.americasbarometer.org/database/agreement.html), data are not included in the package
 
  2. Map and merge all survey from different year and country. This implies:
-    * Adding Wave Column: Creates a column that contains the correct wave for datasets.
-    * Creating Unique ID: Makes a unique ID for merged country files that follows the unique ID of 2016/17 files.
-    * Lengthening and Joining: Lengthens countries into tidy format & Joins the questions and category columns by column_name
-    * Finding Common Questions: Flag questions that are asked across all countries
+ * Adding Wave Column: Creates a column that contains the correct wave for datasets.
+ * Creating Unique ID: Makes a unique ID for merged country files that follows the unique ID of 2016/17 files.
+ * Lengthening and Joining: Lengthens countries into tidy format & Joins the questions and category columns by column_name
+ * Finding Common Questions: Flag questions that are asked across all countries
     
     
  3. Generate a series of indices, calculated for each region based on common variable to explore trends and statistical clusters. Each of the following index are explained in a dedicated vignette (see below)
@@ -107,4 +117,5 @@ The package also include a geographic dataset to ease geo-visualization & analys
 `devtools::document()`
 `devtools::check(document = FALSE)`
 `pkgdown::build_site()`
+
 ------------

@@ -4,36 +4,20 @@ pkgdown_sha: ~
 articles:
   Authoritarianism_index: Authoritarianism_index.html
   Clusters: Clusters.html
+  Community_Activity_index: Community_Activity_index.html
   Correlation: Correlation.html
+  Fear_index: Fear_index.html
+  Possession_index: Possession_index.html
   Prediction: Prediction.html
   Satisfaction_with_Democracy: Satisfaction_with_Democracy.html
   Spatial_heterogeneity: Spatial_heterogeneity.html
+  Sympathy_with_government_critics_index: Sympathy_with_government_critics_index.html
+  Transparency_index: Transparency_index.html
   Trends: Trends.html
-  authority/authoritarianism: authoritarianism.html
-  authority/authoritarianism_HND: authoritarianism_HND.html
+  Trust_in_Government_index: Trust_in_Government_index.html
+  Wealth_index: Wealth_index.html
   bribes: bribes.html
-  community/community: community.html
-  community/community_HND: community_HND.html
-  critics/crit-ts: crit-ts.html
-  critics/crit: crit.html
   data-quality: data-quality.html
-  fear/fear-categorical: fear-categorical.html
-  fear/fear-geo: fear-geo.html
-  fear/fear: fear.html
-  fear/fear_GTM: fear_GTM.html
-  fear/fear_HND: fear_HND.html
-  fear/fear_SLV: fear_SLV.html
-  fear/fear_correlations: fear_correlations.html
   fear_being_victim: fear_being_victim.html
-  possession/wealth_posessions: wealth_posessions.html
-  transparency/transparency_HND: transparency_HND.html
-  trust/trust-correlations: trust-correlations.html
-  trust/trust-ts: trust-ts.html
-  trust/trust: trust.html
-  trust/trust_GTM: trust_GTM.html
-  trust/trust_HND: trust_HND.html
-  trust/trust_SLV: trust_SLV.html
-  wealth/wealth-ts: wealth-ts.html
-  wealth/wealth: wealth.html
-last_built: 2021-04-26T22:49Z
+last_built: 2021-04-26T23:21Z
 
