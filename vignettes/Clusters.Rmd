@@ -1,8 +1,8 @@
 ---
-title: "Analysis of Latin Barometer in Northen Triangle"
+title: "Cluster Analysis"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Analysis of Latin Barometer in Northen Triangle}
+  %\VignetteIndexEntry{Cluster Analysis}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

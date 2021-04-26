@@ -54,25 +54,25 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="articles/1-reading-in-timeseries.html">1-reading-in-timeseries</a>
+      <a href="articles/Authoritarianism_index.html">Authoritarianism index</a>
     </li>
     <li>
-      <a href="articles/2-lengthening-and-recoding.html">2 lengthening &amp; recoding</a>
+      <a href="articles/Clusters.html">Cluster Analysis</a>
     </li>
     <li>
-      <a href="articles/2017-07-18-how-serious-are-americans-about-democracy-americasbarometer.html">How Serious Are Americans About Democracy? An Exploratory Analysis of the AmericasBarometer Data</a>
+      <a href="articles/Correlation.html">Verify correlations</a>
     </li>
     <li>
-      <a href="articles/3-gen-selector-code.html">3-gen-selector-code</a>
+      <a href="articles/Prediction.html">Prediction Models</a>
     </li>
     <li>
-      <a href="articles/90-output-tests.html">90-output-tests</a>
+      <a href="articles/Satisfaction_with_Democracy.html">Satisfaction with Democracy</a>
     </li>
     <li>
-      <a href="articles/LatinBarometer.html">Analysis of Latin Barometer in Northen Triangle</a>
+      <a href="articles/Spatial_heterogeneity.html">Spatial heterogeneity</a>
     </li>
     <li>
-      <a href="articles/Stepwise.html">stepwise fct</a>
+      <a href="articles/Trends.html">Trends analysis of Binomial variable</a>
     </li>
     <li>
       <a href="articles/authority/authoritarianism.html">Authoritarianism index</a>
@@ -81,10 +81,7 @@
       <a href="articles/authority/authoritarianism_HND.html">Authoritarianism index</a>
     </li>
     <li>
-      <a href="articles/binomial.html">Binomial variables in LAPOP</a>
-    </li>
-    <li>
-      <a href="articles/bribes.html">Bribes</a>
+      <a href="articles/bribes.html">Statistics on bribery</a>
     </li>
     <li>
       <a href="articles/community/community.html">Community Activity index</a>
@@ -97,6 +94,9 @@
     </li>
     <li>
       <a href="articles/critics/crit.html">Sympathy with government critics index</a>
+    </li>
+    <li>
+      <a href="articles/data-quality.html">Calculating some high-level data quality points</a>
     </li>
     <li>
       <a href="articles/fear/fear-categorical.html">Fear and unordered categorical variables</a>
@@ -120,16 +120,10 @@
       <a href="articles/fear/fear_correlations.html">binary</a>
     </li>
     <li>
-      <a href="articles/heterogeneity.html">Heterogeneity</a>
-    </li>
-    <li>
-      <a href="articles/lapop_trends.html">Binomial variables in LAPOP</a>
+      <a href="articles/fear_being_victim.html">Out of fear of being a crime victim</a>
     </li>
     <li>
       <a href="articles/possession/wealth_posessions.html">Wealth index</a>
-    </li>
-    <li>
-      <a href="articles/summary.html">LAPOP Summary</a>
     </li>
     <li>
       <a href="articles/transparency/transparency_HND.html">Honduras transparency index</a>
@@ -151,9 +145,6 @@
     </li>
     <li>
       <a href="articles/trust/trust_SLV.html">Trust in Government Index</a>
-    </li>
-    <li>
-      <a href="articles/verify_corr.html">Verify correlations</a>
     </li>
     <li>
       <a href="articles/wealth/wealth-ts.html">Wealth time series</a>
@@ -186,7 +177,7 @@
 <div id="latin-american-public-opinion-project-lapop-analysis" class="section level1">
 <div class="page-header"><h1 class="hasAnchor">
 <a href="#latin-american-public-opinion-project-lapop-analysis" class="anchor"></a>Latin American Public Opinion Project (LAPOP) Analysis</h1></div>
-<p>Project to better understand <strong>population movement drivers in the Northern Triangle</strong>(Honduras, El Salvador &amp; Guatemala).</p>
+<p>Project to better understand <strong>population movement drivers in the Northern Triangle</strong> (<em>Honduras, El Salvador &amp; Guatemala</em>).</p>
 <p>The analysis is based on longitudinal analysis of <a href="http://datasets.americasbarometer.org/database/index.php">Latin American Public Opinion Project (LAPOP)</a> survey from 2004 to 2018 (<em>i.e. 8 survey dataset per country</em>).</p>
 <p>This projects build from analysis of other shared repositories:</p>
 <ul>
@@ -207,6 +198,55 @@
 <li>Can we identify displacement hot-spots?</li>
 </ul>
 </div>
+<div id="getting-started" class="section level2">
+<h2 class="hasAnchor">
+<a href="#getting-started" class="anchor"></a>Getting Started</h2>
+<p>These are the steps you should take to begin using this repo.</p>
+<div id="prerequisites" class="section level3">
+<h3 class="hasAnchor">
+<a href="#prerequisites" class="anchor"></a>Prerequisites</h3>
+<div id="r-studio" class="section level4">
+<h4 class="hasAnchor">
+<a href="#r-studio" class="anchor"></a>R Studio</h4>
+<p>You will need the current version of <a href="https://www.rstudio.com/products/rstudio/#Desktop">RStudio</a> to run this code.</p>
+</div>
+</div>
+</div>
+<div id="install" class="section level2">
+<h2 class="hasAnchor">
+<a href="#install" class="anchor"></a>Install</h2>
+<p>The package is still under development - need to fix the scrapping functions</p>
+<pre class="{r}"><code><a href="https://remotes.r-lib.org/reference/install_github.html">remotes::install_github(unhcr-americas/LAPOP-SMA)</a></code></pre>
+<p>In order to use the package, the following packages will also be installed <a href="https://www.tidyverse.org/packages/">tidyverse</a>, <a href="https://cran.r-project.org/web/packages/haven/haven.pdf">haven</a>, <a href="https://cran.r-project.org/web/packages/labelled/vignettes/intro_labelled.html">labelled</a>, <a href="https://cran.r-project.org/web/packages/sjmisc/sjmisc.pdf">sjmisc</a>, <a href="https://cran.r-project.org/web/packages/assertr/vignettes/assertr.html">assertr</a>, <a href="https://cran.r-project.org/web/packages/janitor/janitor.pdf">janitor</a>, <a href="https://cran.r-project.org/web/packages/rlang/rlang.pdf">rlang</a>.</p>
+<p>Once installed, you need to download and reshape the data with</p>
+<pre class="{r}"><code><a href="reference/get_dataLAPOP.html">AmericasBarometer::get_dataLAPOP()</a></code></pre>
+</div>
+<div id="vignettes" class="section level2">
+<h2 class="hasAnchor">
+<a href="#vignettes" class="anchor"></a>Vignettes</h2>
+<p>Vignettes are R Markdown file (.rmd) that runs interactively. It does not require any additional installation, as it is a built-in function in R Studio. For an in-depth tutorial, visit this <a href="https://bookdown.org/yihui/rmarkdown/notebook.html">R Notebook Guide</a>. There are also <a href="https://www.rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf">cheat sheets</a> available for how to use R Markdown. Once data have been downloaded, you can then knit the vignettes</p>
+<pre class="{r}"><code><a href="reference/get_dataLAPOP.html">AmericasBarometer::get_dataLAPOP()</a></code></pre>
+<div class="sourceCode" id="cb4"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a><span class="op">*</span><span class="st"> </span>Authoritarianism index <span class="st">`</span><span class="dt">aut_idx</span><span class="st">`</span></span>
+<span id="cb4-2"><a href="#cb4-2"></a><span class="op">*</span><span class="st"> </span>Community Activity index <span class="st">`</span><span class="dt">ca_idx</span><span class="st">`</span></span>
+<span id="cb4-3"><a href="#cb4-3"></a><span class="op">*</span><span class="st"> </span>Sympathy with government critics index <span class="st">`</span><span class="dt">crit_idx</span><span class="st">`</span></span>
+<span id="cb4-4"><a href="#cb4-4"></a><span class="op">*</span><span class="st"> </span>Fear index <span class="st">`</span><span class="dt">fear_idx</span><span class="st">`</span></span>
+<span id="cb4-5"><a href="#cb4-5"></a><span class="op">*</span><span class="st"> </span>Transparency index <span class="st">`</span><span class="dt">tr_idx</span><span class="st">`</span></span>
+<span id="cb4-6"><a href="#cb4-6"></a><span class="op">*</span><span class="st"> </span>Trust <span class="cf">in</span> Government Index <span class="st">`</span><span class="dt">tr_idx</span><span class="st">`</span></span>
+<span id="cb4-7"><a href="#cb4-7"></a><span class="op">*</span><span class="st"> </span>Wealth index <span class="st">`</span><span class="dt">w_idx</span><span class="st">`</span></span>
+<span id="cb4-8"><a href="#cb4-8"></a><span class="op">*</span><span class="st"> </span>Possession index <span class="st">`</span><span class="dt">p_idx</span><span class="st">`</span></span></code></pre></div>
+<p>In addition the following are also available:</p>
+<ul>
+<li>Verify correlations</li>
+<li>Calculating some high-level data quality points</li>
+<li>Out of fear of being a crime victim</li>
+<li>Statistics on bribery</li>
+<li>Spatial heterogeneity</li>
+<li>Trends analysis of Binomial variable</li>
+<li>Cluster Analysis</li>
+<li>Prediction Models</li>
+<li>Verify correlations</li>
+</ul>
+</div>
 <div id="package-functions" class="section level2">
 <h2 class="hasAnchor">
 <a href="#package-functions" class="anchor"></a>Package functions</h2>
@@ -222,79 +262,19 @@
 <li>Finding Common Questions: Flag questions that are asked across all countries</li>
 </ul>
 </li>
-<li>
-<p>Generate a series of indices, calculated for each region based on common variable to explore trends and statistical clusters. Each of the following index are explained in a dedicated vignette:</p>
-<ul>
-<li>Authoritarianism index <code>aut_idx</code>
-</li>
-<li>Community Activity index <code>ca_idx</code>
-</li>
-<li>Sympathy with government critics index <code>crit_idx</code>
-</li>
-<li>Fear index <code>fear_idx</code>
-</li>
-<li>Transparency index <code>tr_idx</code>
-</li>
-<li>Trust in Government Index <code>tr_idx</code>
-</li>
-<li>Wealth index <code>w_idx</code>
-</li>
-<li>Possession index <code>p_idx</code>
-</li>
-</ul>
-</li>
+<li><p>Generate a series of indices, calculated for each region based on common variable to explore trends and statistical clusters. Each of the following index are explained in a dedicated vignette (see below)</p></li>
 <li><p>Generate a series of pre-built charts to display the results and get ground ready for Joint Data Interpretation by subject mater expert</p></li>
 </ol>
-</div>
-<div id="getting-started" class="section level2">
-<h2 class="hasAnchor">
-<a href="#getting-started" class="anchor"></a>Getting Started</h2>
-<p>These are the steps you should take to begin using this repo.</p>
-<div id="prerequisites" class="section level3">
-<h3 class="hasAnchor">
-<a href="#prerequisites" class="anchor"></a>Prerequisites</h3>
-<div id="r-studio" class="section level4">
-<h4 class="hasAnchor">
-<a href="#r-studio" class="anchor"></a>R Studio</h4>
-<p>You will need the current version of <a href="https://www.rstudio.com/products/rstudio/#Desktop">RStudio</a> to run this code.</p>
-<p>In order to run this code, you will also need to install the following packages using <code><a href="https://rdrr.io/r/utils/install.packages.html">install.packages()</a></code>:</p>
-<ul>
-<li><a href="https://www.tidyverse.org/packages/">tidyverse</a></li>
-<li><a href="https://cran.r-project.org/web/packages/haven/haven.pdf">haven</a></li>
-<li><a href="https://cran.r-project.org/web/packages/labelled/vignettes/intro_labelled.html">labelled</a></li>
-<li><a href="https://cran.r-project.org/web/packages/sjmisc/sjmisc.pdf">sjmisc</a></li>
-<li><a href="https://cran.r-project.org/web/packages/assertr/vignettes/assertr.html">assertr</a></li>
-<li><a href="https://cran.r-project.org/web/packages/janitor/janitor.pdf">janitor</a></li>
-<li><a href="https://cran.r-project.org/web/packages/rlang/rlang.pdf">rlang</a></li>
-</ul>
-</div>
-</div>
-</div>
-<div id="vignettes" class="section level2">
-<h2 class="hasAnchor">
-<a href="#vignettes" class="anchor"></a>Vignettes</h2>
-<p>Vignettes are R Markdown file (.rmd) that runs interactively. It does not require any additional installation, as it is a built-in function in R Studio. For an in-depth tutorial, visit this <a href="https://bookdown.org/yihui/rmarkdown/notebook.html">R Notebook Guide</a>. There are also <a href="https://www.rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf">cheat sheets</a> available for how to use R Markdown. it se</p>
 </div>
 <div id="reference-dataset--code-book" class="section level2">
 <h2 class="hasAnchor">
 <a href="#reference-dataset--code-book" class="anchor"></a>Reference dataset / code book</h2>
 <p>The package includes for convenience the question <strong>categories</strong> and <strong>labels</strong> from different versions, based on <a href="http://datasets.americasbarometer.org/database/files/2004-2018%20LAPOP%20AmericasBarometer%20Merge_Codebook_v1.0_FREE_W.pdf">Merge_Codebook_v1.0</a></p>
 <p>The package also include a geographic dataset to ease geo-visualization &amp; analysis</p>
-</div>
-<div id="install" class="section level2">
-<h2 class="hasAnchor">
-<a href="#install" class="anchor"></a>Install</h2>
-<p>The package is still under development - need to fix the scrapping functions</p>
-<pre class="{r}"><code><a href="https://remotes.r-lib.org/reference/install_github.html">
-remotes::install_github(unhcr-americas/LAPOP-SMA)
-</a></code></pre>
 <div id="building-package-documentation" class="section level4">
 <h4 class="hasAnchor">
 <a href="#building-package-documentation" class="anchor"></a>Building package documentation</h4>
-<p><code><a href="https://devtools.r-lib.org//reference/document.html">devtools::document()</a></code></p>
-<p><code><a href="https://devtools.r-lib.org//reference/check.html">devtools::check(document = FALSE)</a></code></p>
-<p><code><a href="https://pkgdown.r-lib.org/reference/build_site.html">pkgdown::build_site()</a></code></p>
-<hr>
+<p><code><a href="https://devtools.r-lib.org//reference/document.html">devtools::document()</a></code> <code><a href="https://devtools.r-lib.org//reference/check.html">devtools::check(document = FALSE)</a></code> <code><a href="https://pkgdown.r-lib.org/reference/build_site.html">pkgdown::build_site()</a></code> ————</p>
 </div>
 </div>
 </div>
