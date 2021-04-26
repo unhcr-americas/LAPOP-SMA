@@ -1,0 +1,481 @@
+---
+title: "binary"
+author: "Christie Albano"
+date: "November 29, 2015"
+output: html_document
+---
+```{r, message=FALSE}
+setwd("C:/Users/Craig/Desktop/SMA/VSFS/LAPOP-SMA/analysis")
+lapop.2014.HND <- read.csv("../../HND-2014.csv",stringsAsFactors=FALSE)
+lapop.2014.GTM <- read.csv("../../GTM-2014.csv",stringsAsFactors=FALSE)
+lapop.2014.SLV <- read.csv("../../SLV-2014.csv",stringsAsFactors=FALSE)
+library(mice)
+library(plyr)
+set.seed(12345)
+```
+
+```{r}
+gtm <- lapop.2014.GTM[,c('vic40', 'vic41', 'vic44', 'vic43',
+      'fear10','fear6f','vic1ext','vic1exta',
+      'vic1hogar','aoj11','pese1','pese2','aoj17',
+      'diso7','diso8','diso10','diso18','diso14',
+      'diso16','diso17','vicbar1','vicbar1f',
+      'vicbar3','vicbar4','vicbar7')]
+
+hnd <- lapop.2014.HND[,c('vic40', 'vic41', 'vic44', 'vic43', 'vic45',
+      'fear10','fear6f','vic1ext','vic1exta',
+      'vic1hogar','aoj11','pese1','pese2','aoj17',
+      'diso7','diso8','diso10','diso18','diso14',
+      'diso16','diso17','vicbar1','vicbar1f',
+      'vicbar3','vicbar4','vicbar7')]
+
+slv <- lapop.2014.SLV[,c('vic44',
+      'fear10','vic1ext','vic1exta',
+      'vic1hogar','aoj11','pese1','pese2','aoj17',
+      'diso7','diso8','diso10','diso18','diso14',
+      'diso16','diso17','vicbar1','vicbar1f',
+      'vicbar3','vicbar4','vicbar7')]
+
+hnd$vic1exta[hnd$vic1exta == 999999] = 0
+gtm$vic1exta[gtm$vic1exta == 999999] = 0
+slv$vic1exta[slv$vic1exta == 999999] = 0
+
+is.na(hnd[hnd>30]) = TRUE
+is.na(gtm[gtm>30]) = TRUE
+is.na(slv[slv>30]) = TRUE
+
+complete.hnd = na.omit(hnd)
+complete.gtm = na.omit(gtm)
+complete.slv = na.omit(slv)
+
+pr_hnd = prcomp(complete.hnd, center = TRUE, scale = FALSE)
+pr_gtm = prcomp(complete.gtm, center = TRUE, scale = FALSE)
+pr_slv = prcomp(complete.slv, center = TRUE, scale = FALSE)
+
+my_imp_hnd <- mice(hnd, printFlag = F)
+my_imp_gtm <- mice(gtm, printFlag = F)
+my_imp_slv <- mice(slv, printFlag = F)
+
+pr.hnd <- lapply(1:5,function(x) prcomp(complete(my_imp_hnd,x),scale=FALSE,center=TRUE))
+pr.gtm <- lapply(1:5,function(x) prcomp(complete(my_imp_gtm,x),scale=FALSE,center=TRUE))
+pr.slv <- lapply(1:5,function(x) prcomp(complete(my_imp_slv,x),scale=FALSE,center=TRUE))
+
+all_pc1_hnd <- data.frame(llply(1:5, function(i) pr.hnd[[i]]$x[,1]))
+all_pc1_gtm <- data.frame(llply(1:5, function(i) pr.gtm[[i]]$x[,1]))
+all_pc1_slv <- data.frame(llply(1:5, function(i) pr.slv[[i]]$x[,1]))
+
+all_pc1_hnd$avg <- rowMeans(all_pc1_hnd)
+all_pc1_gtm$avg <- rowMeans(all_pc1_gtm)
+all_pc1_slv$avg <- rowMeans(all_pc1_slv)
+
+all_pc1_hnd$norm <- scale(-all_pc1_hnd$avg) # sign flip -- now high values mean more fear
+all_pc1_gtm$norm <- scale(-all_pc1_gtm$avg) # sign flip -- now high values mean more fear
+all_pc1_slv$norm <- scale(all_pc1_slv$avg) # no sign flip needed
+
+fear_hnd <- data.frame(w=all_pc1_hnd$norm)
+fear_gtm <- data.frame(w=all_pc1_gtm$norm)
+fear_slv <- data.frame(w=all_pc1_slv$norm)
+
+fear_hnd = as.numeric(unlist(fear_hnd)) 
+fear_gtm = as.numeric(unlist(fear_gtm))
+fear_slv = as.numeric(unlist(fear_slv))
+```
+
+Before going further, let's do some quick sanity checks to make sure things are pointing in the right direction.
+
+```{r}
+mean(fear_hnd[lapop.2014.HND$vic1ext==1]) # 0.52
+mean(fear_hnd[lapop.2014.HND$vic1ext==2]) # -0.12 Honduran non-victims less fearful
+mean(fear_slv[lapop.2014.SLV$vic1ext==1]) # 0.51
+mean(fear_slv[lapop.2014.SLV$vic1ext==2]) # -0.12 Salvadoran non-victims less fearful
+mean(fear_gtm[lapop.2014.GTM$vic1ext==1]) # 0.58
+mean(fear_gtm[lapop.2014.GTM$vic1ext==2]) # -0.12 Guatemalan non-victims less fearful
+```
+
+#### HONDURAS #### 
+
+### Binary
+```{r}
+pvalue = function(index, data, variable) {
+  mydata = cbind(data[,variable], index)
+  mydata = mydata[mydata[,1] <3000,]
+  regression = lm(mydata[,2]~mydata[,1])
+  summary(regression)$coefficients[,c(1,4)]
+}
+
+pvalue(fear_hnd, lapop.2014.HND, 'ur') #rural populations are less fearful 
+pvalue(fear_hnd, lapop.2014.HND, 'q1')
+pvalue(fear_hnd, lapop.2014.HND, 'np1')
+pvalue(fear_hnd, lapop.2014.HND, 'np2')
+pvalue(fear_hnd, lapop.2014.HND, 'prot3') #people who have not participated in a protest are less fearful 
+pvalue(fear_hnd, lapop.2014.HND, 'prot7')
+pvalue(fear_hnd, lapop.2014.HND, 'vb2') # voters are less fearful
+pvalue(fear_hnd, lapop.2014.HND, 'vb10')
+pvalue(fear_hnd, lapop.2014.HND, 'wf1')
+pvalue(fear_hnd, lapop.2014.HND, 'cct1b')
+pvalue(fear_hnd, lapop.2014.HND, 'q10a') #people who do not receive remittances are less fearful 
+pvalue(fear_hnd, lapop.2014.HND, 'q14') #people who dont plan to study abroad are less fearful 
+pvalue(fear_hnd, lapop.2014.HND, 'sexi') #people who had a female interviewer are less fearful 
+```
+
+### Continuous Variables 
+```{r}
+pvalue(fear_hnd, lapop.2014.HND, 'ico2') #when police patrols less, participants are more fearful 
+pvalue(fear_hnd, lapop.2014.HND, 'pole2n') #more dissatisfied with police means more fearful 
+pvalue(fear_hnd, lapop.2014.HND, 'aoj12') #the less confident people are in judicial system to punishthe guilty, the more fearful 
+pvalue(fear_hnd, lapop.2014.HND, 'mil1') #less fearful if more confident in training of army/military 
+pvalue(fear_hnd, lapop.2014.HND, 'mil3')
+pvalue(fear_hnd, lapop.2014.HND, 'sd3new2') #less satisfied with schools, more fearful 
+pvalue(fear_hnd, lapop.2014.HND, 'infrax')
+pvalue(fear_hnd, lapop.2014.HND, 'ing4') #those who think democracy is better are less fearful 
+pvalue(fear_hnd, lapop.2014.HND, 'eff1') #those who think leaders are interested in public opinion are less fearful 
+pvalue(fear_hnd, lapop.2014.HND, 'eff2')
+pvalue(fear_hnd, lapop.2014.HND, 'mil7')
+pvalue(fear_hnd, lapop.2014.HND, 'per4') #anxious personalities are more fearful 
+pvalue(fear_hnd, lapop.2014.HND, 'per9')
+pvalue(fear_hnd, lapop.2014.HND, 'dem2')
+pvalue(fear_hnd, lapop.2014.HND, 'vb1')
+pvalue(fear_hnd, lapop.2014.HND, 'pol1') #those less interested in politics are less fearful 
+pvalue(fear_hnd, lapop.2014.HND, 'vb20')
+pvalue(fear_hnd, lapop.2014.HND, 'for6') #people who think China has less influence are less fearful 
+pvalue(fear_hnd, lapop.2014.HND, 'for6b')
+pvalue(fear_hnd, lapop.2014.HND, 'mil10a')
+pvalue(fear_hnd, lapop.2014.HND, 'mil10e')
+pvalue(fear_hnd, lapop.2014.HND, 'q5b')
+pvalue(fear_hnd, lapop.2014.HND, 'q2y')
+pvalue(fear_hnd, lapop.2014.HND, 'q2')
+pvalue(fear_hnd, lapop.2014.HND, 'idio2')
+pvalue(fear_hnd, lapop.2014.HND, 'soct2')
+pvalue(fear_hnd, lapop.2014.HND, 'ed') #those with more yrs. of education are more fearful 
+pvalue(fear_hnd, lapop.2014.HND, 'q12c')
+pvalue(fear_hnd, lapop.2014.HND, 'q12bn')
+pvalue(fear_hnd, lapop.2014.HND, 'q12') #those with more children are less fearful 
+```
+
+Now we should look at which of the variables that correlate with our fear index also correlate with each other.
+
+```{r}
+bin_bin <- function(data,var1,var2) {
+  v1 <- data[data[,var1] < 1000 & data[,var2] < 1000,var1]
+  v2 <- data[data[,var1] < 1000 & data[,var2] < 1000,var2]
+  ct <- table(v1,v2)
+  ft <- fisher.test(ct)
+  c(ft$p.value,ft$estimate)
+}
+hnd_bin <- c('vb2','q10a','q14','ur','sexi','prot3')
+for (x in hnd_bin) {
+  for (y in hnd_bin[-1:-which(hnd_bin==x)]) {
+    res <- bin_bin(lapop.2014.HND,x,y)
+    if (res[1] < 0.01) {
+      print(paste(x,y,res[1],res[2]))
+    }
+  }
+}
+```
+
+So there are negative relationships between:
+
+* `vb2` and `q14`: Voters less likely to plan to leave 
+* `ur` and `sexi`: More female interviewers in urban areas
+
+And positive relationships between:
+
+* `q10a` and `q14`: Remittance receivers more likely to plan to leave
+* `q10a` and `ur`: Remittance receivers more urban
+* `q14` and `ur`: Urban people more likely to leave
+
+Now, correlate binary and continuous variables:
+
+```{r}
+bin_cont <- function(data,bvar,cvar) {
+  b <- data[data[,bvar] < 1000 & data[,cvar] < 1000,bvar]
+  b <- b - min(b) # convert to 0-1 scale
+  c <- data[data[,bvar] < 1000 & data[,cvar] < 1000,cvar]  
+  tt <- t.test(c[b==0],c[b==1])
+  c(tt$p.value,tt$estimate[2]-tt$estimate[1])
+}
+hnd_cont <- c('ed','for6','pol1','per4','sd3new2','mil1','aoj12','q12','ico2',
+              'pole2n','eff1','ing4')
+for (x in hnd_bin) {
+  for (y in hnd_cont) {
+    res <- bin_cont(lapop.2014.HND,x,y)
+    if (res[1] < 0.01) {
+      print(paste(x,y,res[1],res[2]))
+    }
+  }
+}
+```
+
+Negative correlations:
+
+* `vb2` and `q12`: Voters have more children
+* `q10a` and `ed`: Educated people receive more remittances
+* `q14` and `ed`: Educated people plan to leave
+* `q14` and `sd3new2`: People more dissatisfied with schools plan to leave
+* `ur` and `ed`: Urban people more educated
+* `ur` and `per4`: Urban people have anxious personalities
+* `ur` and `aoj12`: Urban people less confident that guilty are punished
+* `sexi` and `for6`: People with male interviewers find China more influential
+
+Positive correlations:
+
+* `vb2` and `pol1`: Voters more interested in politics
+* `prot3` and `pol1`: Protesters more interested in politics
+* `q14` and `pol1`: People interested in politics plan to leave
+* `q14` and `q12`: People with fewer children plan to leave
+* `ur` and `for6`: Urban people consider China more influential
+* `ur` and `q12`: Urban people have fewer children
+* `ur` and `ico2`: More National Police patrols in urban neighborhoods
+* `sexi` and `aoj12`: People with male interviewers more convinced that guilty are punished
+
+Finally, let's correlate the continuous variables with each other:
+
+```{r}
+cont_cont <- function(data,var1,var2) {
+  v1 <- data[data[,var1] < 1000 & data[,var2] < 1000,var1]
+  v2 <- data[data[,var1] < 1000 & data[,var2] < 1000,var2]
+  reg <- lm(v1~v2)
+  summary(reg)$coefficients[2,c(1,4)]
+}
+for (x in hnd_cont) {
+  for (y in hnd_cont[-1:-which(hnd_cont==x)]) {
+    res <- cont_cont(lapop.2014.HND,x,y)
+    if (res[2] < 0.01) {
+      print(paste(x,y,res[2],res[1]))
+    }
+  }
+}
+```
+
+Negative correlations:
+
+* `ed` and `for6`: Educated people find China more influential
+* `ed` and `pol`: Educated people more interested in politics
+* `ed` and `q12`: Educated people have fewer children
+* `ed` and `ico2`: Educated people get more National Police patrols
+* `for6` and `ing4`: People who see Chinese influence prefer democracy
+* `pol1` and `mil1`: People interested in politics have a higher opinion of military
+* `pol1` and `eff1`: People interested in politics think leaders are interested
+* `sd3new2` and `mil1`: People satisfied with schools have a high opinion of military
+* `sd3new2` and `eff1`: People satisfied with schools think leaders are interested
+* `sd3new2` and `ing4`: People satisfied with schools like democracy
+* `mil1` and `aoj12`: People with a high opinion of the military also trust the judiciary
+* `mil1` and `ico2`: People with lots of National Police patrols think highly of the military
+* `mil1` and `pole2n`: People who love the police also love the military
+* `aoj12` and `eff1`: People who think their leaders care also believe the guilty are punished
+* `ico2` and `ing4`: People with lots of National Police patrols prefer democracy
+* `pole2n` and `eff1`: People who think their leaders care like the police
+* `pole2n` and `ing4`: People who like the police like democracy
+
+Positive correlations:
+
+* `ed` and `aoj12`: More educated people don't think the guilty are punished
+* `pol1` and `aoj12`: People interested in politics do think the guilty are punished
+* `per4` and `pole2n`: Anxious people dislike the police
+* `sd3new2` and `aoj12`: People who are satisfied with schools also think the guilty are punished
+* `sd3new2` and `ico2`: People who get lots of National Police patrols are satisfied with schools
+* `sd3new2` and `pole2n`: People who like the schools like the cops
+* `mil1` and `eff1`: People who think their leaders care also think highly of the military
+* `mil1` and `ing4`: People who think highly of the military also like democracy
+* `aoj12` and `ico2`: People who get lots of National Police patrols think the guilty are punished
+* `aoj12` and `pole2n`: People who think the guilty are punished like the police
+* `ico2` and `pole2n`: People who get lots of police patrols love the police
+* `eff1` and `ing4`: People who think their leaders don't care disapprove of democracy
+
+This seems to point to a coherent set of beliefs -- high levels of trust in the military, police, schools, and political leaders all seem to go together.
+
+Now this can really get interesting -- we're prepared to look at multiple regressions. The goal here is to *invalidate* correlations; we want to rule out as many as we can. 
+
+Let's start with an easy one: I really don't believe that people are afraid of crime because they think China is influential. Perception of Chinese influence (`for6`) correlates with urbanization (`ur`), education (`ed`), preference for democracy (`ing4`), and having a male interviewer (`sexi`).
+
+```{r}
+hnd <- lapop.2014.HND
+hnd[hnd > 5000] <- NA
+hnd$fear_idx <- fear_hnd
+summary(lm(fear_hnd ~ hnd$for6 + hnd$ur))
+```
+
+So, when we take urbanization into account, China-watchers are no more afraid of crime than other people at the same level of urbanization.
+
+What if we just toss in everything?
+
+```{r}
+summary(lm(fear_hnd ~ hnd$ur + hnd$vb2 + hnd$q10a + hnd$q14 + hnd$sexi + 
+             hnd$prot3 + hnd$ed + hnd$for6 + hnd$pol1 + hnd$per4 + 
+             hnd$sd3new2 + hnd$mil1 + hnd$aoj12 + hnd$q12 + hnd$ico2 + 
+             hnd$pole2n +hnd$eff1 + hnd$ing4))
+```
+
+With a strict (p < 0.01) criterion, the only significant correlations left are urbanization, male interviewers, anxious personalities, dissatisfaction with schools, infrequent National Police patrols, and dissatisfaction with police.
+
+In hindsight, it probably wasn't necessary to calculate all of those pairwise correlations, because adding all of them tells us what we really needed to know -- which variables really have an impact on our fear index. Of course there's a risk in adding too many variables -- whenever a variable has `NA` values, those responses get omitted from the multiple regression. With too many variables we'll end up throwing away too much data.
+
+```{r}
+nrow(na.omit(hnd[,c(hnd_bin,hnd_cont)])) / nrow(hnd)
+```
+
+We've still got about 75% of our data included in that multiple regression.
+
+While we're at it, let's look at unordered categorical variables:
+
+```{r}
+categ <- function(f,x,categ) {
+  # For a data from f with a continuous variable 'x' and an unordered 
+  # categorical variable 'categ', test whether the value of x is 
+  # significantly higher or lower for each value of categ than for the
+  # rest of the population. Do this using a two-sample t-test.
+  result <- data.frame(var=character(),val=integer(),pval=double(),
+                       mean=double(),othermean=double())
+  for(q in unique(na.omit(f[,categ]))) {
+    if(sum(f[,categ]==q,na.rm=TRUE) > 1) {
+      yes <- f[f[,categ]==q,x]
+      no <- f[f[,categ]!=q,x]
+      if (sum(!is.na(no)) < 2) return()
+      tt <- t.test(yes,no,na.rm=TRUE)
+      if (tt$p.value < 0.01) {
+        newrow <- data.frame(var=categ,val=q,pval=tt$p.value,
+                         mean=tt$estimate[[1]],
+                         othermean=tt$estimate[[2]])
+        result <- rbind(result,newrow)
+      }
+    }
+  }
+  result
+}
+unordered_vars <- c('a4','vic2','vic2aa','vb3n','vb4new','vb101','vb11',
+                    'for1n','for4','for5','q3c','ocup4a','ocup1a','q11n',
+                    'etid','leng1')
+categ(hnd,'fear_idx','a4') # people who complain about health services are less afraid
+categ(hnd,'fear_idx','vic2') # nothing significant
+categ(hnd,'fear_idx','vic2aa') # people who were victimized away from home are less afraid than other victims
+categ(hnd,'fear_idx','vb3n') # JOH voters less fearful, Nasralla voters more fearful
+categ(hnd,'fear_idx','vb4new') # Nothing significant
+categ(hnd,'fear_idx','vb101') # Nada
+categ(hnd,'fear_idx','vb11') # Partido Anti Corrupcion (Nasralla's) voters more fearful
+categ(hnd,'fear_idx','for1n') # nada
+categ(hnd,'fear_idx','for4') # nada
+categ(hnd,'fear_idx','for5') # nada
+categ(hnd,'fear_idx','q3c') # Catholics less fearful, traditional/Native much less fearful
+categ(hnd,'fear_idx','ocup4a') # job seekers more fearful
+categ(hnd,'fear_idx','ocup1a') # self-employed less fearful, salaried more fearful
+categ(hnd,'fear_idx','q11n') # married people less fearful
+categ(hnd,'fear_idx','etid') # nothing
+categ(hnd,'fear_idx','leng1') # nothing
+
+hnd$a4_22 <- as.numeric(hnd$a4==22)
+hnd$vic2aa_4 <- as.numeric(hnd$vic2aa==4)
+hnd$vb3n_401 <- as.numeric(hnd$vb3n==401)
+hnd$vb3n_404 <- as.numeric(hnd$vb3n==404)
+hnd$vb11_407 <- as.numeric(hnd$vb11==407)
+hnd$q3c_1 <- as.numeric(hnd$q3c==1)
+hnd$q3c_7 <- as.numeric(hnd$q3c==7)
+hnd$ocup4a_3 <- as.numeric(hnd$ocup4a==3)
+hnd$ocup1a_4 <- as.numeric(hnd$ocup1a==4)
+hnd$ocup1a_2 <- as.numeric(hnd$ocup1a==2)
+hnd$ocup1a_1 <- as.numeric(hnd$ocup1a==1)
+hnd$q11n_2 <- as.numeric(hnd$q11n==2)
+
+cat_var <- c('a4_22','vic2aa_4','vb3n_401','vb3n_404','vb11_407',
+             'q3c_1','q3c_7','ocup4a_3','ocup1a_4','ocup1a_2',
+             'ocup1a_1','q11n_2')
+
+for (x in cat_var) {
+  s <- lm(fear_hnd ~ hnd$ur + hnd$vb2 + hnd$q10a + hnd$q14 + hnd$sexi + 
+             hnd$prot3 + hnd$ed + hnd$for6 + hnd$pol1 + hnd$per4 + 
+             hnd$sd3new2 + hnd$mil1 + hnd$aoj12 + hnd$q12 + hnd$ico2 + 
+             hnd$pole2n +hnd$eff1 + hnd$ing4 + hnd[,x])
+  res <- summary(s)$coefficient[nrow(summary(s)$coefficient),c(4,1)]
+  if (res[1] < 0.01) {
+    print(paste(c(x,res)))
+  }
+}
+```
+
+With a parsimonious p < 0.01, only `vic2aa_4` is significant. At the p < 0.05 level, `ocup4a_3==3` (job seekers) and `vb11==407` (Anti-corruption party (PAC) adherents) also look interesting.
+
+```{r}
+summary(lm(fear_hnd ~ hnd$ur + hnd$vb2 + hnd$q10a + hnd$q14 + hnd$sexi + 
+             hnd$prot3 + hnd$ed + hnd$for6 + hnd$pol1 + hnd$per4 + 
+             hnd$sd3new2 + hnd$mil1 + hnd$aoj12 + hnd$q12 + hnd$ico2 + 
+             hnd$pole2n +hnd$eff1 + hnd$ing4 + hnd$vic2aa_4))
+```
+
+Because `vic2aa_4` has `NA` values for all respondents who *weren't* victims in the last 12 months, it ruins most of my other correlations. We do see, however, that out of the population of self-identified victims, those with male interviewers are significantly more fearful.
+
+Looking forward to the social media analyses, it seems that frustration with schools and police, urbanization, anxiety, unemployment, and PAC support could be interesting avenues to explore.
+
+### GUATEMALA ####
+```{r}
+pvalue(fear_gtm, lapop.2014.GTM, 'ur') #rural populations are less fearful 
+pvalue(fear_gtm, lapop.2014.GTM, 'q1')
+pvalue(fear_gtm, lapop.2014.GTM, 'np1')
+pvalue(fear_gtm, lapop.2014.GTM, 'np2')
+pvalue(fear_gtm, lapop.2014.GTM, 'prot3')
+pvalue(fear_gtm, lapop.2014.GTM, 'vb2')
+pvalue(fear_gtm, lapop.2014.GTM, 'vb10')
+pvalue(fear_gtm, lapop.2014.GTM, 'wf1') #people who don't receive govt. assistance are less fearful 
+pvalue(fear_gtm, lapop.2014.GTM, 'cct1b') #people who don't receive cash transfers are more fearful 
+pvalue(fear_gtm, lapop.2014.GTM, 'q10a')
+pvalue(fear_gtm, lapop.2014.GTM, 'q14')
+pvalue(fear_gtm, lapop.2014.GTM, 'sexi') #participants with a female interviewer were more fearful 
+```
+
+### Continuous Variables 
+```{r}
+pvalue(fear_gtm, lapop.2014.GTM, 'it1') #people who are less trusting are more fearful 
+pvalue(fear_gtm, lapop.2014.GTM, 'aoj12')#those with less confidence in judiciary system to punish the guilty are more fearful
+pvalue(fear_gtm, lapop.2014.GTM, 'mil4')
+pvalue(fear_gtm, lapop.2014.GTM, 'pn4')#those less satisfied with democracy are more fearful 
+pvalue(fear_gtm, lapop.2014.GTM, 'www1')#those who use the internet less are less fearful 
+pvalue(fear_gtm, lapop.2014.GTM, 'q10e')
+pvalue(fear_gtm, lapop.2014.GTM, 'pol1')#those less interested in politics are less fearful 
+pvalue(fear_gtm, lapop.2014.GTM, 'for6')#those who think china has less influence are less fearful 
+pvalue(fear_gtm, lapop.2014.GTM, 'for6b')#those who think the U.S. has less influence in their country are less fearful
+pvalue(fear_gtm, lapop.2014.GTM, 'for7')
+pvalue(fear_gtm, lapop.2014.GTM, 'mil10c')
+pvalue(fear_gtm, lapop.2014.GTM, 'q5b')
+pvalue(fear_gtm, lapop.2014.GTM, 'ocup4a')#
+
+```
+
+#### EL SALVADOR ####
+```{r}
+pvalue(fear_slv, lapop.2014.SLV, 'ur') #rural populations are more fearful
+pvalue(fear_slv, lapop.2014.SLV, 'q1') #females are more fearful 
+pvalue(fear_slv, lapop.2014.SLV, 'np1') #those who have not attended municipal meeting are more fearful 
+pvalue(fear_slv, lapop.2014.SLV, 'np2') #those who have not requested help from municipal office are more fearful 
+pvalue(fear_slv, lapop.2014.SLV, 'prot3') #those who have not attended a protest are more fearful 
+pvalue(fear_slv, lapop.2014.SLV, 'vb2')
+pvalue(fear_slv, lapop.2014.SLV, 'vb10') #those who do not identify with a political party are more fearful 
+pvalue(fear_slv, lapop.2014.SLV, 'wf1') #those who do not receive govt. assistance are less fearful 
+pvalue(fear_slv, lapop.2014.SLV, 'cct1b')
+pvalue(fear_slv, lapop.2014.SLV, 'q10a') #those who don't receive remittances are more fearful  
+pvalue(fear_slv, lapop.2014.SLV, 'q14') #those who do not plan to study abroad are more fearful 
+pvalue(fear_slv, lapop.2014.SLV, 'sexi') #those with female interviewers were less fearful 
+```
+
+### Continuous Variables 
+```{r}
+pvalue(fear_slv, lapop.2014.SLV, 'it1') #those that are less trusting are less fearful 
+pvalue(fear_slv, lapop.2014.SLV, 'ico2')
+pvalue(fear_slv, lapop.2014.SLV, 'aoj12')#those with less confidence in judicial system are less fearful 
+pvalue(fear_slv, lapop.2014.SLV, 'n11')#
+pvalue(fear_slv, lapop.2014.SLV, 'n15')#
+pvalue(fear_slv, lapop.2014.SLV, 'mil3')
+pvalue(fear_slv, lapop.2014.SLV, 'infrax')
+pvalue(fear_slv, lapop.2014.SLV, 'ing4')
+pvalue(fear_slv, lapop.2014.SLV, 'eff1') #
+pvalue(fear_slv, lapop.2014.SLV, 'eff2')#
+pvalue(fear_slv, lapop.2014.SLV, 'q10g')
+pvalue(fear_slv, lapop.2014.SLV, 'vb3n')
+pvalue(fear_slv, lapop.2014.SLV, 'vb4new')
+pvalue(fear_slv, lapop.2014.SLV, 'vb20')#
+pvalue(fear_slv, lapop.2014.SLV, 'for6')#
+pvalue(fear_slv, lapop.2014.SLV, 'for6b')#
+pvalue(fear_slv, lapop.2014.SLV, 'mil10a')#
+pvalue(fear_slv, lapop.2014.SLV, 'mil10e')
+pvalue(fear_slv, lapop.2014.SLV, 'q5b')
+pvalue(fear_slv, lapop.2014.SLV, 'q10d')
+```
+
+

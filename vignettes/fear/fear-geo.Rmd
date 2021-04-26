@@ -1,0 +1,76 @@
+---
+title: "Geography of fear"
+author: "Craig Jolley"
+date: "November 5, 2015"
+output: html_document
+---
+
+Build all of the composite indices and generate geolocations.
+
+
+```{r,message=FALSE}
+setwd("C:/Users/Craig/Desktop/SMA/VSFS/LAPOP-SMA/analysis")
+source('../indices/make_indices.R')
+source('../utils/make_geo.R')
+library(plyr)
+library(XLConnect)
+
+```
+
+What I want to do first is aggregate by different geographic units and see how much of the variance in the fear index can be explained by each level of aggregation. First, the country level (`pais`).
+
+```{r}
+my_geo$fear <- fear_all
+pais_avg <- ddply(my_geo,~pais_text,summarize,x=mean(fear))
+my_geo$pais_avg <- pais_avg$x[match(my_geo$pais_text,pais_avg$pais_text)]
+qplot(my_geo$fear,my_geo$pais_avg)
+summary(lm(fear~pais_avg,data=my_geo))
+```
+
+So there's a correlation (we would hope!), but the R-squared value is only 0.011; this isn't the right level of aggregation.
+
+Next, let's try `estratopri`, for regional divisions within each country.
+
+```{r}
+my_geo$estratopri <- lapop.2014.all$estratopri
+pri_avg <- ddply(my_geo,~estratopri,summarize,x=mean(fear))
+my_geo$pri_avg <- pri_avg$x[match(my_geo$estratopri,pri_avg$estratopri)]
+qplot(my_geo$fear,my_geo$pri_avg)
+summary(lm(fear~pri_avg,data=my_geo))
+```
+
+So now R-squared has climbed to 0.11; we're accounting for 11% of the variance. Still not all that impressive. Let's move on to the department level:
+
+```{r}
+prov_avg <- ddply(my_geo,~prov_text,summarize,x=mean(fear))
+my_geo$prov_avg <- prov_avg$x[match(my_geo$prov_text,prov_avg$prov_text)]
+qplot(my_geo$fear,my_geo$prov_avg)
+summary(lm(fear~prov_avg,data=my_geo))
+```
+
+With an R-squared of 0.13, departments are barely better than regions. Now let's get really granular and look at municipalities. We'll need to create some kind of unique identifier that combines `pais` and `municipio`, since they're not unique for each country.
+
+```{r}
+my_geo$muni_uniq <- paste(my_geo$pais_text,my_geo$muni_text,sep='_')
+muni_avg <- ddply(my_geo,~muni_uniq,summarize,x=mean(fear))
+my_geo$muni_avg <- muni_avg$x[match(my_geo$muni_uniq,muni_avg$muni_uniq)]
+qplot(my_geo$fear,my_geo$muni_avg)
+summary(lm(fear~muni_avg,data=my_geo))
+```
+
+Even municipalities, the most granular level of geographic resolution we have across all three countries, only explain 22% of the variance in our fear index. Clearly, there's more determining people's level of fear than where they live. The plot is telling, though -- in the least fearful cities, hardly anyone has high a high fear index, while the opposite is true for the most fearful cities.
+
+In Honduras, it's possible to get even more detail and go down to the aldeas level.
+
+```{r}
+dist_avg <- ddply(my_geo,~dist_text,summarize,x=mean(fear))
+my_geo$dist_avg <- dist_avg$x[match(my_geo$dist_text,dist_avg$dist_text)]
+my_geo[my_geo$pais_text != 'Honduras','dist_avg'] <- NA
+qplot(my_geo$fear,my_geo$dist_avg)
+summary(lm(fear~dist_avg,data=my_geo))
+```
+
+In Honduras, then, the availability of aldeas-level geolocation lets us explain 28% of the variance in fear.
+
+See `mapus.R` for outputs of the fear index (and its most important correlates) that are suitable as inputs for GIS.
+

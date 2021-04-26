@@ -1,0 +1,478 @@
+---
+title: "2 lengthening & recoding"
+output: html_notebook
+---
+
+# lengthening
+
+this part transform the data from wide to long
+the output long data has six columns: person_id, pais, country, weight, column_name, answer_measure
+
+```{r}
+question_list <- colnames(all.df)
+remove <- c('pais','person_id','weight1500','country','X1')
+question_list <- question_list[!question_list %in% remove]
+final_data_long <- all.df %>% 
+  # group_by(person_id,country) %>% # >> hack added to make person_id unique
+  # mutate(rowid = row_number()) %>%
+  # ungroup() %>%
+  # mutate(person_id = paste(person_id, rowid, sep="_")) %>%
+  # select(-rowid) %>%# << hack added to make person_id unique
+  gather(column_name, answer_measure, question_list) %>% 
+  select(person_id,pais,country,column_name,answer_measure,weight1500)
+```
+
+# Understand what is going on with strange values
+```{r}
+# library(stringr)
+# problematic <- filter(final_data_long, answer_measure%in%c(98,99,100)&column_name!="q2")
+# table(problematic$column_name,problematic$answer_measure)
+# table(problematic$column_name,str_match(problematic$person_id,".{3}(\\d{2})")[,2])
+# table(problematic$column_name,problematic$country)
+# table(problematic$answer_measure)
+# problematic %>% filter(answer_measure==100)
+```
+
+# recoding
+
+this part will recode the answer_measure column to a sacle of 0-100
+if there is no value recoded, the answer measure will show its original answer
+
+
+## Then, the actual recoding
+
+```{r}
+total_long_common_recoded <- final_data_long %>%
+  mutate(answer_measure = as.character(answer_measure)) %>%
+  left_join(response_labels, 
+            by = c("column_name" = "column_name", "answer_measure" = "value")) %>%
+  mutate(answer_dimension = if_else(column_name=="year"|is.na(label), #make sure year is ok for dropdown menu
+                                    label,
+                                    paste0(answer_measure, ": ", label)),
+         answer_measure = if_else(is.na(value_recoded),answer_measure,value_recoded)
+         )
+  # hack to get better labels on crosstab
+  # group_by(column_name) %>%
+  # mutate(sortid=as.integer(as.factor(answer_measure))) %>%
+  # mutate(sortid=max(sortid,na.rm = T)-sortid) %>%
+  # ungroup() %>%
+  # mutate(answer_dimension = if_else(is.na(label_es),
+  #                                   label_es,
+  #                                   str_c('"',str_dup(" ",sortid), label_es,'"')),
+  #        sortid = NULL)
+```
+# add age group
+
+this part will add age group as a dimension
+
+```{r}
+# Separate our q2 rows, add agegroup, then bind all together
+common_only_q2 <-
+  total_long_common_recoded %>% filter(column_name == "q2") %>%
+  mutate(answer_dimension = as.character(cut(
+    as.numeric(answer_measure),
+    breaks = c(0, 25, 35, 45, 55, 65, Inf),
+    labels = c("18-25", "26-35", "36-45", "46-55", "56-65", "66-")
+  )))
+
+# stacking back into full data
+total_long_common_recoded <- total_long_common_recoded %>% 
+  filter(column_name !="q2") %>%  #Only non-q2 rows left
+  bind_rows(common_only_q2)
+```
+
+
+# assert
+
+check the age group
+it should show actual age in measure and age group in dimension
+
+```{r age_group}
+total_long_common_recoded %>% 
+  filter(column_name == 'q2') %>% 
+  select(answer_measure,answer_dimension)
+```
+
+check the year recoding
+2009 is recoded to 2008
+2017 is recoded to 2016
+2019 is recoded to 2018
+
+```{r}
+total_long_common_recoded %>% 
+  filter(column_name == 'year') %>% 
+  distinct(answer_measure)
+```
+
+
+
+## Combining category and question
+
+```{r Combine category and question}
+total_long_common_narrow <- total_long_common_recoded %>% 
+  left_join(questions_cats, by = "column_name") %>%
+  rename(category_short = paste0("category_short_",lang), question_short = paste0("question_short_",lang)) %>% 
+  unite(category_question, category_short, question_short, sep = ":", remove = FALSE) %>%
+  unite(category_colname, category_short, column_name, sep = ":", remove = FALSE) %>%
+  select(country, person_id, weight1500, column_name, category_question, category_colname, question_short, column_name, answer_measure, answer_dimension) 
+```
+
+## Pivoting Wider 
+
+This part will transform the data from long to wide for tableau
+
+Explicitly name the dimensions and measures 
+
+Define list of all columns names that are measures
+```{r Create measures/dimensions list}
+measures <- c(
+      "a4",
+      "aoj11",
+      "aoj12",
+      "b1",
+      "b12",
+      "b13",
+      "b18",
+      "b2",
+      "b20",
+      "b20a",
+      "b21",
+      "b21a",
+      "b3",
+      "b31",
+      "b32",
+      "b37",
+      "b4",
+      "b47a",
+      "b6",
+      "cct1b",
+      "clien1n",
+      "clien1na",
+      "cp13",
+      "cp2",
+      "cp20",
+      "cp6",
+      "cp7",
+      "cp8",
+      "d1",
+      "d2",
+      "d3",
+      "d4",
+      "d5",
+      "d6",
+      "drk1",
+      "dst1b",
+      "e5",
+      "ed",
+      "eff1",
+      "eff2",
+      "env1c",
+      "env2b",
+      "etid",
+      "exc11",
+      "exc13",
+      "exc14",
+      "exc15",
+      "exc16",
+      "exc18",
+      "exc2",
+      "exc20",
+      "exc6",
+      "exc7",
+      "exc7new",
+      "fs2",
+      "fs8",
+      "gi0",
+      "gi0n",
+      "idio2",
+      "infrax",
+      "ing4",
+      "it1",
+      "jc10",
+      "jc13",
+      "jc15a",
+      "jc16a",
+      "l1",
+      "l1b",
+      "leng1",
+      "lib1",
+      "lib2c",
+      "m1",
+      "mil10a",
+      "mil10e",
+      "np1",
+      "ocup1a",
+      "ocup4a",
+      "pn4",
+      "pol1",
+      "prot3",
+      "q1",
+      "q10a",
+      "q10e",
+      "q10new",
+      "q11n",
+      "q12",
+      "q12bn",
+      "q12c",
+      "q14",
+      "q2",
+      "q3cn",
+      "q5a",
+      "q5b",
+      "r1",
+      "r12",
+      "r14",
+      "r15",
+      "r16",
+      "r18",
+      "r3",
+      "r4",
+      "r4a",
+      "r5",
+      "r6",
+      "r7",
+      "r8",
+      "redist1",
+      "redist2",
+      "redist2a",
+      "redist3",
+      "ros4",
+      "sd2new2",
+      "sd3new2",
+      "sd6new2",
+      "smedia1",
+      "smedia4",
+      "smedia7",
+      "soct2",
+      "vb10",
+      "vb2",
+      "vb20",
+      "vb50",
+      "vb51",
+      "vb52",
+      "vic1ext",
+      "vic1exta",
+      "w14a",
+      "wf1"
+    )
+
+dimensions <- c(
+      "a4",
+      "aoj11",
+      "aoj12",
+      "b1",
+      "b12",
+      "b13",
+      "b18",
+      "b2",
+      "b20",
+      "b20a",
+      "b21",
+      "b21a",
+      "b3",
+      "b31",
+      "b32",
+      "b37",
+      "b4",
+      "b47a",
+      "b6",
+      "cct1b",
+      "clien1n",
+      "clien1na",
+      "cp13",
+      "cp2",
+      "cp20",
+      "cp6",
+      "cp7",
+      "cp8",
+      "d1",
+      "d2",
+      "d3",
+      "d4",
+      "d5",
+      "d6",
+      "drk1",
+      "dst1b",
+      "e5",
+      "ed",
+      "eff1",
+      "eff2",
+      "env1c",
+      "env2b",
+      "etid",
+      "exc11",
+      "exc13",
+      "exc14",
+      "exc15",
+      "exc16",
+      "exc18",
+      "exc2",
+      "exc20",
+      "exc6",
+      "exc7",
+      "exc7new",
+      "fs2",
+      "fs8",
+      "gi0",
+      "gi0n",
+      "idio2",
+      "infrax",
+      "ing4",
+      "it1",
+      "jc10",
+      "jc13",
+      "jc15a",
+      "jc16a",
+      "l1",
+      "l1b",
+      "leng1",
+      "lib1",
+      "lib2c",
+      "m1",
+      "mil10a",
+      "mil10e",
+      "np1",
+      "ocup1a",
+      "ocup4a",
+      "pn4",
+      "pol1",
+      "prot3",
+      "q1",
+      "q10a",
+      "q10e",
+      "q10new",
+      "q11n",
+      "q12",
+      "q12bn",
+      "q12c",
+      "q14",
+      "q2",
+      "q3cn",
+      "q5a",
+      "q5b",
+      "r1",
+      "r12",
+      "r14",
+      "r15",
+      "r16",
+      "r18",
+      "r3",
+      "r4",
+      "r4a",
+      "r5",
+      "r6",
+      "r7",
+      "r8",
+      "redist1",
+      "redist2",
+      "redist2a",
+      "redist3",
+      "ros4",
+      "sd2new2",
+      "sd3new2",
+      "sd6new2",
+      "smedia1",
+      "smedia4",
+      "smedia7",
+      "soct2",
+      "ur",
+      "vb10",
+      "vb2",
+      "vb20",
+      "vb50",
+      "vb51",
+      "vb52",
+      "vic1ext",
+      "vic1exta",
+      "w14a",
+      "wf1",
+      "year"
+    )
+```
+
+
+```{r prepare variables to be saved}
+measure.df <-
+  total_long_common_narrow %>% # Include only measures (cols with recode)
+  filter(
+    column_name %in% measures
+  ) %>%
+  pivot_wider(
+    id_cols = c(person_id, country,weight1500),
+    names_from = column_name,
+    values_from = answer_measure
+  ) %>% rename_at(measures, ~ paste0(.,"_m"))
+
+dimension.df <-
+  total_long_common_narrow %>% # Include only dimensions (cols with label or no recode )
+  filter(
+    column_name %in% dimensions
+  ) %>%
+  pivot_wider(
+    id_cols = c(person_id, country,weight1500),
+    names_from = column_name,
+    values_from = answer_dimension
+  ) %>% rename_at(dimensions, ~ paste0(.,"_d"))
+
+measure.label.df <-
+  total_long_common_narrow %>% # Include only measures (cols with recode)
+  filter(
+    column_name %in% measures
+  ) %>%
+  pivot_wider(
+    id_cols = c(person_id, country,weight1500),
+    names_from = column_name,
+    values_from = answer_dimension
+  ) %>% rename_at(measures, ~ paste0(.,"_l"))
+
+dimension.order.df <-
+  total_long_common_narrow %>% # Include only dimensions (cols with label or no recode )
+  filter(
+    column_name %in% dimensions
+  ) %>%
+  pivot_wider(
+    id_cols = c(person_id, country,weight1500),
+    names_from = column_name,
+    values_from = answer_measure
+  ) %>% rename_at(dimensions, ~ paste0(.,"_o")) 
+
+final_wide <- measure.df %>%
+  left_join(dimension.df, by = c("person_id", "country",'weight1500')) %>%
+  left_join(measure.label.df, by = c("person_id", "country",'weight1500')) %>%
+  left_join(dimension.order.df, by = c("person_id", "country",'weight1500'))
+  
+```
+
+
+```{r Save wide data as .csv}
+write_csv(final_wide, "lapop_wide_en_v2.csv", na = "NULL ") 
+
+```
+
+
+
+Checks that were previously earlier:
+check if the recoding value is in sacle of 0-100
+
+```{r}
+distinct(final_wide,a4)
+```
+
+
+
+```{r}
+distinct(final_wide,b13)
+distinct(final_wide,jc13)
+distinct(final_wide,exc16)
+distinct(final_wide,exc11)
+
+```
+
+```{r}
+all.df %>% 
+  filter(country == 'Colombia') %>% 
+  distinct(b4)
+```
+```{r}
+final_wide %>% filter(a4_m == 62)
+```

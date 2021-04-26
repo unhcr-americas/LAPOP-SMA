@@ -1,0 +1,281 @@
+---
+title: "Analysis of Latin Barometer in Northen Triangle"
+author: "DIMA"
+date: " `r format(Sys.Date(),  '%d %B %Y')`"
+always_allow_html: yes
+output:
+  unhcRstyle::unhcr_templ_html:
+    toc: true
+---
+
+
+
+```{r setup}
+knitr::opts_chunk$set(echo = FALSE, 
+                      message = FALSE, 
+                      warning = FALSE, 
+                      collapse = FALSE,
+                      comment = "#>",
+                      fig.align = "center")
+knitr::opts_chunk$set(fig.width = 12, fig.height = 9)
+set.seed(1)
+extrafont::loadfonts(quiet=TRUE)
+options(scipen = 999) # turn-off scientific notation like 1e+48
+library(unhcRstyle)
+
+```
+
+
+
+
+
+```{r getdata}
+library(tidyverse)
+library(tidymodels)
+library(patchwork)
+library(embed)
+library(haven)
+library(readxl)
+mainDir <- getwd()
+## If you save your analysis under vignette folder...
+mainDirroot <- substring(mainDir, 0 , nchar(mainDir) - 10)
+
+set.seed(12345)
+
+## pulling the last available dataset from NCA
+
+srcs <- 
+  list(guatemala = "http://datasets.americasbarometer.org/database/files/Guatemala%20LAPOP%20AmericasBarometer%202019%20v1.0_W.dta",
+       honduras = "http://datasets.americasbarometer.org/database/files/Honduras%20LAPOP%20AmericasBarometer%202018%20v1.0_W.dta",
+       elsalvador = "http://datasets.americasbarometer.org/database/files/ElSalvador%20LAPOP%20AmericasBarometer%202018%20v1.0_W.dta")
+
+data <- srcs %>% map_dfr(compose(as_factor, read_dta))
+
+data <- data %>% mutate(across(where(is.factor), ~na_if(., "No sabe")), 
+                        across(where(is.factor), ~na_if(., "No responde")),
+                        across(where(is.factor), ~na_if(., "No Aplica")))
+
+
+
+
+```
+
+```{r BuildDico}
+## Building the dictionary to make the reading easier...
+elsalvador <- read_dta("http://datasets.americasbarometer.org/database/files/ElSalvador%20LAPOP%20AmericasBarometer%202018%20v1.0_W.dta")
+```
+ 
+
+## Americas Barometer 
+
+The [AmericasBarometer](https://www.vanderbilt.edu/lapop/about-americasbarometer.php) is a periodic study of 34 countries in the Western Hemisphere, with stratified nationally representative samples drawn in each country, a common questionnaire core, and country-specific modules. It is the only scientifically rigorous comparative survey of democratic values and behaviors that covers all independent countries in North, Central, and South America, as well as a significant number of countries in the Caribbean. The AmericasBarometer measures attitudes, evaluations, experiences, and behavior in the Americas using national probability samples of voting-age adults. Standardizing methods and a common core questionnaire permit valid comparisons across countries and over time on topics including the economy, rule of law, state capacity, trust in institutions, individual values, corruption, security, and more.
+
+Each country survey is implemented based on a national probability design. In some cases, oversamples are collected to allow precise analysis of opinion within sub-national regions. 
+
+## Data Description
+
+```{r}
+# names(data)
+```
+
+
+## Clustering
+
+```{r cars}
+data1 <- 
+  data %>% 
+  transmute(# age = as.numeric(as.character(q2)), 
+            sex = q1, # == "Hombre",
+            marital_status = q11n,
+              # case_when(q11n == "Soltero" ~ "Single",
+              #           q11n == "Casado" | q11n == "Unión Libre (acompañado)" ~ "Couple",
+              #           TRUE ~ "Other"),
+            country = pais, location = estratopri, urban = ur, municipality = tamano,
+            hhsize = fct_recode(q12c, "20" = "20+") %>% compose(as.numeric, as.character)(),
+            education =
+              ed %>%
+              fct_recode("0" = "Ninguno", "18" = "18+") %>%
+              compose(as.numeric, as.character)(),
+            employment_status = ocup4a,
+              # case_when(ocup4a == "Trabajando" | ocup4a == "No está trabajando en este momento pero tiene trabajo" ~ "Employed",
+              #           ocup4a == "Está buscando trabajo activamente" ~ "Searching for work",
+              #           TRUE ~ "Outside the labor force"),
+            # occupation = ocupoit,
+            # religion = q3cn,
+            # ethnicity = etid,
+            experienced_crime = vic1ext, # == "Sí",
+            unsafe_neighborhood = aoj11,
+              # str_detect(aoj11, "inseguro"),
+            # food_insecure = fs2, # == "Sí",
+            # perc_econ = soct2, 
+            # perc_safety = pese2,
+            # perc_trust = it1 == "Algo confiable" | it1 == "Muy confiable",
+            # perc_natural_disaster = drk1, perc_env_severity = env2b,
+            # trust_political_system = b3 == "4" | b3 == "5" | b3 == "6" | b3 == "Mucho",
+            intent = q14 == "Sí") %>% 
+  filter(!is.na(intent))
+
+data1 <- data1 %>% 
+  mutate(across(c(where(is.logical), -intent), as_factor))
+
+f <- function(x) {
+  x %>% 
+    select(-country) %>%
+    recipe(intent ~ .) %>% 
+    step_unknown(all_nominal()) %>%
+    step_meanimpute(all_numeric()) %>% 
+    step_other(all_nominal(), threshold = .05) %>% 
+    step_lencode_mixed(all_nominal(), -intent, outcome = vars(intent)) %>%
+    step_nzv(all_predictors()) %>% 
+    step_normalize(all_predictors()) %>%
+    step_umap(all_predictors()) %>%
+    prep()
+}
+
+data0 <- 
+  data1 %>% 
+  split(.$country) %>% 
+  map(~bind_cols(., f(.) %>% 
+  juice() %>% 
+  select(-intent)) %>% 
+  filter(intent)) %>% 
+  map_dfr(~mutate(., cluster = select(., umap_1, umap_2) %>% 
+  dist() %>% 
+  hclust(method = "average") %>% 
+  cutree(4) %>% 
+ as_factor()))
+```
+
+
+
+```{r }
+data0 %>% ggplot() + 
+  geom_point(aes(umap_1, umap_2, color = cluster)) + 
+  facet_wrap(vars(country)) +
+  unhcr_theme()
+```
+
+
+
+```{r }
+data0 %>% 
+  count(country, cluster, sex) %>%
+  group_by(country, cluster) %>% 
+  mutate(p = n/sum(n))
+```
+
+
+
+```{r }
+data0 %>% 
+  select(-umap_1, -umap_2) %>% 
+  mutate(across(where(is.factor), fct_drop)) %>% 
+  group_by(country, cluster) %>% 
+  summarize(# across(where(is.numeric), mean, na.rm = TRUE),
+            across(where(is.factor), compose(list, fct_count))) %>% 
+  # mutate(across(where(is.numeric), list)) %>% 
+  pivot_longer(c(-country, -cluster), names_to = "dim", values_to = "val") %>% 
+  unnest(val) %>% 
+  group_by(country, cluster, dim) %>% 
+  mutate(n = n/sum(n, na.rm = TRUE)) %>% 
+  ungroup() %>% 
+  mutate(cluster = str_c("cluster_", cluster)) %>% 
+  pivot_wider(names_from = "cluster", values_from = "n") %>% 
+  filter(across(contains("cluster"), ~.!=0)) %>% 
+  mutate(across(contains("cluster"), replace_na, 0)) 
+
+```
+
+
+## Predicting Intention
+
+```{r}
+ridit <- function(x) {
+  r <-
+    forcats::fct_count(x) %>%
+    dplyr::filter(!is.na(f)) %>%
+    dplyr::mutate(
+      prop = n/sum(n),
+      csum = cumsum(prop),
+      ridit = dplyr::lag(csum, default = 0) + prop/2) %>%
+    { purrr::set_names(.$ridit, .$f) }
+  
+  r[x] %>% purrr::set_names(NULL)
+}
+```
+
+
+```{r}
+mdata <-
+  data %>%
+  transmute(country = pais, urban = ur == "Urbano", #strata = estratopri,
+            age = as.numeric(as.character(q2)), sex = q1,
+            edu =
+              ed %>%
+              fct_recode("0" = "Ninguno", "18" = "18+") %>%
+              compose(as.numeric, as.character)(),
+            marital_status = 
+              case_when(q11n == "Soltero" ~ "Single",
+                        q11n == "Casado" | q11n == "Unión Libre (acompañado)" ~ "Couple",
+                        TRUE ~ "Other"),
+            hhsize = fct_recode(q12c, "20" = "20+") %>% compose(as.numeric, as.character)(),
+            share_children =
+              ((fct_recode(q12bn, "0" = "Ninguno") %>% compose(as.numeric, as.character)())/hhsize) %>%
+              modify_if(~replace_na(.>=1, TRUE), ~NA_real_),
+            # ethnicity = etid,
+            ocup = 
+              case_when(ocup4a == "Trabajando" | ocup4a == "No está trabajando en este momento pero tiene trabajo" ~ "Employed",
+                        ocup4a == "Está buscando trabajo activamente" ~ "Searching for work",
+                        TRUE ~ "Outside the labor force") %>% 
+              fct_relevel("Employed", after = Inf),
+            # perc_econ = soct2, perc_safety = pese2,
+            # perc_trust = it1 == "Algo confiable" | it1 == "Muy confiable",
+            # perc_natural_disaster = drk1, perc_env_severity = env2b,
+            experienced_crime = vic1ext == "Sí", # crime_neighborhood = vicbar7 == "Sí",
+            unsafe_neighborhood = str_detect(aoj11, "inseguro"),
+            # leave_neighborhood = vic43 == "Sí", # Honduras only!!!
+            # trust_judiciary = aoj12 == "Mucho" | aoj12 == "Algo",
+            # trust_political_system = b3 == "4" | b3 == "5" | b3 == "6" | b3 == "Mucho",
+            # # trust_police = infrax %>% na_if("[No Leer] No hay Policía/ No llegaría nunca"),
+            # trust_police = infrax == "Menos de 10 minutos" | infrax == "Entre 10 y hasta 30 minutos",
+            # recv_remittances = q10a == "Sí", rec_assistance = wf1 == "Sí",
+            remittances_or_assistnace = q10a == "Sí" | wf1 == "Sí",
+            wealth_percentile = q10new,
+            intention = q14 == "Sí",
+            # usa_contact = q10cus == "Sí",
+            usa_contact_freq = q16 == "Todos los días" | q16 == "Una o dos veces a la semana" | q16 == "Una o dos veces por mes",
+            food_insecure = fs2 == "Sí",
+            social_media_user = smedia1 == "Sí" | smedia7 == "Sí"
+            )
+
+mdata <- 
+  mdata %>% 
+  group_by(country) %>% 
+  mutate(wealth_percentile = ridit(wealth_percentile)) %>% 
+  ungroup()
+
+per_country <-
+  mdata %>%
+  split(.$country) %>%
+  map_dfr(~glm(intention~., data = select(., -country), family = "binomial") %>%
+            tidy(exponentiate = TRUE, conf.int = TRUE),
+          .id = "country")
+```
+
+
+
+```{r }
+per_country %>% 
+  filter(!(conf.low < 1 & conf.high > 1)) %>%
+  filter(term != "strata") %>%
+  ggplot(aes(estimate, term)) + 
+  geom_pointrange(aes(xmin = conf.low, xmax = conf.high)) + 
+  geom_text(aes(label = scales::label_number(accuracy = .01)(estimate)), vjust = -0.5) +
+  geom_vline(xintercept = 1) +
+  labs(x = "Odds ratio", y = NULL) +
+  facet_wrap(vars(country))+
+  unhcr_theme()
+
+```
+
+

@@ -1,0 +1,149 @@
+---
+title: "Heterogeneity"
+author: "Craig Jolley"
+date: "January 21, 2016"
+output: html_document
+---
+
+I want to explore spatial heterogeneity -- are there some variables that show more strongly place-based variation than others? Note that this analysis is using spatial information at the municipal level; in most cases, the LAPOP survey isn't designed to give representative results at this level of spatial disaggregation. 
+
+I'm not entirely sure whether there's a way of doing this type of analysis that's more statistically rigorous -- aggregating at the `estratopri` level doesn't explain nearly as much of the variance as the municipal-level aggregation does, but might give similar results.
+
+```{r,message=FALSE}
+library(ggplot2)
+library(plyr)
+library(ggmap)
+
+setwd("C:/Users/Craig/Desktop/SMA/VSFS/LAPOP-SMA/viz")
+source('../utils/make_geo.R',encoding='utf-8')
+source('../indices/make_indices.R')
+
+tmp <- my_geo
+tmp$locstr <- paste(tmp$muni_text,tmp$prov_text,tmp$pais_text,
+                       sep=", ")
+uniq_loc <- unique(tmp[tmp$pais_text=='Honduras','locstr'])
+latlong <- ldply(uniq_loc,function(x) geocode(x,source="google",output="latlon"))
+latlong$locstr <- uniq_loc
+names(latlong) <- c('long2','lat2','locstr')
+j <- join(tmp,latlong,by="locstr")
+my_geo[my_geo$pais_text=='Honduras','lat'] <- j[j$pais_text=='Honduras','lat2']
+my_geo[my_geo$pais_text=='Honduras','long'] <- j[j$pais_text=='Honduras','long2']
+```
+
+For any variable, I need to be able to calculate the fraction of its variance that can be attributed to geography at the municipal level. The remainder of its variance can then be attributed to factors within a single municipality.
+
+```{r}
+geo_variance <- function(data,x,make_plot=FALSE,xlab='Value') {
+  tmp <- my_geo
+  tmp$muni_uniq <- paste(tmp$pais_text,tmp$muni_text,sep='_')  
+  tmp$x <- x
+  tmp$x[tmp$x > 800000] <- NA
+  muni_avg <- ddply(tmp,~muni_uniq,summarize,x=mean(x,na.rm=TRUE))  
+  tmp$muni_avg <- muni_avg$x[match(tmp$muni_uniq,muni_avg$muni_uniq)] 
+  my_lm <- lm(data=tmp,x ~ muni_avg)
+  if (make_plot==TRUE) {
+    tmp <- na.omit(tmp)
+    p <- ggplot(tmp,aes(x=x,y=muni_avg)) +
+      geom_point(color='tomato',alpha=0.2,size=5) +
+       geom_smooth(method='lm',size=2,color='royalblue') +
+       annotate('text',label=paste("R-sq:",round(summary(my_lm)$r.squared,2)), 
+                size=10,x=min(tmp$x) + 0.1*(max(tmp$x)-min(tmp$x)),
+                y=0.9*max(tmp$muni_avg),hjust=0,vjust=0,color='royalblue') +
+       theme_classic() +
+       ylab('Muni-level average') +
+       xlab(xlab) +
+       theme(text=element_text(size=20))
+    print(p)
+  }
+  summary(my_lm)$r.squared
+}
+```
+
+Our fear index shows a relatively high level of spatial variance (22%):
+
+```{r}
+geo_variance(lapop.2014.all,fear_all,make_plot=T,xlab="Fear index")
+```
+
+Other variables, such as approval for gay marriage, show much less spatial variance (5%). In other words, whether Central Americans approve of gay marriage doesn't correlate strongly with whether other people surveyed in the same municipality also approve.
+
+```{r}
+geo_variance(lapop.2014.all,lapop.2014.all$d6,make_plot=T,xlab="Approval for gay marriage")
+```
+
+To get a more global view, we can calculate this geo-variance for all of the region-wide variables and see which show unusually high or low variance.
+
+```{r}
+# Ignore these irrelevant variables 
+drop <- c("formatq","sexi","colori","uniq_id","pais","idnum","estratopri",
+          "estratosec","upm","prov","municipio","cluster","tamano","idiomaq",
+          "fecha","wt","ti",'sex')
+# Also remove unordered categorical variables
+unord_common <- c('idiomaq','a4','vic2','vic2aa','aoj22','env1','vb1',
+                  'vb4new','vb101','vb20','for1n','for4',
+                  'for5','q3c','ocup4a','ocup1a','q11n','etid','vb11','leng1',
+                  'vb3n')
+
+plot_us <- common[!common %in% c(drop,unord_common)]
+d <- lapop.2014.all[,plot_us]
+d$fear_idx <- fear_all
+d$ca_idx <- ca_all
+d$tr_idx <- tr_all
+d$w_idx <- w_all
+d$crit_idx <- crit_all
+d$aut_idx <- aut_all
+# TODO: Eventually I want to systematically include dummy variables; for now
+# I'll just manually create a couple that I need
+d$q3c_5 <- as.numeric(lapop.2014.all$q3c==5)
+d$ocup4a_3 <- as.numeric(lapop.2014.all$ocup4a==3)
+geo_var <- ldply(names(d),function(x) geo_variance(d,d[,x]))
+geo_var$name <- names(d)
+
+head(geo_var[order(geo_var$V1,decreasing=TRUE),])
+
+ggplot(data=geo_var,aes(x=V1)) +
+  geom_density(fill='aquamarine3',adjust=0.25) +
+  theme_classic() +
+  geom_vline(xintercept=median(geo_var$V1),color='khaki2',size=2) +
+  xlab('Geographic fraction of variance') +
+  theme(axis.ticks=element_blank(),
+        axis.text.y=element_blank(),
+        axis.line=element_blank(),
+        axis.title.y=element_blank(),
+        text=element_text(size=20))
+```
+
+For a given variable, we may want a list of locations for which its value is significantly different from the average
+
+``` {r}
+sig_locs <- function(data,var,direction,cutoff=0.01) {
+  # direction should be 'two.sided', 'less', or 'greater'
+  tmp <- my_geo
+  tmp$muni_uniq <- paste(tmp$pais_text,tmp$muni_text,sep='_')  
+  tmp$x <- var
+  tmp$x[tmp$x > 800000] <- NA
+  res <- data.frame()
+  for (m in unique(tmp$muni_uniq)) {
+    tt <- t.test(tmp[tmp$muni_uniq==m,'x'],tmp[tmp$muni_uniq!=m,'x'],
+                 alternative=direction)
+    if (tt$p.value < cutoff) {
+      res <- rbind(res,data.frame(muni_uniq=m,
+                                  est=tt$estimate[1]-tt$estimate[2],
+                                  pval=tt$p.value))
+    }
+  }
+  j <- join(res,tmp[,c('pais_text','muni_text','lat','long','muni_uniq','x')],by='muni_uniq',match='first')
+  rownames(j) <- NULL
+  j <- j[order(j$pval),]
+  j[,c('pais_text','muni_text','lat','long','est','pval')]
+}
+```
+
+What does this look like for our fear index?
+
+```{r}
+sl <- sig_locs(d,d$fear_idx,'greater')
+head(sl[,c('pais_text','muni_text','est','pval')])
+```
+
+Again, we should be careful about interpreting these, because results aren't necessarily representative at the municipal level. I'd be more inclined to trust what we see for big cities than for small ones.
