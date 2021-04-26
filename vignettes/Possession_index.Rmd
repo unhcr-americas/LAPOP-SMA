@@ -1,0 +1,16 @@
+---
+title: "Possession index"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Possession index}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
