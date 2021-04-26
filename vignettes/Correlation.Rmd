@@ -1,9 +1,19 @@
 ---
 title: "Verify correlations"
-author: "Craig"
-date: "12 December 2015"
-output: html_document
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Verify correlations}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
 
 Rather than re-calculating all of the indices here, we've got the code to do this stashed in a separate R file.
 

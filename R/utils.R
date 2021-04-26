@@ -115,6 +115,59 @@ sanity_check <- function(data,idx,var) {
 }
 
 
+# This function checks if pais column exists in the dataframe
+check_pais <- function(df, filename){
+  # inputs : 
+  # df - dataframe to be used
+  # filename - the name of the file being imported
+  # output : dataframe with correct country as a column
+  if(! "pais" %in% colnames(df)){
+    print("'pais' missing!")
+  }
+  return(df)
+}
+
+
+
+# This function checks if year column exists in the dataframe, and if it does then it makes sure that the year matches the year in filename.  If it doesn't then it adds the year from the name of file. 
+add_year <- function(df, filename){
+  # inputs : 
+  # df - dataframe to be used
+  # filename - the name of the file being imported
+  # output : dataframe with correct year as a column
+  if(!("year" %in% names(df))){
+    year <- str_extract(filename, "\\d{4}")
+    df$year <- year
+    cat(paste0("\nSet year to ",year))
+  }
+  return(df)
+}
+
+
+# Function to generate unique id's that contain year, country and observation info
+add_uniqueID <- function(df) {
+  df <- df %>%
+    mutate(person_id = paste(year, pais, idnum,sep = "_")) %>%
+    group_by(person_id) %>% 
+    mutate(id_count = row_number()) %>% 
+    ungroup() %>%
+    mutate(person_id = paste(person_id, id_count, sep = "_"),
+           id_count = NULL)
+  #Adding more stuff to id because some files have non-unique ids
+  assert(df, is_uniq, person_id)
+  return(df)
+}
+
+#function to generate/get weights OLD}
+add_weight1500 <- function(country_df) {
+  #creates final output variable
+  if (!"weight1500"%in%names(country_df)){
+    country_df <- mutate(country_df, weight1500=wt/n()*1500)
+  }
+  return(country_df)
+}
+
+
 
 #' fixdata
 #' @md 
@@ -580,3 +633,30 @@ lm_plot <- function(x,orig,title,p_max=0.01,text=NULL,offsets=NULL,flip=NULL,
   print(p)
   plotme # return this so I can re-use it below
 }
+
+
+geo_variance <- function(data,x,make_plot=FALSE,xlab='Value') {
+  tmp <- my_geo
+  tmp$muni_uniq <- paste(tmp$pais_text,tmp$muni_text,sep='_')  
+  tmp$x <- x
+  tmp$x[tmp$x > 800000] <- NA
+  muni_avg <- ddply(tmp,~muni_uniq,summarize,x=mean(x,na.rm=TRUE))  
+  tmp$muni_avg <- muni_avg$x[match(tmp$muni_uniq,muni_avg$muni_uniq)] 
+  my_lm <- lm(data=tmp,x ~ muni_avg)
+  if (make_plot==TRUE) {
+    tmp <- na.omit(tmp)
+    p <- ggplot(tmp,aes(x=x,y=muni_avg)) +
+      geom_point(color='tomato',alpha=0.2,size=5) +
+      geom_smooth(method='lm',size=2,color='royalblue') +
+      annotate('text',label=paste("R-sq:",round(summary(my_lm)$r.squared,2)), 
+               size=10,x=min(tmp$x) + 0.1*(max(tmp$x)-min(tmp$x)),
+               y=0.9*max(tmp$muni_avg),hjust=0,vjust=0,color='royalblue') +
+      theme_classic() +
+      ylab('Muni-level average') +
+      xlab(xlab) +
+      theme(text=element_text(size=20))
+    print(p)
+  }
+  summary(my_lm)$r.squared
+}
+

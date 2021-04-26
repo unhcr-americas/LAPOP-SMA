@@ -1,13 +1,18 @@
 ---
 title: "Analysis of Latin Barometer in Northen Triangle"
-author: "DIMA"
-date: " `r format(Sys.Date(),  '%d %B %Y')`"
-always_allow_html: yes
-output:
-  unhcRstyle::unhcr_templ_html:
-    toc: true
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Analysis of Latin Barometer in Northen Triangle}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
 
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
 
 
 ```{r setup}

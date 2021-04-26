@@ -1,11 +1,19 @@
 ---
-title: "Bribes"
-author: "Craig Jolley"
-date: "February 3, 2015"
-output: html_document
+title: "Statistics on bribery"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Statistics on bribery}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
 
-Putting together some statistics on bribery, based on the LAPOP data.
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+ 
 
 ```{r}
 library(plyr)

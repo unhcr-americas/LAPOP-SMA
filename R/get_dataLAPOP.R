@@ -204,6 +204,40 @@ get_dataLAPOP <- function(){
     lapop.2014.GTM,lapop.2014.SLV,lapop.2014.HND,
     fnames,trend.all,yrs,intersection)
  
+ 
+ # country_list <- lapply(file_data$dta_files, get_country_dfs)
+ country.dfs <- sapply(country.filenames, get_country_df)
+ 
+ # Combining the list of dataframes into one data frame.
+ country.dfs.tidied <- sapply(country.dfs, function(df){
+   df %>%
+     add_uniqueID() %>% 
+     add_weight1500() %>%
+     select(person_id, one_of(target_vars)) %>%  
+     mutate_at(vars(contains('idnum')), as.character) %>% 
+     mutate_at(vars(contains('pais')), as.numeric) %>% 
+     mutate_at(vars(contains('year')), as.numeric) %>% 
+     mutate_at(vars(contains('clusterdesc')), as.character) 
+ })
+ 
+ all.df <- reduce(country.dfs.tidied, bind_rows)
+ 
+ 
+ # Adding full country names to data frame.
+ all.df <- left_join(all.df,
+                     (
+                       response_labels %>%
+                         filter(column_name == "pais") %>%
+                         mutate_at(vars(("value")), as.double) %>%
+                         select(value, label)
+                     ),
+                     by = c("pais" = "value")) %>%
+   mutate(country = label)
+ 
+ all.df %>% select("person_id","wt","weight1500", everything()) %>% head()
+ all.df %>% assert(is_uniq, person_id)
+ 
+ 
  ## save in raw-data folder
  data_raw_dir()
  write.csv(data, "data-raw/dataLAPOP.csv", row.names = FALSE)

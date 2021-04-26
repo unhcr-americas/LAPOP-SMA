@@ -1,23 +1,23 @@
 ---
-title: 'How Serious Are Americans About Democracy? An Exploratory Analysis of the AmericasBarometer Data'
-author: steve
-layout: post
-date: "`r Sys.Date()`"
-permalink:
-categories:
-  - Political Science
-excerpt: "How serious are Americans about democracy? I look at four waves of AmericasBarometer data to answer that question. I have my doubts about American (certainly partisan) commitment to democracy."
+title: "Satisfaction with Democracy"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Satisfaction with Democracy}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
 
-```{r setup, include=FALSE, cache=FALSE}
-knitr::opts_chunk$set(fig.path='images/')
-
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
 ```
-{% include image.html url="/images/trump-ny-rally.jpg" caption="A recurring theme among partisans (Reuters/Stephen Yang)" width=400 align="right" %}
 
-One of my favorite disconnects in political science---as much as you can call it that---concerns political behavior research in the United States where we see two different classes of surveys. The first, those exclusive to the United States---like the [American National Election Study](http://www.electionstudies.org/studypages/download/datacenter_all_NoData.php) (ANES), [Cooperative Congressional Election Study](https://cces.gov.harvard.edu/data) (CCES), and [General Social Survey](http://gss.norc.org/) (GSS)---ask quite granular questions about politics in the United States that are of great interest to American political behavior researchers and political commentators. They will help us understand what Americans think about things like the Trans-Pacific Partnership or gay marriage (as opposed to homosexuality, in general). I've used these surveys to dig at some of the more particular things Americans think about [gun control](http://svmiller.com/blog/2015/12/gun-control-public-opinion-1972-2014/), [racism](http://svmiller.com/blog/2017/04/age-income-racism-partisanship-trump-vote-2016/), [abortion, and protectionism](http://svmiller.com/blog/2016/12/trump-twitter-diversion-controversial-subjects-public-opinion/).
 
-The second class of surveys---like [AmericasBarometer](http://www.vanderbilt.edu/lapop/) or [World Values Survey](http://www.worldvaluessurvey.org/wvs.jsp) (WVS)---will ask effectively the *same questions* in the United States as it would ask in a country like Pakistan or Venezuela. This is understandable from the perspective of these researchers; the U.S. is home to arguably the most accessible public opinion data sources in the world and the marginal cost of adding a thousand or two observations in the U.S. to compare American responses to Pakistani or Venezuelan responses is quite small. However, these questions are more general, concerning bigger issues of democracy, prosperity, and security. When we use these data sources, we're almost not interested in what the Americans are saying. The bigger concern would be developing countries where democracy is less stable and prosperity and security are not givens.
+
+
+Class of surveys---like [AmericasBarometer](http://www.vanderbilt.edu/lapop/) or [World Values Survey](http://www.worldvaluessurvey.org/wvs.jsp) (WVS)---will ask effectively the *same questions* in the United States as it would ask in a country like Pakistan or Venezuela. These questions are more general, concerning bigger issues of democracy, prosperity, and security. When we use these data sources, we're almost not interested in what the Americans are saying. The bigger concern would be developing countries where democracy is less stable and prosperity and security are not givens.
 
 The problem with this myopia is that Americans are saying things in these surveys that we're ignoring or treating uncritically. They're communicating statements about American democracy that are not as optimistic or rosy as we want to think they are. My analysis, consistent with some of my hunches on what I call [America's "strong leader" problem](http://svmiller.com/blog/2016/05/america-strong-leaders-world-values-survey-trump/) in the WVS data, suggests attitudes about American democracy that are close to [the "instrumental-intrinsic" arguments](https://www.cambridge.org/core/journals/british-journal-of-political-science/article/support-for-democracy-in-africa-intrinsic-or-instrumental/AEFE1DC3B5327DF4C8420B6D60B05B14) we were having about African democracy 15 years ago. Americans---partisans, in particular---may be valuing democracy and democratic norms the extent to which elections produce outcomes that partisans like. They may not be serious about democracy for democracy's sake.
 

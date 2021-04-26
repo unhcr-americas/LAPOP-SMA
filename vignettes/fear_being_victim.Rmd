@@ -1,9 +1,19 @@
 ---
-title: "Binomial variables in LAPOP"
-author: "Craig Jolley"
-date: "September 28, 2015"
-output: html_document
+title: "Out of fear of being a crime victim"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Out of fear of being a crime victim}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
+
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
 
 Binomial variables are those that can take on two values: 0/1, yes/no, male/female, etc. A *lot* of the Americas Barometer variables are of this type.
 

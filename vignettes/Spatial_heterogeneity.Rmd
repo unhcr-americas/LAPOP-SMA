@@ -1,11 +1,25 @@
 ---
-title: "Heterogeneity"
-author: "Craig Jolley"
-date: "January 21, 2016"
-output: html_document
+title: "Spatial heterogeneity"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Spatial heterogeneity}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
 
-I want to explore spatial heterogeneity -- are there some variables that show more strongly place-based variation than others? Note that this analysis is using spatial information at the municipal level; in most cases, the LAPOP survey isn't designed to give representative results at this level of spatial disaggregation. 
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+
+## Exploring spatial heterogeneity -- 
+
+Are there some variables that show more strongly place-based variation than others? 
+
+Note that this analysis is using spatial information at the municipal level; in most cases, the LAPOP survey isn't designed to give representative results at this level of spatial disaggregation. 
 
 I'm not entirely sure whether there's a way of doing this type of analysis that's more statistically rigorous -- aggregating at the `estratopri` level doesn't explain nearly as much of the variance as the municipal-level aggregation does, but might give similar results.
 
@@ -14,7 +28,6 @@ library(ggplot2)
 library(plyr)
 library(ggmap)
 
-setwd("C:/Users/Craig/Desktop/SMA/VSFS/LAPOP-SMA/viz")
 source('../utils/make_geo.R',encoding='utf-8')
 source('../indices/make_indices.R')
 
@@ -33,30 +46,7 @@ my_geo[my_geo$pais_text=='Honduras','long'] <- j[j$pais_text=='Honduras','long2'
 For any variable, I need to be able to calculate the fraction of its variance that can be attributed to geography at the municipal level. The remainder of its variance can then be attributed to factors within a single municipality.
 
 ```{r}
-geo_variance <- function(data,x,make_plot=FALSE,xlab='Value') {
-  tmp <- my_geo
-  tmp$muni_uniq <- paste(tmp$pais_text,tmp$muni_text,sep='_')  
-  tmp$x <- x
-  tmp$x[tmp$x > 800000] <- NA
-  muni_avg <- ddply(tmp,~muni_uniq,summarize,x=mean(x,na.rm=TRUE))  
-  tmp$muni_avg <- muni_avg$x[match(tmp$muni_uniq,muni_avg$muni_uniq)] 
-  my_lm <- lm(data=tmp,x ~ muni_avg)
-  if (make_plot==TRUE) {
-    tmp <- na.omit(tmp)
-    p <- ggplot(tmp,aes(x=x,y=muni_avg)) +
-      geom_point(color='tomato',alpha=0.2,size=5) +
-       geom_smooth(method='lm',size=2,color='royalblue') +
-       annotate('text',label=paste("R-sq:",round(summary(my_lm)$r.squared,2)), 
-                size=10,x=min(tmp$x) + 0.1*(max(tmp$x)-min(tmp$x)),
-                y=0.9*max(tmp$muni_avg),hjust=0,vjust=0,color='royalblue') +
-       theme_classic() +
-       ylab('Muni-level average') +
-       xlab(xlab) +
-       theme(text=element_text(size=20))
-    print(p)
-  }
-  summary(my_lm)$r.squared
-}
+
 ```
 
 Our fear index shows a relatively high level of spatial variance (22%):

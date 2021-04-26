@@ -1,11 +1,21 @@
 ---
-title: "LAPOP Summary"
-author: "Craig Jolley"
-date: "January 20, 2016"
-output: html_document
+title: "Calculating some high-level data quality points"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Calculating some high-level data quality points}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
 
-Calculating some high-level summary points for the LAPOP datasets.
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+
+
 
 ```{r,message=FALSE}
 library(plyr)
@@ -58,7 +68,7 @@ lapop.2014.all <- rbind(lapop.2014.GTM[,common],lapop.2014.SLV[,common],
 
 ```
 
-# Basic features #
+# Basic features 
 
 ```{r,message=FALSE,warning=FALSE}
 basic <- data.frame(country=c('Guatemala','El Salvador','Honduras'),
@@ -134,7 +144,7 @@ ggplot(ts, aes(fill=category, ymax=ymax, ymin=ymin, xmax=4, xmin=2)) +
            axis.title=element_blank())
 ```
 
-# Missing values #
+# Missing values 
 
 ```{r}
 # Average missing values
@@ -180,7 +190,7 @@ The most common missing responses are for:
 
 In general, questions with many missing answers were requesting information about fairly unusual experiences. In all cases, 50% of questions have missing-answer rates of less than 1-2%.
 
-# Survey dates #
+# Survey dates 
 
 For some reason, a single response in Guatemala was from 1/1/2012, while the rest are from the spring of 2014
 
@@ -217,7 +227,7 @@ ggplot(date_time,aes(x=ti,fill=country)) +
 
 Most people took 30-60 minutes to complete the survey.
 
-# Basic Demographics #
+# Basic Demographics 
 
 ```{r}
 mean(lapop.2014.all$sex==2) # 51.8% female
