@@ -9,7 +9,7 @@ Description: Latin American Public Opinion Project (LAPOP) survey -http://datase
 URL: https://unhcr-americas.github.io/LAPOP-SMA/docs
 BugReports: https://github.com/unhcr-americas/LAPOP-SMA
 Depends: R (>= 3.5.0)
-import: stats, filter, na.omit, tidyverse 
+import: foreign, stats, filter, na.omit, tidyverse, labelled, sjmisc, assertr, janitor, rlang 
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true

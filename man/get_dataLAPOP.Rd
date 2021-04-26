@@ -7,7 +7,10 @@
 get_dataLAPOP()
 }
 \description{
-Get all country specific dataset and do a full merge and get the The full Grand Merge data set
+Get all country specific dataset and do a full merge and get the
+full Grand Merge data set.
+Create a data frame called lapop.trends containing all indicators
+that are consistent across countries and years.
 }
 \examples{
 \dontrun{

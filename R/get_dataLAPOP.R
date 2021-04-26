@@ -45,7 +45,10 @@ data_raw_dir <- function() {
 
 #' get_dataLAPOP
 #' 
-#' Get all country specific dataset and do a full merge and get the The full Grand Merge data set
+#' Get all country specific dataset and do a full merge and get the 
+#' full Grand Merge data set.
+#' Create a data frame called lapop.trends containing all indicators 
+#' that are consistent across countries and years.
 #'
 #' @md
 #' @examples
@@ -88,20 +91,16 @@ get_dataLAPOP <- function(){
  
  
  
- library(foreign) # needed to import STATA files
- library(plyr)
- library(ggplot2)
- library(stringr)
- library(reshape2)
- library(RColorBrewer)
- library(stringi)
+ # library(foreign) # needed to import STATA files
+ # library(plyr)
+ # library(ggplot2)
+ # library(stringr)
+ # library(reshape2)
+ # library(RColorBrewer)
+ # library(stringi)
  
- 
- ###############################################################################
- # Data cleaning: Create a data frame called lapop.trends containing all 
- # indicators that are consistent across countries and years.
- ###############################################################################
- yrs <- c('2004','2006','2008','2010','2012','2014')
+
+ yrs <- c('2004','2006','2008','2010','2012','2014','2016','2018')
  fnames <- sapply(c('GTM','HND','SLV'),function(x) paste(yrs,x,sep ='-'))
  rownames(fnames) <- yrs
  fnames[1:5,] <- paste(fnames[1:5,],'.dta',sep='')
@@ -209,5 +208,4 @@ get_dataLAPOP <- function(){
  data_raw_dir()
  write.csv(data, "data-raw/dataLAPOP.csv", row.names = FALSE)
  
- 
-  }
+}

@@ -91,49 +91,6 @@ get_outliers <- function(var, direction, pmax=0.01) {
   muni_df
 }
 
-
-
-#' make_idx
-#' 
-#' Functions we need to construct indices
-#' @md
-#' @param data Given dataset containing variables
-#' 
-#' @param vars variable used construct a composite index from the first principal 
-#'  component after multiple imputation. 
-#'  
-#' @param sgn Direction -  Set sgn=-1 to reverse the direction of the index.
-#' 
-#' @param scale Scale - Set scale=TRUE to use scaling during the PCA calculation
-#' @param seed for reproducibility
-#' 
-#' @examples
-#' \dontrun{
-#'  
-#' }
-#' @export 
-make_idx <- function(data,
-                     vars,
-                     sgn=1,
-                     scale=FALSE,
-                     seed=12345) {
-
-  my_data <- data[,vars]
-  is.na(my_data[my_data>800000]) <- TRUE
-  my_data <- my_data[,order(names(my_data))] # alphabetize columns
-  my_imp <- mice(my_data,printFlag=F,seed=seed)
-  my_pr <- lapply(1:5,function(x) 
-    prcomp(complete(my_imp,x),scale=scale,center=TRUE))
-  all_pc1 <- data.frame(llply(1:5, function(i) my_pr[[i]]$x[,1]))
-  for (i in 2:ncol(all_pc1)) {  
-    if (cor(all_pc1[,1],all_pc1[,i]) < 0) {
-      all_pc1[,i] <- -1 * all_pc1[,i]
-    }
-  }
-  avg <- rowMeans(all_pc1)
-  scale(sgn*avg)
-}
- 
 #' sanity_check
 #' 
 #' Return the average values of 'var' in 'data' for the lowest and highest quartiles of idx
@@ -195,6 +152,49 @@ fixdata <- function(x) {
   y[y > 800000] <- NA
   y
 }
+
+#' make_idx
+#' 
+#' Functions we need to construct indices
+#' @md
+#' @param data Given dataset containing variables
+#' 
+#' @param vars variable used construct a composite index from the first principal 
+#'  component after multiple imputation. 
+#'  
+#' @param sgn Direction -  Set sgn=-1 to reverse the direction of the index.
+#' 
+#' @param scale Scale - Set scale=TRUE to use scaling during the PCA calculation
+#' @param seed for reproducibility
+#' 
+#' @examples
+#' \dontrun{
+#'  
+#' }
+#' @export 
+make_idx <- function(data,
+                     vars,
+                     sgn=1,
+                     scale=FALSE,
+                     seed=12345) {
+
+  my_data <- data[,vars]
+  is.na(my_data[my_data>800000]) <- TRUE
+  my_data <- my_data[,order(names(my_data))] # alphabetize columns
+  my_imp <- mice(my_data,printFlag=F,seed=seed)
+  my_pr <- lapply(1:5,function(x) 
+    prcomp(complete(my_imp,x),scale=scale,center=TRUE))
+  all_pc1 <- data.frame(llply(1:5, function(i) my_pr[[i]]$x[,1]))
+  for (i in 2:ncol(all_pc1)) {  
+    if (cor(all_pc1[,1],all_pc1[,i]) < 0) {
+      all_pc1[,i] <- -1 * all_pc1[,i]
+    }
+  }
+  avg <- rowMeans(all_pc1)
+  scale(sgn*avg)
+}
+ 
+
 
 #' binom.low
 #' 
