@@ -51,122 +51,133 @@ data_raw_dir <- function() {
 #' that are consistent across countries and years.
 #'
 #' @md
+#' @param src list of direct URL to dataset - dataset name to be normalised
+#'  with 3 letters country code plus yer 
+#'  like GTM2019
 #' @examples
 #' \dontrun{
 #' }
 #' @export
 
-get_dataLAPOP <- function(){
+get_dataLAPOP <- function( ){
   
   # http://datasets.americasbarometer.org/database/files/2004-2018%20LAPOP%20AmericasBaometer%20Merge_FREE_V1.0_W.zip
   #data <- read_dta("data-raw/down/2004-2018 LAPOP AmericasBarometer Merge (v1.0FREE).dta")
+ #require(tidyverse)
+ #require(haven)
+  # library(foreign) # needed to import STATA files
+  # library(plyr)
+  # library(ggplot2)
+  # library(stringr)
+  # library(reshape2)
+  # library(RColorBrewer)
+  # library(stringi)  
   
- srcs <- 
-   list(guatemala2019 = "http://datasets.americasbarometer.org/database/files/Guatemala%20LAPOP%20AmericasBarometer%202019%20v1.0_W.dta",
+ srcs <- list(
+        lapop.2004.GTM ="http://datasets.americasbarometer.org/database/files/1111117573guatemala%202004%20export%20version.dta",
+        lapop.2006.GTM ="http://datasets.americasbarometer.org/database/files/784250406guatemala_%20lapop_final%202006%20data%20set%20092906.dta",
+        lapop.2008.GTM ="http://datasets.americasbarometer.org/database/files/130872853guatemala_lapop_dims_2008_final_data_set_v10.dta",
+        lapop.2010.GTM ="http://datasets.americasbarometer.org/database/files/305797627Guatemala_LAPOP_AmericasBarometer%202010%20data%20set%20%20approved%20V3.dta",
+        lapop.2012.GTM ="http://datasets.americasbarometer.org/database/files/2041873797Guatemala%20LAPOP%20AmericasBarometer%202012%20Rev1_W.dta",
+        lapop.2014.GTM ="http://datasets.americasbarometer.org/database/files/1519863689Guatemala%20LAPOP%20AmericasBarometer%202014%20v3.0_W.dta",
+        lapop.2016.GTM ="http://datasets.americasbarometer.org/database/files/823416394Guatemala%20LAPOP%20AmericasBarometer%202017%20V1.0_W.dta",
+        lapop.2019.GTM ="http://datasets.americasbarometer.org/database/files/Guatemala%20LAPOP%20AmericasBarometer%202019%20v1.0_W.dta",
+       # test <- foreign::read.dta("http://datasets.americasbarometer.org/database/files/Guatemala%20LAPOP%20AmericasBarometer%202019%20v1.0_W.dta")
+       # test <- haven::read_dta("http://datasets.americasbarometer.org/database/files/Guatemala%20LAPOP%20AmericasBarometer%202019%20v1.0_W.dta")
+       
+        lapop.2004.HND ="http://datasets.americasbarometer.org/database/files/1997861390honduras%202004%20export%20version.dta",
+        lapop.2006.HND ="http://datasets.americasbarometer.org/database/files/1631591650honduras_lapop_final%202006%20data%20set%20092906.dta",
+        lapop.2008.HND ="http://datasets.americasbarometer.org/database/files/1645121539honduras_lapop_dims_2008_final_data_set_v10.dta",
+        lapop.2010.HND ="http://datasets.americasbarometer.org/database/files/1418722138Honduras_LAPOP_AmericasBarometer%202010%20data%20set%20%20approved%20v3.dta",
+        lapop.2012.HND ="http://datasets.americasbarometer.org/database/files/42768395Honduras%20LAPOP%20AmericasBarometer%202012%20Rev1_W.dta",
+        lapop.2014.HND ="http://datasets.americasbarometer.org/database/files/1492610684Honduras%20LAPOP%20AmericasBarometer%202014%20v3.0_W.dta",
+        lapop.2016.HND ="http://datasets.americasbarometer.org/database/files/1252173714Honduras%20LAPOP%20AmericasBarometer%202016%20V1.0_W.dta",
+        lapop.2018.HND = "http://datasets.americasbarometer.org/database/files/Honduras%20LAPOP%20AmericasBarometer%202018%20v1.0_W.dta",
         
         
-        honduras2018 = "http://datasets.americasbarometer.org/database/files/Honduras%20LAPOP%20AmericasBarometer%202018%20v1.0_W.dta",
-        honduras2004 ="http://datasets.americasbarometer.org/database/files/1997861390honduras%202004%20export%20version.dta",
-        honduras2006 ="http://datasets.americasbarometer.org/database/files/1631591650honduras_lapop_final%202006%20data%20set%20092906.dta",
-        honduras2008 ="http://datasets.americasbarometer.org/database/files/1698154699el_salvador_lapop_dims_2008_final_lapop08_v10.dta",
-        honduras2010 ="http://datasets.americasbarometer.org/database/files/316969358El%20Salvador_LAPOP_AmericasBarometer%202010%20data%20set%20%20approved%20v3.dta",
-        honduras2012 ="http://datasets.americasbarometer.org/database/files/1126250629ElSalvador%20LAPOP%20AmericasBarometer%202012%20Rev1_W.dta",
-        honduras2014 ="http://datasets.americasbarometer.org/database/files/1234285428ElSalvador%20LAPOP%20AmericasBarometer%202014%20v3.0_W.dta",
-        honduras2016 ="http://datasets.americasbarometer.org/database/files/381267663ElSalvador%20LAPOP%20AmericasBarometer%202016%20V1.0_W.dta",
-        
-        
-        elsalvador2018 = "http://datasets.americasbarometer.org/database/files/ElSalvador%20LAPOP%20AmericasBarometer%202018%20v1.0_W.dta",
-        elsalvador2004 ="http://datasets.americasbarometer.org/database/files/1762554388el%20salvador%202004%20export%20version.dta",
-        elsalvador2006 ="http://datasets.americasbarometer.org/database/files/223466081el%20salvador_lapop_final%202006%20data%20set%20092906.dta",
-        elsalvador2008 ="http://datasets.americasbarometer.org/database/files/1698154699el_salvador_lapop_dims_2008_final_lapop08_v10.dta",
-        elsalvador2010 ="http://datasets.americasbarometer.org/database/files/316969358El%20Salvador_LAPOP_AmericasBarometer%202010%20data%20set%20%20approved%20v3.dta",
-        elsalvador2012 ="http://datasets.americasbarometer.org/database/files/1126250629ElSalvador%20LAPOP%20AmericasBarometer%202012%20Rev1_W.dta",
-        elsalvador2014 ="http://datasets.americasbarometer.org/database/files/1234285428ElSalvador%20LAPOP%20AmericasBarometer%202014%20v3.0_W.dta",
-        elsalvador2016 ="http://datasets.americasbarometer.org/database/files/381267663ElSalvador%20LAPOP%20AmericasBarometer%202016%20V1.0_W.dta")
+        lapop.2004.SLV ="http://datasets.americasbarometer.org/database/files/1762554388el%20salvador%202004%20export%20version.dta",
+        lapop.2006.SLV ="http://datasets.americasbarometer.org/database/files/223466081el%20salvador_lapop_final%202006%20data%20set%20092906.dta",
+        lapop.2008.SLV ="http://datasets.americasbarometer.org/database/files/1698154699el_salvador_lapop_dims_2008_final_lapop08_v10.dta",
+        lapop.2010.SLV ="http://datasets.americasbarometer.org/database/files/316969358El%20Salvador_LAPOP_AmericasBarometer%202010%20data%20set%20%20approved%20v3.dta",
+        lapop.2012.SLV ="http://datasets.americasbarometer.org/database/files/1126250629ElSalvador%20LAPOP%20AmericasBarometer%202012%20Rev1_W.dta",
+        lapop.2014.SLV ="http://datasets.americasbarometer.org/database/files/1234285428ElSalvador%20LAPOP%20AmericasBarometer%202014%20v3.0_W.dta",
+        lapop.2016.SLV ="http://datasets.americasbarometer.org/database/files/381267663ElSalvador%20LAPOP%20AmericasBarometer%202016%20V1.0_W.dta",
+        lapop.2018.SLV = "http://datasets.americasbarometer.org/database/files/ElSalvador%20LAPOP%20AmericasBarometer%202018%20v1.0_W.dta"
+        )
  
- data <- srcs %>% map_dfr(compose(as_factor, read_dta))
- 
- ## Get a consolidated data dictionnary
- dico <- srcs %>% map_dfr(compose(make_codebook(read_dta)))
- 
- 
- 
- # library(foreign) # needed to import STATA files
- # library(plyr)
- # library(ggplot2)
- # library(stringr)
- # library(reshape2)
- # library(RColorBrewer)
- # library(stringi)
  
 
- yrs <- c('2004','2006','2008','2010','2012','2014','2016','2018')
- fnames <- sapply(c('GTM','HND','SLV'),function(x) paste(yrs,x,sep ='-'))
- rownames(fnames) <- yrs
- fnames[1:5,] <- paste(fnames[1:5,],'.dta',sep='')
- fnames[6,] <- paste(fnames[6,],'.csv',sep='')
- 
- # this isn't the most compact way to do this, but as long as the datasets
- # are heterogeneous it sort of makes sense
- lapop.2004.GTM <- read.dta(fnames['2004','GTM'],convert.factors=FALSE)
- lapop.2004.HND <- read.dta(fnames['2004','HND'],convert.factors=FALSE)
- lapop.2004.SLV <- read.dta(fnames['2004','SLV'],convert.factors=FALSE)
- lapop.2006.GTM <- read.dta(fnames['2006','GTM'],convert.factors=FALSE)
- lapop.2006.HND <- read.dta(fnames['2006','HND'],convert.factors=FALSE)
- lapop.2006.SLV <- read.dta(fnames['2006','SLV'],convert.factors=FALSE)
- lapop.2008.GTM <- read.dta(fnames['2008','GTM'],convert.factors=FALSE)
- lapop.2008.HND <- read.dta(fnames['2008','HND'],convert.factors=FALSE)
- lapop.2008.SLV <- read.dta(fnames['2008','SLV'],convert.factors=FALSE)
- lapop.2010.GTM <- read.dta(fnames['2010','GTM'],convert.factors=FALSE)
- lapop.2010.HND <- read.dta(fnames['2010','HND'],convert.factors=FALSE)
- lapop.2010.SLV <- read.dta(fnames['2010','SLV'],convert.factors=FALSE)
- lapop.2012.GTM <- read.dta(fnames['2012','GTM'],convert.factors=FALSE)
- lapop.2012.HND <- read.dta(fnames['2012','HND'],convert.factors=FALSE)
- lapop.2012.SLV <- read.dta(fnames['2012','SLV'],convert.factors=FALSE)
- lapop.2014.GTM <- read.csv(fnames['2014','GTM'])
- lapop.2014.HND <- read.csv(fnames['2014','HND'])
- lapop.2014.SLV <- read.csv(fnames['2014','SLV'])
- 
- # before we can check for consistent indicators, we need to make them all lowercase
- names(lapop.2004.GTM) <- tolower(names(lapop.2004.GTM))
- names(lapop.2004.HND) <- tolower(names(lapop.2004.HND))
- names(lapop.2004.SLV) <- tolower(names(lapop.2004.SLV))
- names(lapop.2006.GTM) <- tolower(names(lapop.2006.GTM))
- names(lapop.2006.HND) <- tolower(names(lapop.2006.HND))
- names(lapop.2006.SLV) <- tolower(names(lapop.2006.SLV))
- names(lapop.2008.GTM) <- tolower(names(lapop.2008.GTM))
- names(lapop.2008.HND) <- tolower(names(lapop.2008.HND))
- names(lapop.2008.SLV) <- tolower(names(lapop.2008.SLV))
- names(lapop.2010.GTM) <- tolower(names(lapop.2010.GTM))
- names(lapop.2010.HND) <- tolower(names(lapop.2010.HND))
- names(lapop.2010.SLV) <- tolower(names(lapop.2010.SLV))
- names(lapop.2012.GTM) <- tolower(names(lapop.2012.GTM))
- names(lapop.2012.HND) <- tolower(names(lapop.2012.HND))
- names(lapop.2012.SLV) <- tolower(names(lapop.2012.SLV))
- names(lapop.2014.GTM) <- tolower(names(lapop.2014.GTM))
- names(lapop.2014.HND) <- tolower(names(lapop.2014.HND))
- names(lapop.2014.SLV) <- tolower(names(lapop.2014.SLV))
- 
- # add years 
- lapop.2004.GTM$year <- 2004; lapop.2004.HND$year <- 2004; lapop.2004.SLV$year <- 2004
- lapop.2006.GTM$year <- 2006; lapop.2006.HND$year <- 2006; lapop.2006.SLV$year <- 2006
- lapop.2008.GTM$year <- 2008; lapop.2008.HND$year <- 2008; lapop.2008.SLV$year <- 2008
- lapop.2010.GTM$year <- 2010; lapop.2010.HND$year <- 2010; lapop.2010.SLV$year <- 2010
- lapop.2012.GTM$year <- 2012; lapop.2012.HND$year <- 2012; lapop.2012.SLV$year <- 2012
- lapop.2014.GTM$year <- 2014; lapop.2014.HND$year <- 2014; lapop.2014.SLV$year <- 2014
- 
- # The idnum field wasn't used in 2004 (or in 2006 in SLV); this can be handy 
- # if I need to join the complete dataset with individual ones again.
- set.seed(12345)
- lapop.2004.GTM$idnum <- stri_rand_strings(nrow(lapop.2004.GTM),60)
- lapop.2004.SLV$idnum <- stri_rand_strings(nrow(lapop.2004.SLV),60)
- lapop.2006.SLV$idnum <- stri_rand_strings(nrow(lapop.2006.SLV),60)
- lapop.2004.HND$idnum <- stri_rand_strings(nrow(lapop.2004.HND),60)
- # sanity check
- # nrow(lapop.2004.GTM)+nrow(lapop.2004.SLV)+nrow(lapop.2006.SLV)+nrow(lapop.2004.HND)
- # length(unique(c(lapop.2004.GTM$idnum,lapop.2004.SLV$idnum,
- #                 lapop.2006.SLV$idnum,lapop.2004.HND$idnum)))
- 
+  scrcframe <- as.data.frame(t(as.data.frame(srcs)))
+  names(scrcframe)[1] <- "url"
+  scrcframe$year <- as.integer(substr(row.names(scrcframe),7,10 ))
+  scrcframe$ctry <- as.character(substr(row.names(scrcframe),12,14 ))
+
+  ## save in raw-data folder
+  if(!dir.exists("data-raw")) dir.create("data-raw") 
+  
+for (i in 18:nrow(scrcframe))  {
+    # i <- 2
+    url1 <- scrcframe[i,c("url")]
+    year1  <- scrcframe[i,c("year")]
+    ctrycollect1 <- scrcframe[i,c("ctry")]  
+    
+    ## just get some error handling...
+    possibleError <- tryCatch(
+      haven::read_dta(url1),
+      error=function(e) e
+    )
+    ## In case of error push it next
+    if(inherits(possibleError, "error")) next
+    
+    #REAL WORK
+        lapop <- haven::read_dta(url1);
+        names(lapop) <- tolower(names(lapop));
+        lapop$year  <- year1;
+        lapop$ctrycollect <- ctrycollect1;
+        
+        cat(paste0("Reading data for ", ctrycollect1, " in ", year1, " : ", nrow(lapop), " observations  & ", ncol(lapop), " variables.\n"))
+    
+        # In 2004-2012, missing values are conveyed by 'NA'. In 2014, they used 888888 
+        # and 988888; these will do very bad things if you leave them in!
+        # Some years also used 8 and 9 as no-response codes; be more careful with those...
+        is.na(lapop)[lapop==888888] <- TRUE;
+        is.na(lapop)[lapop==988888] <- TRUE;
+        is.na(lapop)[lapop==999999] <- TRUE;
+        is.na(lapop)[lapop==88] <- TRUE;
+        
+        # The idnum field wasn't used in 2004 (or in 2006 in SLV); this can be handy 
+        # if I need to join the complete dataset with individual ones again.
+        set.seed(12345);
+        if(year1 == "2004" | (year1 == "2006" & ctrycollect1 == "SLV" )) {
+        lapop$idnum <- stringi::stri_rand_strings(nrow(lapop),60)
+        #lapop$idnum <- row.names(lapop)
+        };
+        lapop$idnum <- as.character(lapop$idnum);
+        ## Re-encode the data 
+      
+        ## get dico and save it
+        #write.csv(make_codebook(lapop), paste0(getwd(),"/data-raw/",row.names(scrcframe)[i],"-dico.csv"), row.names = FALSE) ;
+        ## Save frame
+        write.csv(lapop, paste0(getwd(),"/data-raw/",row.names(scrcframe)[i],".csv"), row.names = FALSE) ;
+        
+        #dummy while loop for a  10 sec sleep
+        date_time <-Sys.time()
+        while((as.numeric(Sys.time()) - as.numeric(date_time))< 10){}
+    
+  } ## End loop
+  
+ ## grand merge
+  #data <- srcs %>% map_dfr(compose(as_factor, read_dta))
+  
+  ## Get a consolidated data dictionnary
+  #dico <- srcs %>% map_dfr(compose(make_codebook(read_dta)))  
+  
+ datalist <-  list.files(paste0(getwd(),"/data-raw"),full.names=T)
+ lapop.trend <- read.csv(datalist[1])
+ lapop.trend$ti <- as.character(lapop.trend$ti)
+ lapop.trend$fecha <- " "
+ lapop.trend$annotations <- " "
+ lapop.trend.inter <- lapop.trend
  
  # I <3 recursive functions
  intersection <- function(x, y, ...){
@@ -174,72 +185,54 @@ get_dataLAPOP <- function(){
    else intersect(x, intersection(y, ...))
  }
  
- trend.all <- intersection(names(lapop.2004.GTM),names(lapop.2004.HND),names(lapop.2004.SLV),
-                           names(lapop.2006.GTM),names(lapop.2006.HND),names(lapop.2006.SLV),
-                           names(lapop.2008.GTM),names(lapop.2008.HND),names(lapop.2008.SLV),
-                           names(lapop.2010.GTM),names(lapop.2010.HND),names(lapop.2010.SLV),
-                           names(lapop.2012.GTM),names(lapop.2012.HND),names(lapop.2012.SLV),
-                           names(lapop.2014.GTM),names(lapop.2014.HND),names(lapop.2014.SLV))
+ for (f in 2:length(datalist)) {
+   cat(paste0("reading :",f, datalist[f], "\n"))
+    # f <- 3
+    lapop.trend1 <- read.csv(datalist[f])
+    lapop.trend1$idnum <- as.character(lapop.trend1$idnum)
+    
+     if ( !(is.null(lapop.trend1$ti) ) ) {
+     lapop.trend1$ti <- as.character(lapop.trend1$ti)}
+    
+    
+    if ( !(is.null(lapop.trend1$clusterdesc) ) ) {
+      lapop.trend1$clusterdesc <- as.character(lapop.trend1$clusterdesc)}
+    
+    if ( !(is.null(lapop.trend1$fecha) ) ) {
+      lapop.trend1$fecha <- as.character(lapop.trend1$fecha)}
+    
+    if ( !(is.null(lapop.trend1$annotations) ) ) {
+      lapop.trend1$annotations <- as.character(lapop.trend1$annotations)}
+    
+    ## All merge
+    lapop.trend <- dplyr::bind_rows(lapop.trend, lapop.trend1)
+    
+    ## Only intersection
+    commonvar <- intersection(names(lapop.trend.inter), names(lapop.trend1))
+    lapop.trend.inter <- rbind(lapop.trend.inter[,  commonvar],
+                               lapop.trend1[ ,  commonvar])
+    
+  }
+   
+ names.lapop.trend  <- as.data.frame(names(lapop.trend))
+ names(names.lapop.trend)[1] <- "column_name"
+ names.lapop.trend.inter <- as.data.frame(names(lapop.trend.inter))
+ names(names.lapop.trend.inter)[1] <- "column_name"
  
- lapop.trends <- rbind(lapop.2004.GTM[trend.all],lapop.2004.HND[trend.all],lapop.2004.SLV[trend.all],
-                       lapop.2006.GTM[trend.all],lapop.2006.HND[trend.all],lapop.2006.SLV[trend.all],
-                       lapop.2008.GTM[trend.all],lapop.2008.HND[trend.all],lapop.2008.SLV[trend.all],
-                       lapop.2010.GTM[trend.all],lapop.2010.HND[trend.all],lapop.2010.SLV[trend.all],
-                       lapop.2012.GTM[trend.all],lapop.2012.HND[trend.all],lapop.2012.SLV[trend.all],
-                       lapop.2014.GTM[trend.all],lapop.2014.HND[trend.all],lapop.2014.SLV[trend.all])
- # In 2004-2012, missing values are conveyed by 'NA'. In 2014, they used 888888 
- # and 988888; these will do very bad things if you leave them in!
- # Some years also used 8 and 9 as no-response codes; be more careful with those...
- is.na(lapop.trends)[lapop.trends==888888] <- TRUE
- is.na(lapop.trends)[lapop.trends==988888] <- TRUE
- is.na(lapop.trends)[lapop.trends==999999] <- TRUE
- is.na(lapop.trends)[lapop.trends==88] <- TRUE
+ questions <- read.csv("data/questions_categories_v1-2.csv")
+ vmodalities <- read.csv("data/values_labels_v1-2.csv")
  
- # clean up
- rm(lapop.2004.GTM,lapop.2004.SLV,lapop.2004.HND,
-    lapop.2006.GTM,lapop.2006.SLV,lapop.2006.HND,
-    lapop.2008.GTM,lapop.2008.SLV,lapop.2008.HND,
-    lapop.2010.GTM,lapop.2010.SLV,lapop.2010.HND,
-    lapop.2012.GTM,lapop.2012.SLV,lapop.2012.HND,
-    lapop.2014.GTM,lapop.2014.SLV,lapop.2014.HND,
-    fnames,trend.all,yrs,intersection)
+ names.lapop.trend  <- merge(x = names.lapop.trend,
+                             y = questions, all.x = TRUE)
+ names.lapop.trend.inter  <- merge(x = names.lapop.trend.inter,
+                             y = questions, all.x = TRUE)
  
- 
- # country_list <- lapply(file_data$dta_files, get_country_dfs)
- country.dfs <- sapply(country.filenames, get_country_df)
- 
- # Combining the list of dataframes into one data frame.
- country.dfs.tidied <- sapply(country.dfs, function(df){
-   df %>%
-     add_uniqueID() %>% 
-     add_weight1500() %>%
-     select(person_id, one_of(target_vars)) %>%  
-     mutate_at(vars(contains('idnum')), as.character) %>% 
-     mutate_at(vars(contains('pais')), as.numeric) %>% 
-     mutate_at(vars(contains('year')), as.numeric) %>% 
-     mutate_at(vars(contains('clusterdesc')), as.character) 
- })
- 
- all.df <- reduce(country.dfs.tidied, bind_rows)
- 
- 
- # Adding full country names to data frame.
- all.df <- left_join(all.df,
-                     (
-                       response_labels %>%
-                         filter(column_name == "pais") %>%
-                         mutate_at(vars(("value")), as.double) %>%
-                         select(value, label)
-                     ),
-                     by = c("pais" = "value")) %>%
-   mutate(country = label)
- 
- all.df %>% select("person_id","wt","weight1500", everything()) %>% head()
- all.df %>% assert(is_uniq, person_id)
- 
- 
+
  ## save in raw-data folder
- data_raw_dir()
- write.csv(data, "data-raw/dataLAPOP.csv", row.names = FALSE)
+ if(!dir.exists("data")) dir.create("data") 
+ write.csv(lapop.trend.inter, "data/dataLAPOPinter.csv", row.names = FALSE)
+ write.csv(lapop.trend, "data/dataLAPOP.csv", row.names = FALSE)
+ 
+
  
 }

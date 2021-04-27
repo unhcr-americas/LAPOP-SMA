@@ -100,7 +100,7 @@ The package:
  * Finding Common Questions: Flag questions that are asked across all countries
     
     
- 3. Generate a series of indices, calculated for each region based on common variable to explore trends and statistical clusters. Each of the following index are explained in a dedicated vignette (see below)
+ 3. Generate a series of indices, calculated for each region based on common variable to explore trends and statistical clusters. Each of the indices are described in a dedicated vignette.
  
  4. Generate a series of pre-built charts to display the results and get ground ready for Joint Data Interpretation by subject mater expert
  
