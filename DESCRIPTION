@@ -4,7 +4,9 @@ Title: Survey data from the Latin America Public Opinion Project to better under
 Version: 0.1.0
 Author: Edouard Legoupil
 Maintainer: Edouard Legoupil <edouard.legoupil@gmail.com>
-Authors@R: person("Edouard", "Legoupil", email = "edouard.legoupil@gmail.com", role = c("aut", "cre"))
+Authors@R: c(
+  person("Edouard", "Legoupil", role = c("aut", "cre"), email = "legoupil@unhcr.org"),
+  person("Hisham", "Galal", role = c("aut", "ctb"), email = "galalh@unhcr.org"))
 Description: Latin American Public Opinion Project (LAPOP) survey -http://datasets.americasbarometer.org/database/index.php
 URL: https://unhcr-americas.github.io/LAPOP-SMA/docs
 BugReports: https://github.com/unhcr-americas/LAPOP-SMA

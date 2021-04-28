@@ -1,8 +1,6 @@
 # Latin American Public Opinion Project (LAPOP) Analysis
 
-Project to better understand __population movement drivers in the Northern Triangle__ (_Honduras, El Salvador & Guatemala_).
-
-__[Analysis Executive summary is here](docs/summary.html)__
+Project to better understand __population movement drivers in the Northern Triangle__ (_Honduras, El Salvador & Guatemala_). The __[Analysis Executive summary is here](summary.html)__
 
 The analysis is based on longitudinal analysis of [Latin American Public Opinion Project (LAPOP)](http://datasets.americasbarometer.org/database/index.php) survey from 2004 to 2018 (_i.e. 8 survey dataset per country_).
 
@@ -12,32 +10,27 @@ Each country survey is implemented based on a national probability design. In so
 
 This projects build from analysis of other shared repositories such as [LAPOP-SMA](https://github.com/ccjolley/LAPOP-SMA) from [Craig Jolley](jolleycraig@gmail.com), Snr Data Scientist @ USAID, [lapop-dashboard](https://github.com/vanderbilt-data-science/lapop-dashboard) from Vanderbilt Data Science Team or [LAPOP-predictive-models](https://github.com/carmen-canedo/LAPOP-predictive-models)
  
-The scripts from those various repository were re-organized in an R package in order to ease analysis reproducibility.
+The scripts from those various repository were re-organized in an R package in order to ease analysis reproducibility. This package also aims at building capacity of humanitarian data analyst in operations
 
-This package also aims at building capacity of humanitarian data analyst in operations
-
-## Key Research question
+## Key questions
 
 The main focus of the study is organized around 3 linked questions that can influence population movement mitigation program:
 
- 1. What influence the intention to move to another country: push & pull factor? How different measurement of perception are correlated: protection-related push factor vs economic pull factor? Are economic conditions sufficient to motivate the intention to move? Resources allocation to protection intervention vs economic support
+|      Reearch      |  Programme Design         |
+|:-------------|:-------------|
+|   What influence the intention to move to another country: push & pull factor? How different measurement of perception are correlated: protection-related push factor vs economic pull factor? Are economic conditions sufficient to motivate the intention to move? | Resources allocation to protection intervention vs economic support |
+|     Can we identify displacement hot-spots? What make those hospots specific?  |   Geographic targeting and area-based approach for service delivery design |
+|  Are there specific profiles that are intending vs those who do not intend to move? |  Household targeting for cash intervention |
 
- 2. Can we identify displacement hot-spots? What make those hospots specific? Geographic targeting and area-based approach for service delivery design
-
- 3. Are there specific profiles that are intending vs those who do not intend to move? Household targeting for cash intervention
-
- 
 
  
 ## Getting Started
 These are the steps you should take to begin using this repo.
 
 ### Prerequisites 
+You will need the current version of [R Statistical Language](https://www.r-project.org/) & [RStudio](https://www.rstudio.com/products/rstudio/#Desktop) to run this code.
 
-#### R Studio
-You will need the current version of [RStudio](https://www.rstudio.com/products/rstudio/#Desktop) to run this code.
-
-## Install
+### Install
 
 The package is still under development - if you want to fix- improve - contribute - please fork it in github and install locally the package. 
 ```{r}
@@ -53,7 +46,7 @@ Once installed, you need to download and reshape the data with
 AmericasBarometer::get_dataLAPOP()
 ```
 
-## Vignettes
+### Vignettes
 
 Vignettes are R Markdown file (.rmd) that runs interactively stored int the `vignettes` folder. It does not require any additional installation, as it is a built-in function in R Studio. For an in-depth tutorial, visit this [R Notebook Guide](https://bookdown.org/yihui/rmarkdown/notebook.html). There are also [cheat sheets](https://www.rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf) available for how to use R Markdown.
 
@@ -94,7 +87,7 @@ In addition the following are also available:
  * Calculating some high-level data quality points
 
 
-## Package functions
+### Package functions
 
 The package includes functions stored in the `R` folder:
 
@@ -114,18 +107,11 @@ The package includes functions stored in the `R` folder:
 If you change the functions, regenerate the documentation before rebuilding the package 
 ```{r}
 devtools::document()
+devtools::check(document = FALSE)
 ```
 
-## Reference dataset / code book
+### Reference dataset / code book
 The package includes for convenience the question __categories__ and __labels__ from different versions, based on [Merge_Codebook_v1.0](http://datasets.americasbarometer.org/database/files/2004-2018%20LAPOP%20AmericasBarometer%20Merge_Codebook_v1.0_FREE_W.pdf)
 
 The package also include a geographic dataset to ease geo-visualization & analysis
 
-
-#### Building package documentation 
-
-``
-`devtools::check(document = FALSE)`
-`pkgdown::build_site()`
-
-------------

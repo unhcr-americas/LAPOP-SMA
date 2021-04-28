@@ -129,23 +129,40 @@
 <div id="latin-american-public-opinion-project-lapop-analysis" class="section level1">
 <div class="page-header"><h1 class="hasAnchor">
 <a href="#latin-american-public-opinion-project-lapop-analysis" class="anchor"></a>Latin American Public Opinion Project (LAPOP) Analysis</h1></div>
-<p>Project to better understand <strong>population movement drivers in the Northern Triangle</strong> (<em>Honduras, El Salvador &amp; Guatemala</em>).</p>
-<p><strong><a href="docs/summary.html">Analysis Executive summary is here</a></strong></p>
+<p>Project to better understand <strong>population movement drivers in the Northern Triangle</strong> (<em>Honduras, El Salvador &amp; Guatemala</em>). The <strong><a href="summary.html">Analysis Executive summary is here</a></strong></p>
 <p>The analysis is based on longitudinal analysis of <a href="http://datasets.americasbarometer.org/database/index.php">Latin American Public Opinion Project (LAPOP)</a> survey from 2004 to 2018 (<em>i.e. 8 survey dataset per country</em>).</p>
 <p>The <a href="https://www.vanderbilt.edu/lapop/about-americasbarometer.php">AmericasBarometer</a> is a periodic study of 34 countries in the Western Hemisphere, with stratified nationally representative samples drawn in each country, a common questionnaire core, and country-specific modules. It is the only scientifically rigorous comparative survey of democratic values and behaviors that covers all independent countries in North, Central, and South America, as well as a significant number of countries in the Caribbean. The Americas Barometer measures attitudes, evaluations, experiences, and behavior in the Americas using national probability samples of voting-age adults. Standardizing methods and a common core questionnaire permit valid comparisons across countries and over time on topics including the economy, rule of law, state capacity, trust in institutions, individual values, corruption, security, and more.</p>
 <p>Each country survey is implemented based on a national probability design. In some cases, oversamples are collected to allow precise analysis of opinion within sub-national regions.</p>
 <p>This projects build from analysis of other shared repositories such as <a href="https://github.com/ccjolley/LAPOP-SMA">LAPOP-SMA</a> from <a href="jolleycraig@gmail.com">Craig Jolley</a>, Snr Data Scientist @ USAID, <a href="https://github.com/vanderbilt-data-science/lapop-dashboard">lapop-dashboard</a> from Vanderbilt Data Science Team or <a href="https://github.com/carmen-canedo/LAPOP-predictive-models">LAPOP-predictive-models</a></p>
-<p>The scripts from those various repository were re-organized in an R package in order to ease analysis reproducibility.</p>
-<p>This package also aims at building capacity of humanitarian data analyst in operations</p>
-<div id="key-research-question" class="section level2">
+<p>The scripts from those various repository were re-organized in an R package in order to ease analysis reproducibility. This package also aims at building capacity of humanitarian data analyst in operations</p>
+<div id="key-questions" class="section level2">
 <h2 class="hasAnchor">
-<a href="#key-research-question" class="anchor"></a>Key Research question</h2>
+<a href="#key-questions" class="anchor"></a>Key questions</h2>
 <p>The main focus of the study is organized around 3 linked questions that can influence population movement mitigation program:</p>
-<ol>
-<li><p>What influence the intention to move to another country: push &amp; pull factor? How different measurement of perception are correlated: protection-related push factor vs economic pull factor? Are economic conditions sufficient to motivate the intention to move? Resources allocation to protection intervention vs economic support</p></li>
-<li><p>Can we identify displacement hot-spots? What make those hospots specific? Geographic targeting and area-based approach for service delivery design</p></li>
-<li><p>Are there specific profiles that are intending vs those who do not intend to move? Household targeting for cash intervention</p></li>
-</ol>
+<table class="table">
+<colgroup>
+<col width="50%">
+<col width="50%">
+</colgroup>
+<thead><tr class="header">
+<th align="left">Reearch</th>
+<th align="left">Programme Design</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">What influence the intention to move to another country: push &amp; pull factor? How different measurement of perception are correlated: protection-related push factor vs economic pull factor? Are economic conditions sufficient to motivate the intention to move?</td>
+<td align="left">Resources allocation to protection intervention vs economic support</td>
+</tr>
+<tr class="even">
+<td align="left">Can we identify displacement hot-spots? What make those hospots specific?</td>
+<td align="left">Geographic targeting and area-based approach for service delivery design</td>
+</tr>
+<tr class="odd">
+<td align="left">Are there specific profiles that are intending vs those who do not intend to move?</td>
+<td align="left">Household targeting for cash intervention</td>
+</tr>
+</tbody>
+</table>
 </div>
 <div id="getting-started" class="section level2">
 <h2 class="hasAnchor">
@@ -154,25 +171,20 @@
 <div id="prerequisites" class="section level3">
 <h3 class="hasAnchor">
 <a href="#prerequisites" class="anchor"></a>Prerequisites</h3>
-<div id="r-studio" class="section level4">
-<h4 class="hasAnchor">
-<a href="#r-studio" class="anchor"></a>R Studio</h4>
-<p>You will need the current version of <a href="https://www.rstudio.com/products/rstudio/#Desktop">RStudio</a> to run this code.</p>
+<p>You will need the current version of <a href="https://www.r-project.org/">R Statistical Language</a> &amp; <a href="https://www.rstudio.com/products/rstudio/#Desktop">RStudio</a> to run this code.</p>
 </div>
-</div>
-</div>
-<div id="install" class="section level2">
-<h2 class="hasAnchor">
-<a href="#install" class="anchor"></a>Install</h2>
+<div id="install" class="section level3">
+<h3 class="hasAnchor">
+<a href="#install" class="anchor"></a>Install</h3>
 <p>The package is still under development - if you want to fix- improve - contribute - please fork it in github and install locally the package.</p>
 <pre class="{r}"><code><a href="https://devtools.r-lib.org//reference/install.html">devtools::install()</a></code></pre>
 <p>In order to use the package, the following packages will also be installed <a href="https://www.tidyverse.org/packages/">tidyverse</a>, <a href="https://cran.r-project.org/web/packages/haven/haven.pdf">haven</a>, <a href="https://cran.r-project.org/web/packages/labelled/vignettes/intro_labelled.html">labelled</a>, <a href="https://cran.r-project.org/web/packages/sjmisc/sjmisc.pdf">sjmisc</a>, <a href="https://cran.r-project.org/web/packages/assertr/vignettes/assertr.html">assertr</a>, <a href="https://cran.r-project.org/web/packages/janitor/janitor.pdf">janitor</a>, <a href="https://cran.r-project.org/web/packages/rlang/rlang.pdf">rlang</a>.</p>
 <p>You will be then able to use all functions with the prefix: <code>AmericasBarometer::</code> Once installed, you need to download and reshape the data with</p>
 <pre class="{r}"><code><a href="reference/get_dataLAPOP.html">AmericasBarometer::get_dataLAPOP()</a></code></pre>
 </div>
-<div id="vignettes" class="section level2">
-<h2 class="hasAnchor">
-<a href="#vignettes" class="anchor"></a>Vignettes</h2>
+<div id="vignettes" class="section level3">
+<h3 class="hasAnchor">
+<a href="#vignettes" class="anchor"></a>Vignettes</h3>
 <p>Vignettes are R Markdown file (.rmd) that runs interactively stored int the <code>vignettes</code> folder. It does not require any additional installation, as it is a built-in function in R Studio. For an in-depth tutorial, visit this <a href="https://bookdown.org/yihui/rmarkdown/notebook.html">R Notebook Guide</a>. There are also <a href="https://www.rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf">cheat sheets</a> available for how to use R Markdown.</p>
 <p>Once data have been downloaded, you can then knit the vignettes and the full site with</p>
 <pre class="{r}"><code><a href="https://devtools.r-lib.org//reference/document.html">devtools::document()
@@ -201,9 +213,9 @@ pkgdown::build_site()</a></code></pre>
 <li>Calculating some high-level data quality points</li>
 </ul>
 </div>
-<div id="package-functions" class="section level2">
-<h2 class="hasAnchor">
-<a href="#package-functions" class="anchor"></a>Package functions</h2>
+<div id="package-functions" class="section level3">
+<h3 class="hasAnchor">
+<a href="#package-functions" class="anchor"></a>Package functions</h3>
 <p>The package includes functions stored in the <code>R</code> folder:</p>
 <ol>
 <li><p>Pull survey data - download all of the merged files that exist for each country individually from the <a href="http://datasets.americasbarometer.org/database/index.php">LAPOP Datasets</a>. Because of the <a href="datasets.americasbarometer.org/database/agreement.html">dataset licence</a>, data are not included in the package</p></li>
@@ -220,18 +232,14 @@ pkgdown::build_site()</a></code></pre>
 <li><p>Generate a series of pre-built charts to display the results and get ground ready for Joint Data Interpretation by subject mater expert</p></li>
 </ol>
 <p>If you change the functions, regenerate the documentation before rebuilding the package</p>
-<pre class="{r}"><code><a href="https://devtools.r-lib.org//reference/document.html">devtools::document()</a></code></pre>
+<pre class="{r}"><code><a href="https://devtools.r-lib.org//reference/document.html">devtools::document()
+devtools::check(document = FALSE)</a></code></pre>
 </div>
-<div id="reference-dataset--code-book" class="section level2">
-<h2 class="hasAnchor">
-<a href="#reference-dataset--code-book" class="anchor"></a>Reference dataset / code book</h2>
+<div id="reference-dataset--code-book" class="section level3">
+<h3 class="hasAnchor">
+<a href="#reference-dataset--code-book" class="anchor"></a>Reference dataset / code book</h3>
 <p>The package includes for convenience the question <strong>categories</strong> and <strong>labels</strong> from different versions, based on <a href="http://datasets.americasbarometer.org/database/files/2004-2018%20LAPOP%20AmericasBarometer%20Merge_Codebook_v1.0_FREE_W.pdf">Merge_Codebook_v1.0</a></p>
 <p>The package also include a geographic dataset to ease geo-visualization &amp; analysis</p>
-<div id="building-package-documentation" class="section level4">
-<h4 class="hasAnchor">
-<a href="#building-package-documentation" class="anchor"></a>Building package documentation</h4>
-<p>`<code></code>devtools::check(document = FALSE)<code></code>pkgdown::build_site()`</p>
-<hr>
 </div>
 </div>
 </div>
@@ -259,6 +267,7 @@ pkgdown::build_site()</a></code></pre>
 <h2>Developers</h2>
 <ul class="list-unstyled">
 <li>Edouard Legoupil <br><small class="roles"> Author, maintainer </small>  </li>
+<li>Hisham Galal <br><small class="roles"> Author, contributor </small>  </li>
 </ul>
 </div>
 
@@ -267,7 +276,7 @@ pkgdown::build_site()</a></code></pre>
 
 
       <footer><div class="copyright">
-  <p>Developed by Edouard Legoupil.</p>
+  <p>Developed by Edouard Legoupil, Hisham Galal.</p>
 </div>
 
 <div class="pkgdown">
