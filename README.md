@@ -2,6 +2,8 @@
 
 Project to better understand __population movement drivers in the Northern Triangle__ (_Honduras, El Salvador & Guatemala_).
 
+__[Analysis Executive summary is here](docs/summary.html)__
+
 The analysis is based on longitudinal analysis of [Latin American Public Opinion Project (LAPOP)](http://datasets.americasbarometer.org/database/index.php) survey from 2004 to 2018 (_i.e. 8 survey dataset per country_).
 
 The [AmericasBarometer](https://www.vanderbilt.edu/lapop/about-americasbarometer.php) is a periodic study of 34 countries in the Western Hemisphere, with stratified nationally representative samples drawn in each country, a common questionnaire core, and country-specific modules. It is the only scientifically rigorous comparative survey of democratic values and behaviors that covers all independent countries in North, Central, and South America, as well as a significant number of countries in the Caribbean. The Americas Barometer measures attitudes, evaluations, experiences, and behavior in the Americas using national probability samples of voting-age adults. Standardizing methods and a common core questionnaire permit valid comparisons across countries and over time on topics including the economy, rule of law, state capacity, trust in institutions, individual values, corruption, security, and more.
