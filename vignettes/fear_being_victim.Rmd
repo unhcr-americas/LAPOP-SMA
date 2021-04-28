@@ -37,14 +37,22 @@ library(ISOcodes) # need this for department names
 For now, focus on Honduras in 2014. Assuming that you've already downloaded all of the Americas Barometer data (look [here](https://github.com/ccjolley/LAPOP-SMA/blob/master/load_lapop.R) if you haven't), we can load it into an R data frame:
 
 ```{r}
-setwd("C:/Users/Craig/Desktop/SMA/VSFS/LAPOP-SMA/viz")
-lapop.2014.HND <- read.csv('../../2014-HND.csv')
+mainDir <- getwd()
+## If you save your analysis under vignette folder...
+mainDirroot <- substring(mainDir, 0 , nchar(mainDir) - 10)
+
+
+lapop.2014.GTM <- read.csv(paste0(mainDirroot, "/data-raw/lapop.2014.GTM.csv"))
+lapop.2014.SLV <- read.csv(paste0(mainDirroot, "/data-raw/lapop.2014.SLV.csv"))
+lapop.2014.HND <- read.csv(paste0(mainDirroot, "/data-raw/lapop.2014.HND.csv"))
 ```
 
 The easiest thing to do is look at the average. We need to make sure that we only look at valid yes/no responses; our average will be meaningless otherwise. The easy way to do this is to create a copy of our data and remove the useless entries. If you want to do this with a different dataset, just replace `vic40` below with a different indicator.
 
 ```{r}
-my_data <- lapop.2014.HND$vic40[lapop.2014.HND$vic40<3] # keep only entries with value < 3
+# keep only entries with value < 3 
+my_data <- lapop.2014.HND$vic40[lapop.2014.HND$vic40<3]
+
 mean(my_data==1)
 ```
 
@@ -53,7 +61,7 @@ There are two things going on in that statement. `vic40==1` creates a string of 
 Averages can be misleading -- they didn't ask everyone, and so the real average might not be exactly 34%. We can see what the likely range of values is by using an exact binomial test:
 
 ```{r}
-binom.test(sum(my_data==1),length(my_data))
+stats::binom.test(sum(my_data==1),length(my_data))
 ```
 
 This tells us that, out of 1558 people who answered the question, 531 said "yes", so the population average (what we would get if we really asked everybody) has a 95% chance of being between 31.7% and 36.5%.
@@ -61,7 +69,7 @@ This tells us that, out of 1558 people who answered the question, 531 said "yes"
 Just for fun, we can see what would happen if the LAPOP team had only asked 100 people:
 
 ```{r}
-binom.test(sum(head(my_data,100)==1),100)
+stats::binom.test(sum(head(my_data,100)==1),100)
 ```
 
 If we only had the first 100 survey responses, we can only be confident that the population average is between 21.2% and 40%. Asking more people matters!
@@ -76,6 +84,11 @@ no_text <- paste('No: ',round(mean(my_data==2)*100,digits=1),'%',sep='') # Label
 q_text <- 'Out of fear of being a crime victim, in the last 12 months have you limited the places where you go shop?'
 q_y <- max(sum(my_data==1),sum(my_data==2)) # How high up should the question text be?
 offset=length(my_data)*0.05 # Move labels down a bit from the top of bars
+```
+
+
+```{r fig.height=6, fig.width=8, message=FALSE, warning=FALSE}
+
 ggplot(f,aes(factor(ans,labels=c('Yes','No')))) + 
   geom_bar(fill='goldenrod') +
   annotate('text',label=yes_text,      # add 'yes' label
@@ -175,12 +188,23 @@ Now, let's make our map:
 ```{r,results='asis'}
 map_avg$vic40 <- round(map_avg$x,3)
 data("ISO_3166_2")
-ISO_3166_2_HN <- subset(ISO_3166_2, Country %in% "HN")
-ISO_3166_2_HN$prov <- ISO_3166_2_HN$Code # need matching names for join operation
-joined <- join(ISO_3166_2_HN,map_avg,by="prov")[c('Code','Name','vic40')]
-g <- gvisGeoChart(joined,locationvar='Code',colorvar='vic40',hovervar='Name',
-                  options=list(region="HN",resolution="provinces",
+
+#ISO_3166_2_HN <- subset(ISO_3166_2, Country %in% "HN")
+#ISO_3166_2_HN$prov <- ISO_3166_2_HN$Code # need matching names for join operation
+#joined <- join(ISO_3166_2_HN,map_avg,by="prov")[c('Code','Name','vic40')]
+
+ISO_3166_2$prov <- ISO_3166_2$Code # need matching names for join operation
+joined <- join(ISO_3166_2,map_avg,by="prov")[c('Code','Name','vic40')]
+
+joined <- joined[ !(is.na(joined$vic40)), ]
+
+g <- googleVis::gvisGeoChart(joined,locationvar='Code',
+                             colorvar='vic40',
+                             hovervar='Name',
+                             options=list(region="HN",
+                                          resolution="provinces",
                                colorAxis="{minValue: 0,  colors: ['#FFFFFF', '#2B65EC']}"))
+
 print(g,'chart')
 ```
 

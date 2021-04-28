@@ -4,11 +4,11 @@ Project to better understand __population movement drivers in the Northern Trian
 
 The analysis is based on longitudinal analysis of [Latin American Public Opinion Project (LAPOP)](http://datasets.americasbarometer.org/database/index.php) survey from 2004 to 2018 (_i.e. 8 survey dataset per country_).
 
-This projects build from analysis of other shared repositories:
+The [AmericasBarometer](https://www.vanderbilt.edu/lapop/about-americasbarometer.php) is a periodic study of 34 countries in the Western Hemisphere, with stratified nationally representative samples drawn in each country, a common questionnaire core, and country-specific modules. It is the only scientifically rigorous comparative survey of democratic values and behaviors that covers all independent countries in North, Central, and South America, as well as a significant number of countries in the Caribbean. The Americas Barometer measures attitudes, evaluations, experiences, and behavior in the Americas using national probability samples of voting-age adults. Standardizing methods and a common core questionnaire permit valid comparisons across countries and over time on topics including the economy, rule of law, state capacity, trust in institutions, individual values, corruption, security, and more.
 
- * [LAPOP-SMA](https://github.com/ccjolley/LAPOP-SMA) from [Craig Jolley](jolleycraig@gmail.com), Snr Data Scientist @ USAID
- * [lapop-dashboard](https://github.com/vanderbilt-data-science/lapop-dashboard) from Vanderbilt Data Science Team
- * [LAPOP-predictive-models](https://github.com/carmen-canedo/LAPOP-predictive-models)
+Each country survey is implemented based on a national probability design. In some cases, oversamples are collected to allow precise analysis of opinion within sub-national regions. 
+
+This projects build from analysis of other shared repositories such as [LAPOP-SMA](https://github.com/ccjolley/LAPOP-SMA) from [Craig Jolley](jolleycraig@gmail.com), Snr Data Scientist @ USAID, [lapop-dashboard](https://github.com/vanderbilt-data-science/lapop-dashboard) from Vanderbilt Data Science Team or [LAPOP-predictive-models](https://github.com/carmen-canedo/LAPOP-predictive-models)
  
 The scripts from those various repository were re-organized in an R package in order to ease analysis reproducibility.
 
@@ -16,10 +16,13 @@ This package also aims at building capacity of humanitarian data analyst in oper
 
 ## Key Research question
 
-* What influence the perception of being forcibly displaced
-* Are there specific profiles that are moving Vs not able to move
-* Are economic conditions sufficient to motivate the intention to move?
-* Can we identify displacement hot-spots?
+The main focus of the study is organized around 3 linked questions that can influence population movement mitigation program:
+
+ 1. What influence the intention to move to another country: push & pull factor? How different measurement of perception are correlated: protection-related push factor vs economic pull factor? Are economic conditions sufficient to motivate the intention to move? Resources allocation to protection intervention vs economic support
+
+ 2. Can we identify displacement hot-spots? What make those hospots specific? Geographic targeting and area-based approach for service delivery design
+
+ 3. Are there specific profiles that are intending vs those who do not intend to move? Household targeting for cash intervention
 
  
 
@@ -34,26 +37,29 @@ You will need the current version of [RStudio](https://www.rstudio.com/products/
 
 ## Install
 
-The package is still under development - need to fix the scrapping functions
-
+The package is still under development - if you want to fix- improve - contribute - please fork it in github and install locally the package. 
 ```{r}
-remotes::install_github(unhcr-americas/LAPOP-SMA)
+devtools::install()
 ```
 
 In order to use the package, the following packages will also be installed [tidyverse](https://www.tidyverse.org/packages/), [haven](https://cran.r-project.org/web/packages/haven/haven.pdf), [labelled](https://cran.r-project.org/web/packages/labelled/vignettes/intro_labelled.html), [sjmisc](https://cran.r-project.org/web/packages/sjmisc/sjmisc.pdf), [assertr](https://cran.r-project.org/web/packages/assertr/vignettes/assertr.html), [janitor](https://cran.r-project.org/web/packages/janitor/janitor.pdf), [rlang](https://cran.r-project.org/web/packages/rlang/rlang.pdf).
 
+You will be then able to use all functions with the prefix: `AmericasBarometer::` 
 Once installed, you need to download and reshape the data with 
+
 ```{r}
 AmericasBarometer::get_dataLAPOP()
 ```
 
 ## Vignettes
 
-Vignettes are R Markdown file (.rmd) that runs interactively. It does not require any additional installation, as it is a built-in function in R Studio. For an in-depth tutorial, visit this [R Notebook Guide](https://bookdown.org/yihui/rmarkdown/notebook.html). There are also [cheat sheets](https://www.rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf) available for how to use R Markdown.
+Vignettes are R Markdown file (.rmd) that runs interactively stored int the `vignettes` folder. It does not require any additional installation, as it is a built-in function in R Studio. For an in-depth tutorial, visit this [R Notebook Guide](https://bookdown.org/yihui/rmarkdown/notebook.html). There are also [cheat sheets](https://www.rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf) available for how to use R Markdown.
 
-Once data have been downloaded, you can then knit the vignettes 
+Once data have been downloaded, you can then knit the vignettes and the full site with
 ```{r}
-AmericasBarometer::refreshVignettes()
+devtools::document()
+
+pkgdown::build_site()
 ```
 
 This will generate the full package documentation in the `docs` folder
@@ -77,19 +83,18 @@ This will generate the full package documentation in the `docs` folder
 In addition the following are also available:
 
  * Verify correlations
- * Calculating some high-level data quality points
+ * Prediction Models
  * Out of fear of being a crime victim
  * Statistics on bribery
- * Spatial heterogeneity
  * Trends analysis of Binomial variable
  * Cluster Analysis
- * Prediction Models
- * Verify correlations
+ * Spatial heterogeneity
+ * Calculating some high-level data quality points
 
 
 ## Package functions
 
-The package:
+The package includes functions stored in the `R` folder:
 
  1. Pull survey data - download all of the merged files that exist for each country individually from the [LAPOP Datasets](http://datasets.americasbarometer.org/database/index.php). Because of the [dataset licence](datasets.americasbarometer.org/database/agreement.html), data are not included in the package
 
@@ -104,7 +109,10 @@ The package:
  
  4. Generate a series of pre-built charts to display the results and get ground ready for Joint Data Interpretation by subject mater expert
  
- 
+If you change the functions, regenerate the documentation before rebuilding the package 
+```{r}
+devtools::document()
+```
 
 ## Reference dataset / code book
 The package includes for convenience the question __categories__ and __labels__ from different versions, based on [Merge_Codebook_v1.0](http://datasets.americasbarometer.org/database/files/2004-2018%20LAPOP%20AmericasBarometer%20Merge_Codebook_v1.0_FREE_W.pdf)
@@ -114,7 +122,7 @@ The package also include a geographic dataset to ease geo-visualization & analys
 
 #### Building package documentation 
 
-`devtools::document()`
+``
 `devtools::check(document = FALSE)`
 `pkgdown::build_site()`
 

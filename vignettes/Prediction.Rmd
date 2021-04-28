@@ -18,9 +18,14 @@ knitr::opts_chunk$set(
 
 
 ```{r}
-lapop.2014.SLV <- read.csv("~/Desktop/ElSalvador_Data_LAPOP_americasbarometer_2014.csv")
-lapop.2014.HND <- read.csv("~/Desktop/Honduras_Data_LAPOP_americasbarometer_2014.csv")
-lapop.2014.GTM <- read.csv("~/Desktop/Guatemala_Data_LAPOP_americasbarometer_2014.csv")
+mainDir <- getwd()
+## If you save your analysis under vignette folder...
+mainDirroot <- substring(mainDir, 0 , nchar(mainDir) - 10)
+
+
+lapop.2014.GTM <- read.csv(paste0(mainDirroot, "/data-raw/lapop.2014.GTM.csv"))
+lapop.2014.SLV <- read.csv(paste0(mainDirroot, "/data-raw/lapop.2014.SLV.csv"))
+lapop.2014.HND <- read.csv(paste0(mainDirroot, "/data-raw/lapop.2014.HND.csv"))
 
 names.slv = names(lapop.2014.SLV)
 names.hnd = names(lapop.2014.HND)
@@ -30,6 +35,16 @@ names.gtm = names(lapop.2014.GTM)
 ```{r}
 
 
+## Fear index ###############################################################################
+fear_common <- c('fear10','vic1ext','vic1exta','vic1hogar','aoj11',
+                 'pese1','pese2','aoj17','diso7','diso8','diso10','diso18',
+                 'diso14','diso16','diso17','vicbar1','vicbar1f','vicbar3',
+                 'vicbar4','vicbar7','a4_crime')
+
+# Using the old versions of GTM and SLV indices until I can evaluate new ones.
+fear_hnd <- AmericasBarometer::make_idx(lapop.2014.HND,
+                    # c(fear_common,'vic40','vic41','vic43','vic44','vic45','fear6f'))
+                     c(fear_common))
 ```
 
 ```{r}
@@ -106,6 +121,7 @@ ord_hnd <- unused_hnd[!(unused_hnd %in% bin_hnd) &
 ### HONDURAS (unused) ###
 ```{r}
 hnd = as.numeric(length(unused_hnd))
+
 for (i in 1:length(unused_hnd)) {
   hnd[i] = paste("lapop.2014.HND", unused_hnd[i], sep = "$")  
 }
@@ -114,11 +130,17 @@ hnd.values = paste(hnd, collapse = "+") #I copied and pasted hnd.values (but rem
 
 unord_hnd #need to make a factor in the scope 
 
+
+
+```
+
+ 
+```{r}
 line.none = lm(fear_hnd~1, data = lapop.2014.HND)
-line.all = lm(fear_hnd~lapop.2014.HND$muni10+lapop.2014.HND$honmun30+lapop.2014.HND$honmuni31+lapop.2014.HND$honmun32+lapop.2014.HND$honmun33+lapop.2014.HND$honmun36+lapop.2014.HND$honmun37+lapop.2014.HND$honmun38+lapop.2014.HND$honmun39+lapop.2014.HND$honmun40+lapop.2014.HND$honmun41+lapop.2014.HND$honmun42+lapop.2014.HND$cpss1+lapop.2014.HND$prot4+lapop.2014.HND$prot7+lapop.2014.HND$ico2+lapop.2014.HND$mil1+lapop.2014.HND$mil2+lapop.2014.HND$pr3d+lapop.2014.HND$pr3e+lapop.2014.HND$honqt1+lapop.2014.HND$honqt2+lapop.2014.HND$honqt3+lapop.2014.HND$honqt4+lapop.2014.HND$honqt5+lapop.2014.HND$honqt6+lapop.2014.HND$honqt7+lapop.2014.HND$honqt8+lapop.2014.HND$honqt9+lapop.2014.HND$honqt10+lapop.2014.HND$honqt11+lapop.2014.HND$honqt12+lapop.2014.HND$m2+lapop.2014.HND$honm3+lapop.2014.HND$coer1+lapop.2014.HND$ros1+as.factor(lapop.2014.HND$dst1)+lapop.2014.HND$per4+lapop.2014.HND$per9+lapop.2014.HND$exc18+as.factor(lapop.2014.HND$vb3n)+ as.factor(lapop.2014.HND$vb11)+ as.factor(lapop.2014.HND$leng1) + tr_hnd + w_hnd + crit_hnd + aut_hnd + ex_hnd + ca_hnd)
+line.all = lm(fear_hnd ~lapop.2014.HND$muni10 + lapop.2014.HND$honmun30 + lapop.2014.HND$honmuni31 + lapop.2014.HND$honmun32 + lapop.2014.HND$honmun33 + lapop.2014.HND$honmun36 + lapop.2014.HND$honmun37 + lapop.2014.HND$honmun38 + lapop.2014.HND$honmun39 + lapop.2014.HND$honmun40 + lapop.2014.HND$honmun41 + lapop.2014.HND$honmun42 + lapop.2014.HND$cpss1 + lapop.2014.HND$prot4 + lapop.2014.HND$prot7 + lapop.2014.HND$ico2 + lapop.2014.HND$mil1 + lapop.2014.HND$mil2 + lapop.2014.HND$pr3d + lapop.2014.HND$pr3e + lapop.2014.HND$honqt1 + lapop.2014.HND$honqt2 + lapop.2014.HND$honqt3 + lapop.2014.HND$honqt4 + lapop.2014.HND$honqt5 + lapop.2014.HND$honqt6 + lapop.2014.HND$honqt7 + lapop.2014.HND$honqt8 + lapop.2014.HND$honqt9 + lapop.2014.HND$honqt10 + lapop.2014.HND$honqt11 + lapop.2014.HND$honqt12 + lapop.2014.HND$m2 + lapop.2014.HND$honm3 + lapop.2014.HND$coer1 + lapop.2014.HND$ros1 + as.factor(lapop.2014.HND$dst1) + lapop.2014.HND$per4 + lapop.2014.HND$per9 + lapop.2014.HND$exc18 + as.factor(lapop.2014.HND$vb3n) +  as.factor(lapop.2014.HND$vb11) +  as.factor(lapop.2014.HND$leng1)  +  tr_hnd + w_hnd + crit_hnd + aut_hnd + ex_hnd + ca_hnd)
 
 ### Forward Selection
-step(line.none, scope = ~lapop.2014.HND$muni10+lapop.2014.HND$honmun30+lapop.2014.HND$honmuni31+lapop.2014.HND$honmun32+lapop.2014.HND$honmun33+lapop.2014.HND$honmun36+lapop.2014.HND$honmun37+lapop.2014.HND$honmun38+lapop.2014.HND$honmun39+lapop.2014.HND$honmun40+lapop.2014.HND$honmun41+lapop.2014.HND$honmun42+lapop.2014.HND$cpss1+lapop.2014.HND$prot4+lapop.2014.HND$prot7+lapop.2014.HND$ico2+lapop.2014.HND$mil1+lapop.2014.HND$mil2+lapop.2014.HND$pr3d+lapop.2014.HND$pr3e+lapop.2014.HND$honqt1+lapop.2014.HND$honqt2+lapop.2014.HND$honqt3+lapop.2014.HND$honqt4+lapop.2014.HND$honqt5+lapop.2014.HND$honqt6+lapop.2014.HND$honqt7+lapop.2014.HND$honqt8+lapop.2014.HND$honqt9+lapop.2014.HND$honqt10+lapop.2014.HND$honqt11+lapop.2014.HND$honqt12+lapop.2014.HND$m2+lapop.2014.HND$honm3+lapop.2014.HND$coer1+lapop.2014.HND$ros1+as.factor(lapop.2014.HND$dst1)+lapop.2014.HND$per4+lapop.2014.HND$per9+lapop.2014.HND$exc18+as.factor(lapop.2014.HND$vb3n)+ as.factor(lapop.2014.HND$vb11)+ as.factor(lapop.2014.HND$leng1) + tr_hnd + w_hnd + crit_hnd + aut_hnd + ex_hnd + ca_hnd, direction = "forward", data = lapop.2014.HND)
+step(line.none, scope = ~lapop.2014.HND$muni10 + lapop.2014.HND$honmun30 + lapop.2014.HND$honmuni31 + lapop.2014.HND$honmun32 + lapop.2014.HND$honmun33 + lapop.2014.HND$honmun36 + lapop.2014.HND$honmun37 + lapop.2014.HND$honmun38 + lapop.2014.HND$honmun39 + lapop.2014.HND$honmun40 + lapop.2014.HND$honmun41 + lapop.2014.HND$honmun42 + lapop.2014.HND$cpss1 + lapop.2014.HND$prot4 + lapop.2014.HND$prot7 + lapop.2014.HND$ico2 + lapop.2014.HND$mil1 + lapop.2014.HND$mil2 + lapop.2014.HND$pr3d + lapop.2014.HND$pr3e + lapop.2014.HND$honqt1 + lapop.2014.HND$honqt2 + lapop.2014.HND$honqt3 + lapop.2014.HND$honqt4 + lapop.2014.HND$honqt5 + lapop.2014.HND$honqt6 + lapop.2014.HND$honqt7 + lapop.2014.HND$honqt8 + lapop.2014.HND$honqt9 + lapop.2014.HND$honqt10 + lapop.2014.HND$honqt11 + lapop.2014.HND$honqt12 + lapop.2014.HND$m2 + lapop.2014.HND$honm3 + lapop.2014.HND$coer1 + lapop.2014.HND$ros1 + as.factor(lapop.2014.HND$dst1) + lapop.2014.HND$per4 + lapop.2014.HND$per9 + lapop.2014.HND$exc18 + as.factor(lapop.2014.HND$vb3n) +  as.factor(lapop.2014.HND$vb11) +  as.factor(lapop.2014.HND$leng1)  +  tr_hnd  +  w_hnd  +  crit_hnd  +  aut_hnd  +  ex_hnd  +  ca_hnd, direction = "forward", data = lapop.2014.HND)
 
 ## Backward Selection
 step(line.all, direction = "backward", data = lapop.2014.HND)
