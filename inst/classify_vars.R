@@ -198,3 +198,4 @@ unord_bin <- function(data,var1,var2,cutoff=0) {
   }
   ldply(names(tmp),function(x) bin_bin(tmp,x,var2,cutoff))
 }
+

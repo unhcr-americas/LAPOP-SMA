@@ -8,10 +8,22 @@ vignette: >
 ---
 
 ```{r setup, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>"
-)
+knitr::opts_chunk$set(echo = FALSE, 
+                      message = FALSE, 
+                      warning = FALSE, 
+                      collapse = FALSE,
+                      comment = "#>",
+                      fig.align = "center")
+knitr::opts_chunk$set(fig.width = 12, fig.height = 9)
+set.seed(1)
+extrafont::loadfonts(quiet=TRUE)
+options(scipen = 999) # turn-off scientific notation like 1e+48
+library(unhcRstyle)
+library(ggplot2)
+library(mice)
+library(plyr) 
+library(GGally) 
+
 ```
 
 
@@ -23,22 +35,19 @@ This index will measure the a respondant's inclination toward authoritarian poli
 - `jc13`: Coup is justified when corruption is high (1=yes, 2=no)
 - `jc15a`: President justified in governing without legislature during crisis (1=yes, 2=no)
 
-To start off, we'll load the necessary packages:
 
-```{r, message=FALSE}
-library(ggplot2)
-library(mice)
-library(plyr) 
-library(GGally) 
-```
 
 We'll load all three 2014 datasets and construct a data frame containing the columns we want.
 
 ```{r}
-setwd("C:/Users/Craig/Desktop/SMA/VSFS/LAPOP-SMA/indices")
-lapop.2014.GTM <- read.csv('../../2014-GTM.csv')
-lapop.2014.SLV <- read.csv('../../2014-SLV.csv')
-lapop.2014.HND <- read.csv('../../2014-HND.csv')
+mainDir <- getwd()
+## If you save your analysis under vignette folder...
+mainDirroot <- substring(mainDir, 0 , nchar(mainDir) - 10)
+
+
+lapop.2014.GTM <- read.csv(paste0(mainDirroot, "/data-raw/lapop.2014.GTM.csv"))
+lapop.2014.SLV <- read.csv(paste0(mainDirroot, "/data-raw/lapop.2014.SLV.csv"))
+lapop.2014.HND <- read.csv(paste0(mainDirroot, "/data-raw/lapop.2014.HND.csv"))
 v <- c('dem2','dem11','jc13','jc10','jc15a')
 my_data <- rbind(lapop.2014.GTM[,v],lapop.2014.SLV[,v],lapop.2014.HND[,v])
 #dem2 has sort of an odd scale -- switch 1 and 2

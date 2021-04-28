@@ -21,6 +21,6 @@ res[res$mode==5,'text'] <- 'Crime'
 
 # ArcMap only wants to join on text fields
 res$estratopri <- as.character(res$estratopri) 
-write.csv(res,'a4.csv',row.names=FALSE)
+write.csv(res,'data/a4.csv',row.names=FALSE)
 
 

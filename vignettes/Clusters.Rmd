@@ -7,15 +7,9 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+
+
 ```{r setup, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>"
-)
-```
-
-
-```{r setup}
 knitr::opts_chunk$set(echo = FALSE, 
                       message = FALSE, 
                       warning = FALSE, 
@@ -27,6 +21,12 @@ set.seed(1)
 extrafont::loadfonts(quiet=TRUE)
 options(scipen = 999) # turn-off scientific notation like 1e+48
 library(unhcRstyle)
+library(tidyverse)
+library(tidymodels)
+library(patchwork)
+library(embed)
+library(haven)
+library(readxl)
 
 ```
 
@@ -35,12 +35,7 @@ library(unhcRstyle)
 
 
 ```{r getdata}
-library(tidyverse)
-library(tidymodels)
-library(patchwork)
-library(embed)
-library(haven)
-library(readxl)
+
 mainDir <- getwd()
 ## If you save your analysis under vignette folder...
 mainDirroot <- substring(mainDir, 0 , nchar(mainDir) - 10)
@@ -49,12 +44,21 @@ set.seed(12345)
 
 ## pulling the last available dataset from NCA
 
-srcs <- 
-  list(guatemala = "http://datasets.americasbarometer.org/database/files/Guatemala%20LAPOP%20AmericasBarometer%202019%20v1.0_W.dta",
-       honduras = "http://datasets.americasbarometer.org/database/files/Honduras%20LAPOP%20AmericasBarometer%202018%20v1.0_W.dta",
-       elsalvador = "http://datasets.americasbarometer.org/database/files/ElSalvador%20LAPOP%20AmericasBarometer%202018%20v1.0_W.dta")
+# srcs <- 
+#   list(guatemala = "http://datasets.americasbarometer.org/database/files/Guatemala%20LAPOP%20AmericasBarometer%202019%20v1.0_W.dta",
+#        honduras = "http://datasets.americasbarometer.org/database/files/Honduras%20LAPOP%20AmericasBarometer%202018%20v1.0_W.dta",
+#        elsalvador = "http://datasets.americasbarometer.org/database/files/ElSalvador%20LAPOP%20AmericasBarometer%202018%20v1.0_W.dta")
+# 
+# data <- srcs %>% map_dfr(compose(as_factor, read_dta))
 
-data <- srcs %>% map_dfr(compose(as_factor, read_dta))
+mainDir <- getwd()
+## If you save your analysis under vignette folder...
+mainDirroot <- substring(mainDir, 0 , nchar(mainDir) - 10)
+
+
+data1 <- read.csv(paste0(mainDirroot, "/data/dataLAPOP.csv"))
+
+data <- data1[ which(data1$year %in% c("2018", "2019")),  ] 
 
 data <- data %>% mutate(across(where(is.factor), ~na_if(., "No sabe")), 
                         across(where(is.factor), ~na_if(., "No responde")),
@@ -65,15 +69,12 @@ data <- data %>% mutate(across(where(is.factor), ~na_if(., "No sabe")),
 
 ```
 
-```{r BuildDico}
-## Building the dictionary to make the reading easier...
-elsalvador <- read_dta("http://datasets.americasbarometer.org/database/files/ElSalvador%20LAPOP%20AmericasBarometer%202018%20v1.0_W.dta")
-```
+
  
 
 ## Americas Barometer 
 
-The [AmericasBarometer](https://www.vanderbilt.edu/lapop/about-americasbarometer.php) is a periodic study of 34 countries in the Western Hemisphere, with stratified nationally representative samples drawn in each country, a common questionnaire core, and country-specific modules. It is the only scientifically rigorous comparative survey of democratic values and behaviors that covers all independent countries in North, Central, and South America, as well as a significant number of countries in the Caribbean. The AmericasBarometer measures attitudes, evaluations, experiences, and behavior in the Americas using national probability samples of voting-age adults. Standardizing methods and a common core questionnaire permit valid comparisons across countries and over time on topics including the economy, rule of law, state capacity, trust in institutions, individual values, corruption, security, and more.
+The [AmericasBarometer](https://www.vanderbilt.edu/lapop/about-americasbarometer.php) is a periodic study of 34 countries in the Western Hemisphere, with stratified nationally representative samples drawn in each country, a common questionnaire core, and country-specific modules. It is the only scientifically rigorous comparative survey of democratic values and behaviors that covers all independent countries in North, Central, and South America, as well as a significant number of countries in the Caribbean. The Americas Barometer measures attitudes, evaluations, experiences, and behavior in the Americas using national probability samples of voting-age adults. Standardizing methods and a common core questionnaire permit valid comparisons across countries and over time on topics including the economy, rule of law, state capacity, trust in institutions, individual values, corruption, security, and more.
 
 Each country survey is implemented based on a national probability design. In some cases, oversamples are collected to allow precise analysis of opinion within sub-national regions. 
 
@@ -95,10 +96,13 @@ data1 <-
               # case_when(q11n == "Soltero" ~ "Single",
               #           q11n == "Casado" | q11n == "Unión Libre (acompañado)" ~ "Couple",
               #           TRUE ~ "Other"),
-            country = pais, location = estratopri, urban = ur, municipality = tamano,
-            hhsize = fct_recode(q12c, "20" = "20+") %>% compose(as.numeric, as.character)(),
-            education =
-              ed %>%
+            country = pais, 
+            location = estratopri, 
+            urban = ur, 
+            municipality = tamano,
+            hhsize = fct_recode(q12c, "20" = "20+") %>% 
+    compose(as.numeric, as.character)(),
+            education =  ed %>%
               fct_recode("0" = "Ninguno", "18" = "18+") %>%
               compose(as.numeric, as.character)(),
             employment_status = ocup4a,
@@ -148,7 +152,8 @@ data0 <-
   dist() %>% 
   hclust(method = "average") %>% 
   cutree(4) %>% 
- as_factor()))
+  as_factor()))
+
 ```
 
 

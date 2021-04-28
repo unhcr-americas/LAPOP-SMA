@@ -3,19 +3,26 @@
 library(ggmap)
 library(plyr)
 
+mainDir <- getwd()
+## If you save your analysis under vignette folder...
+mainDirroot <- substring(mainDir, 0 , nchar(mainDir) - 5)
+
+
 
 
 # No need to load these again, as long as this is called *after*
 # make_indices.R
 if (!exists(c('lapop.2014.GTM','lapop.2014.SLV','lapop.2014.HND'))) {
-  lapop.2014.HND <- read.csv("../../HND-2014.csv",stringsAsFactors=FALSE)
-  lapop.2014.GTM <- read.csv("../../GTM-2014.csv",stringsAsFactors=FALSE)
-  lapop.2014.SLV <- read.csv("../../SLV-2014.csv",stringsAsFactors=FALSE)
+  lapop.2014.GTM <- read.csv(paste0(mainDir, "/data-raw/lapop.2014.GTM.csv"),stringsAsFactors=FALSE)
+  lapop.2014.SLV <- read.csv(paste0(mainDir, "/data-raw/lapop.2014.SLV.csv"),stringsAsFactors=FALSE)
+  lapop.2014.HND <- read.csv(paste0(mainDir, "/data-raw/lapop.2014.HND.csv"),stringsAsFactors=FALSE)
+  
+  
 }
 geo <- c('pais','estratopri','estratosec','prov','municipio')
 my_geo <- rbind(lapop.2014.GTM[,geo],lapop.2014.SLV[,geo],
                         lapop.2014.HND[,geo])
-my_geo[my_geo$pais==4,'hondistrito'] <- lapop.2014.HND$hondistrito
+#my_geo[my_geo$pais==4,'hondistrito'] <- lapop.2014.HND$hondistrito
 # rm(geo,lapop.2014.GTM,lapop.2014.SLV,lapop.2014.HND)
 
 # my_geo now contains the geo data for all locations surveyed.
