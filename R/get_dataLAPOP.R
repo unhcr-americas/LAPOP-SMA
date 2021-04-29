@@ -13,13 +13,18 @@
 #' @export
 
 make_codebook <- function(tbl){
+  # tbl <- lapop
   n <- ncol(tbl)
-  labels_list <- map(1:n, function(x) attr(tbl[[x]], "label") )
+  labels_list <- as.character(map(1:n, function(x) attr(tbl[[x]], "label") ))
   # if a vector of character strings is preferable
-  labels_vector <- map_chr(1:n, function(x) attr(tbl[[x]], "label") )
+  #labels_vector <- map_chr(1:n, function(x) attr(tbl[[x]], "label") )
+  
   vars_vector <- labels(tbl)[[2]]
   levels_vector <- lapply(lapply(tbl, table), length) %>% as_vector()
-  return(tibble("var" = vars_vector, "label" = labels_vector, "levels" = levels_vector))
+  return(tibble("var" = vars_vector, 
+               # "label" = labels_vector,
+                "label" = labels_list, 
+                "levels" = levels_vector))
 }
 
 
@@ -115,8 +120,8 @@ get_dataLAPOP <- function( ){
   ## save in raw-data folder
   if(!dir.exists("data-raw")) dir.create("data-raw") 
   
-for (i in 18:nrow(scrcframe))  {
-    # i <- 2
+for (i in 1:nrow(scrcframe))  {
+    # i <- 1
     url1 <- scrcframe[i,c("url")]
     year1  <- scrcframe[i,c("year")]
     ctrycollect1 <- scrcframe[i,c("ctry")]  
@@ -129,7 +134,7 @@ for (i in 18:nrow(scrcframe))  {
     ## In case of error push it next
     if(inherits(possibleError, "error")) next
     
-    #REAL WORK
+    #if all is ok then:
         lapop <- haven::read_dta(url1);
         names(lapop) <- tolower(names(lapop));
         lapop$year  <- year1;
@@ -137,6 +142,11 @@ for (i in 18:nrow(scrcframe))  {
         
         cat(paste0("Reading data for ", ctrycollect1, " in ", year1, " : ", nrow(lapop), " observations  & ", ncol(lapop), " variables.\n"))
     
+    ## get dico and save it
+    write.csv(make_codebook(lapop), paste0(getwd(),"/inst/dico/",row.names(scrcframe)[i],"-dico.csv"), row.names = FALSE) ;
+    
+    
+    ### Doing some cleaning to be able to safely merge everything afterwards...
         # In 2004-2012, missing values are conveyed by 'NA'. In 2014, they used 888888 
         # and 988888; these will do very bad things if you leave them in!
         # Some years also used 8 and 9 as no-response codes; be more careful with those...
@@ -155,9 +165,7 @@ for (i in 18:nrow(scrcframe))  {
         lapop$idnum <- as.character(lapop$idnum);
         ## Re-encode the data 
       
-        ## get dico and save it
-        #write.csv(make_codebook(lapop), paste0(getwd(),"/data-raw/",row.names(scrcframe)[i],"-dico.csv"), row.names = FALSE) ;
-        ## Save frame
+         ## Save frame
         write.csv(lapop, paste0(getwd(),"/data-raw/",row.names(scrcframe)[i],".csv"), row.names = FALSE) ;
         
         #dummy while loop for a  10 sec sleep

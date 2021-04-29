@@ -2,22 +2,10 @@ pandoc: 2.7.3
 pkgdown: 1.6.1
 pkgdown_sha: ~
 articles:
-  Clusters: Clusters.html
-  Correlation: Correlation.html
-  Prediction: Prediction.html
-  Satisfaction_with_Democracy: Satisfaction_with_Democracy.html
-  Spatial_heterogeneity: Spatial_heterogeneity.html
+  Building_indices: Building_indices.html
   Trends: Trends.html
   bribes: bribes.html
   data-quality: data-quality.html
   fear_being_victim: fear_being_victim.html
-  index_Authoritarianism: index_Authoritarianism.html
-  index_Community_Activity: index_Community_Activity.html
-  index_Fear: index_Fear.html
-  index_Possession: index_Possession.html
-  index_Sympathy_with_government_critics: index_Sympathy_with_government_critics.html
-  index_Transparency: index_Transparency.html
-  index_Trust_in_Government: index_Trust_in_Government.html
-  index_Wealth: index_Wealth.html
-last_built: 2021-04-28T13:50Z
+last_built: 2021-04-29T15:22Z
 

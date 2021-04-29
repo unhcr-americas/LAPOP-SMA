@@ -54,22 +54,10 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="articles/Clusters.html">Cluster Analysis</a>
+      <a href="articles/Building_indices.html">Building Indices</a>
     </li>
     <li>
-      <a href="articles/Correlation.html">Verify correlations</a>
-    </li>
-    <li>
-      <a href="articles/Prediction.html">Prediction Models</a>
-    </li>
-    <li>
-      <a href="articles/Satisfaction_with_Democracy.html">Satisfaction with Democracy</a>
-    </li>
-    <li>
-      <a href="articles/Spatial_heterogeneity.html">Spatial heterogeneity</a>
-    </li>
-    <li>
-      <a href="articles/Trends.html">Trends analysis of Binomial variable</a>
+      <a href="articles/Trends.html">Trends analysis</a>
     </li>
     <li>
       <a href="articles/bribes.html">Statistics on bribery</a>
@@ -79,30 +67,6 @@
     </li>
     <li>
       <a href="articles/fear_being_victim.html">Out of fear of being a crime victim</a>
-    </li>
-    <li>
-      <a href="articles/index_Authoritarianism.html">Authoritarianism index</a>
-    </li>
-    <li>
-      <a href="articles/index_Community_Activity.html">Community Activity index</a>
-    </li>
-    <li>
-      <a href="articles/index_Fear.html">Fear index</a>
-    </li>
-    <li>
-      <a href="articles/index_Possession.html">Possession index</a>
-    </li>
-    <li>
-      <a href="articles/index_Sympathy_with_government_critics.html">Sympathy with government critics index</a>
-    </li>
-    <li>
-      <a href="articles/index_Transparency.html">Transparency index</a>
-    </li>
-    <li>
-      <a href="articles/index_Trust_in_Government.html">Trust in Government index</a>
-    </li>
-    <li>
-      <a href="articles/index_Wealth.html">Wealth index</a>
     </li>
   </ul>
 </li>
@@ -132,7 +96,7 @@
 <p>Project to better understand <strong>population movement drivers in the Northern Triangle</strong> (<em>Honduras, El Salvador &amp; Guatemala</em>). The <strong><a href="summary.html">Analysis Executive summary is here</a></strong></p>
 <p>The analysis is based on longitudinal analysis of <a href="http://datasets.americasbarometer.org/database/index.php">Latin American Public Opinion Project (LAPOP)</a> survey from 2004 to 2018 (<em>i.e. 8 survey dataset per country</em>).</p>
 <p>The <a href="https://www.vanderbilt.edu/lapop/about-americasbarometer.php">AmericasBarometer</a> is a periodic study of 34 countries in the Western Hemisphere, with stratified nationally representative samples drawn in each country, a common questionnaire core, and country-specific modules. It is the only scientifically rigorous comparative survey of democratic values and behaviors that covers all independent countries in North, Central, and South America, as well as a significant number of countries in the Caribbean. The Americas Barometer measures attitudes, evaluations, experiences, and behavior in the Americas using national probability samples of voting-age adults. Standardizing methods and a common core questionnaire permit valid comparisons across countries and over time on topics including the economy, rule of law, state capacity, trust in institutions, individual values, corruption, security, and more.</p>
-<p>Each country survey is implemented based on a national probability design. In some cases, oversamples are collected to allow precise analysis of opinion within sub-national regions.</p>
+<p>Each country survey is implemented based on a national probability design. In some cases, oversamples are collected to allow precise analysis of opinion within sub-national regions. These data were supplied by the Latin American Public Opinion Project at Vanderbilt University, which takes no responsibility for any interpretation of the data.</p>
 <p>This projects build from analysis of other shared repositories such as <a href="https://github.com/ccjolley/LAPOP-SMA">LAPOP-SMA</a> from <a href="jolleycraig@gmail.com">Craig Jolley</a>, Snr Data Scientist @ USAID, <a href="https://github.com/vanderbilt-data-science/lapop-dashboard">lapop-dashboard</a> from Vanderbilt Data Science Team or <a href="https://github.com/carmen-canedo/LAPOP-predictive-models">LAPOP-predictive-models</a></p>
 <p>The scripts from those various repository were re-organized in an R package in order to ease analysis reproducibility. This package also aims at building capacity of humanitarian data analyst in operations</p>
 <div id="key-questions" class="section level2">
@@ -190,27 +154,39 @@
 <pre class="{r}"><code><a href="https://devtools.r-lib.org//reference/document.html">devtools::document()
 
 pkgdown::build_site()</a></code></pre>
-<p>This will generate the full package documentation in the <code>docs</code> folder</p>
-<ul>
-<li><p>Authoritarianism index <code>aut_idx</code></p></li>
-<li><p>Community Activity index <code>ca_idx</code></p></li>
-<li><p>Sympathy with government critics index <code>crit_idx</code></p></li>
-<li><p>Fear index <code>fear_idx</code></p></li>
-<li><p>Transparency index <code>tr_idx</code></p></li>
-<li><p>Trust in Government Index <code>tr_idx</code></p></li>
-<li><p>Wealth index <code>w_idx</code></p></li>
-<li><p>Possession index <code>p_idx</code></p></li>
-</ul>
+<p>This will generate the full package documentation in the <code>docs</code> folder.</p>
+<p>For the sake of analysis, <strong>7 composite indicators</strong> are created.</p>
+<ol>
+<li>Authoritarianism index <code>aut_idx</code><br>
+</li>
+<li>Community Activity index <code>ca_idx</code><br>
+</li>
+<li>Sympathy with government critics index <code>crit_idx</code><br>
+</li>
+<li>Fear index <code>fear_idx</code>
+</li>
+<li>Transparency index <code>transp_idx</code><br>
+</li>
+<li>Trust in Government Index <code>trust_idx</code>
+</li>
+<li>Wealth index <code>weahlt_idx</code>
+</li>
+</ol>
+<p>In technical terms, this implies to perform for each of those indices missing value imputation and principal component analysis. Then for each indices, a prediction model is created, spatial heterogeneity and time trends are explored.</p>
 <p>In addition the following are also available:</p>
 <ul>
-<li>Verify correlations</li>
-<li>Prediction Models</li>
+<li>Calculating some high-level data quality points</li>
+<li>Verify correlations between all indices</li>
+</ul>
+<p>Specific variable in relation with protection are detailed:</p>
+<ul>
 <li>Out of fear of being a crime victim</li>
 <li>Statistics on bribery</li>
-<li>Trends analysis of Binomial variable</li>
+</ul>
+<p>Last to support both geographic and household targeting the last two analysis are performed:</p>
+<ul>
 <li>Cluster Analysis</li>
 <li>Spatial heterogeneity</li>
-<li>Calculating some high-level data quality points</li>
 </ul>
 </div>
 <div id="package-functions" class="section level3">
@@ -218,7 +194,7 @@ pkgdown::build_site()</a></code></pre>
 <a href="#package-functions" class="anchor"></a>Package functions</h3>
 <p>The package includes functions stored in the <code>R</code> folder:</p>
 <ol>
-<li><p>Pull survey data - download all of the merged files that exist for each country individually from the <a href="http://datasets.americasbarometer.org/database/index.php">LAPOP Datasets</a>. Because of the <a href="datasets.americasbarometer.org/database/agreement.html">dataset licence</a>, data are not included in the package</p></li>
+<li><p>Pull survey data - download all of the merged files that exist for each country individually from the <a href="http://datasets.americasbarometer.org/database/index.php">LAPOP Datasets</a>. Because of the <a href="http://datasets.americasbarometer.org/database/agreement.html">dataset licence</a>, data are not included in the package</p></li>
 <li><p>Map and merge all survey from different year and country. This implies:</p></li>
 </ol>
 <ul>

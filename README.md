@@ -57,32 +57,35 @@ devtools::document()
 pkgdown::build_site()
 ```
 
-This will generate the full package documentation in the `docs` folder
+This will generate the full package documentation in the `docs` folder. 
 
- * Authoritarianism index `aut_idx`  
-    
- * Community Activity index `ca_idx`  
-    
- * Sympathy with government critics index `crit_idx`  
-    
- * Fear index `fear_idx`  
-    
- * Transparency index `tr_idx`   
-    
- * Trust in Government Index `tr_idx`  
-    
- * Wealth index `w_idx`  
-    
+For the sake of analysis, __7 composite indicators__ are created.
+
+ 1. Authoritarianism index `aut_idx`  
+ 2. Community Activity index `ca_idx`  
+ 3. Sympathy with government critics index `crit_idx`  
+ 4. Fear index `fear_idx` 
+ 5. Transparency index `transp_idx`   
+ 6. Trust in Government Index `trust_idx` 
+ 7. Wealth index `weahlt_idx`  
+
+
+In technical terms, this implies to perform for each of those indices missing value imputation and principal component analysis. Then for each indices, a prediction model is created, spatial heterogeneity and time trends are explored.
+
 In addition the following are also available:
 
- * Verify correlations
- * Prediction Models
+ * Calculating some high-level data quality points
+ * Verify correlations between all indices
+ 
+Specific variable in relation with protection are detailed:
+
  * Out of fear of being a crime victim
  * Statistics on bribery
- * Trends analysis of Binomial variable
+
+Last to support both geographic and household targeting the last two analysis are performed:  
+
  * Cluster Analysis
  * Spatial heterogeneity
- * Calculating some high-level data quality points
 
 
 ### Package functions
