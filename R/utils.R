@@ -278,47 +278,60 @@ binom.low <- function(x,n) { binom.test(x,n,alternative='two.sided')$conf.int[1]
 #' @export 
 binom.high <- function(x,n) { binom.test(x,n,alternative='two.sided')$conf.int[2] }
 
-#' binom_plot
+#' trend_plot
 #' use this to make plots of a binomial variable (one that takes only 0/1 values)
 #' @md
 #' @param  f  a data frame that must contain the following columns:
 #'   year = year of observations 
 #'    x = number of 1's observed that year 
 #'    n = total observations in that year
-#' @param label
-#' @param label_y
+#' @param plotTittle plot title
 #' @examples
 #' \dontrun{
 #'  
 #' }
 #' @export
-binom_plot <- function(f, 
-                       label='', 
-                       label_y=0) {
+trend_plot <- function(f, 
+                       plotTittle='',
+                       plotsubTittle = '') {
   f$mean <- f$x / f$n
-  if (label_y == 0 ) {
-    label_y <- 1.1*max(f$mean)
-  }
+  # if (label_y == 0 ) {
+  #   label_y <- 1.1*max(f$mean)
+  # }
   f$ymin <- mapply(binom.low,f$x,f$n)
   f$ymax <- mapply(binom.high,f$x,f$n)
+  
   ggplot(data=f,aes(x=year,y=mean)) +
-    geom_line(size=1.5,color='red') +
+    geom_line(size=1.5,
+              color='red') +
     geom_point(size=5) +
     geom_errorbar(aes(ymin=ymin,
                       ymax=ymax,
                       width=0.5)) +
+    ## Display every 2 years
     scale_x_continuous(breaks=seq(2004,2018,2)) +
-    annotate('text',
-             label=str_wrap(label,width=32),
-             size=8,
-             x=2003,
-             y=label_y,
-             hjust=0,
-             vjust=0) +
-    theme_classic() +
-    theme(text=element_text(size=20),
-          axis.title.y=element_blank(),
-          axis.title.x=element_blank()) 
+    # annotate('text',
+    #          label=str_wrap(label,width=32),
+    #          size=8,
+    #          x=2003,
+    #          y=label_y,
+    #          hjust=0,
+    #          vjust=0) +
+    
+    labs(title = str_wrap(plotTittle,width=32),
+         subtitle = str_wrap(plotsubTittle,width=32),
+         x = " ",
+         y = " ",
+         caption = "Latin American Public Opinion Project / Vanderbilt University") +
+    unhcRstyle::unhcr_theme() +
+    theme(axis.text = element_text(size = 6),
+          legend.position = "none",
+          panel.grid.major.x = element_line(color = "#cbcbcb"),
+          panel.grid.major.y = element_blank())
+    # theme_classic() +
+    # theme(text=element_text(size=20),
+    #       axis.title.y=element_blank(),
+    #       axis.title.x=element_blank()) 
 }
 
 #' bar_plot

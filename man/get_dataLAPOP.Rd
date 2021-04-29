@@ -6,6 +6,11 @@
 \usage{
 get_dataLAPOP()
 }
+\arguments{
+\item{src}{list of direct URL to dataset - dataset name to be normalised
+with 3 letters country code plus yer
+like GTM2019}
+}
 \description{
 Get all country specific dataset and do a full merge and get the
 full Grand Merge data set.

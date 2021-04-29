@@ -37,11 +37,8 @@ lapop.trends <- read.csv(paste0(mainDirroot, "/data/dataLAPOP.csv"))
 ```
 
 
-This defines a few methods for visualizing time trends. 
 
 Time trends are here assemble by stitching together individual files for the three Northern Triangle countries.
-
-
 
 
 *NOTE:* While indicator names might be consistent from year to year, values aren't necessarily. In 2014, `cp5` (tried to solve a community problem) was on a scale of 1-4 (4=never). Earlier years just used 1=yes, 2=no, so it looks like there was a big jump in 2008.
@@ -51,7 +48,9 @@ Time trends are here assemble by stitching together individual files for the thr
 exc2 <- ddply(lapop.trends,~year,summarize,x=sum(!is.na(exc2) & exc2==1),
             n=sum(!is.na(exc2) & (exc2==0 | exc2==1)))
 
-AmericasBarometer::binom_plot(exc2,'exc2: Asked for a bribe by a police officer?',0.12)
+AmericasBarometer::trend_plot(exc2,
+                              'Asked for a bribe by a police officer?',
+                              'exc2:  ')
 ``` 
 
 Police asking for bribes seems to be on the rise.
@@ -81,7 +80,9 @@ Education seems to be improving -- there has been a decrease in people with less
 ```{r}
 r3 <- ddply(lapop.trends,~year,summarize,x=sum(!is.na(r3) & r3==1),
             n=sum(!is.na(r3) & (r3==0 | r3==1)))
-AmericasBarometer::binom_plot(r3,'r3: Refrigerator in home',0.65)
+AmericasBarometer::trend_plot(r3,
+                              'Refrigerator in home',
+                               'r3')
 ```
 
 Refrigerators are on the rise.
@@ -89,7 +90,9 @@ Refrigerators are on the rise.
 ```{r}
 r4 <- ddply(lapop.trends,~year,summarize,x=sum(!is.na(r4) & r4==1),
              n=sum(!is.na(r4) & (r4==0 | r4==1)))
-AmericasBarometer::binom_plot(r4,'r4: Landline telephone in home')
+AmericasBarometer::trend_plot(r4,
+                              'Landline telephone in home',
+                              'r4')
 ```
 
 Landlines are on their way out.
@@ -97,7 +100,9 @@ Landlines are on their way out.
 ```{r}
 r4a <- ddply(lapop.trends,~year,summarize,x=sum(!is.na(r4a) & r4a==1),
              n=sum(!is.na(r4a) & (r4a==0 | r4a==1)))
-AmericasBarometer::binom_plot(r4a,'r4a: Cellular telephone in home',0.8)
+AmericasBarometer::trend_plot(r4a,
+                              'Cellular telephone in home',
+                              'r4a')
 ```
 
 The cell phone market looks like it saturated in about 2010.
@@ -117,7 +122,9 @@ The number of occasional churchgoers has been pretty constant (and low); it look
 ```{r}
 jc10 <- ddply(lapop.trends,~year,summarize,x=sum(!is.na(jc10) & jc10==2),
             n=sum(!is.na(jc10) & (jc10==1 | jc10==2)))
-AmericasBarometer::binom_plot(jc10,'jc10: Military coup is justified if crime is high',0.6)
+AmericasBarometer::trend_plot(jc10,
+                              'Military coup is justified if crime is high',
+                              'jc10')
 ```
 
 Whatever happened in 2008, it also coincided with a sudden rise in the number of people who are open to the idea of a military coup.
@@ -128,7 +135,8 @@ e5 <- ddply(lapop.trends,~year,summarize,
             disapprove=sum(e5<4,na.rm=TRUE) / sum(e5<11,na.rm=TRUE),
             meh=sum(e5>3 & e5<8,na.rm=TRUE) / sum(e5<11,na.rm=TRUE),
             approve=sum(e5>7,na.rm=TRUE) / sum(e5<11,na.rm=TRUE))
-multi_lines(e5)
+
+AmericasBarometer::multi_lines(e5)
 ```
 
 The question about approval of political demonstrations (`e5`) lets people express a range from strong approval to strong disapproval -- most are somewhere in the middle. People who are actively approving of political demonstrations seem to be  losing ground to those who are either wishy-washy or disapproving
@@ -142,7 +150,8 @@ l1 <- ddply(lapop.trends,~year,summarize,
             left=sum(l1<5,na.rm=TRUE) / sum(l1<11,na.rm=TRUE),
             center=sum(l1==5 | l1==6,na.rm=TRUE) / sum(l1<11,na.rm=TRUE),
             right=sum(l1>6,na.rm=TRUE) / sum(l1<11,na.rm=TRUE))
-multi_lines(l1)
+
+AmericasBarometer::multi_lines(l1)
 ```
 
 The distribution of political ideology (`l1`) is interesting; the largest group puts themselves smack in the middle, rather than tilting left or right. This centrist group (most likely politically disengaged) has stayed pretty constant over the last decade, while on average the right is losing out to the left.
