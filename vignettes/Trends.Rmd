@@ -1,51 +1,73 @@
 ---
-title: "Trends analysis of Binomial variable"
-output: rmarkdown::html_vignette
+title: "Trends analysis"
+output:
+  rmarkdown::html_vignette:
+    toc: yes
+    fig_width: 8
+    fig_height: 6
 vignette: >
-  %\VignetteIndexEntry{Trends analysis of Binomial variable}
+  %\VignetteIndexEntry{Trends analysis}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
 ```{r setup, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>"
-)
+knitr::opts_chunk$set(echo = FALSE, 
+                      message = FALSE, 
+                      warning = FALSE, 
+                      collapse = FALSE,
+                      comment = "#>",
+                      fig.align = "center")
 ```
-
-This defines a few methods for visualizing time trends. Note that here I'm assembling time trends by stitching together individual files for the three Northern Triangle countries; in the future things might be more consistent if I use LAPOP's "Grand Merge" dataset.
-
-Start by defining a few functions that we can use to make similar-looking plots for different indicators.
 
 ```{r}
 library(AmericasBarometer)
+library(plyr)
+library(ggplot2)
+library(stringr)
+library(RColorBrewer)
+
+mainDir <- getwd()
+## If you save your analysis under vignette folder...
+mainDirroot <- substring(mainDir, 0 , nchar(mainDir) - 10)
+
+
+lapop.trends <- read.csv(paste0(mainDirroot, "/data/dataLAPOP.csv"))
+
 ```
 
-Now load all of the data and make some plots for individual indicators.
+
+This defines a few methods for visualizing time trends. 
+
+Time trends are here assemble by stitching together individual files for the three Northern Triangle countries.
+
+
+
 
 *NOTE:* While indicator names might be consistent from year to year, values aren't necessarily. In 2014, `cp5` (tried to solve a community problem) was on a scale of 1-4 (4=never). Earlier years just used 1=yes, 2=no, so it looks like there was a big jump in 2008.
 
 ```{r}
  
-source('../utils/make_trends.R')
 exc2 <- ddply(lapop.trends,~year,summarize,x=sum(!is.na(exc2) & exc2==1),
             n=sum(!is.na(exc2) & (exc2==0 | exc2==1)))
-binom_plot(exc2,'exc2: Asked for a bribe by a police officer?',0.12)
+
+AmericasBarometer::binom_plot(exc2,'exc2: Asked for a bribe by a police officer?',0.12)
 ``` 
 
 Police asking for bribes seems to be on the rise.
 
 ```{r}
-ed <- lapop.trends[lapop.trends$year %in% c(2004,2008,2014),c('ed','year')]
+ed <- lapop.trends[lapop.trends$year %in% c(2004,2008,2014,2016,2018),c('ed','year')]
 ed$year <- as.character(ed$year)
 col3 <- brewer.pal(3,"Dark2")
 ed <- na.omit(ed)
+
+
 ggplot(ed,aes(x=ed,group=year,color=year)) +
   geom_density(size=2) +
   scale_color_brewer(type="qual") +
-  theme_classic() +
   scale_x_continuous(limits=c(0,max(lapop.trends$ed,na.rm=TRUE))) +
+  theme_classic() +
   xlab("Years of education")+
   theme(text=element_text(size=20),
         axis.title.y=element_blank(),
@@ -59,7 +81,7 @@ Education seems to be improving -- there has been a decrease in people with less
 ```{r}
 r3 <- ddply(lapop.trends,~year,summarize,x=sum(!is.na(r3) & r3==1),
             n=sum(!is.na(r3) & (r3==0 | r3==1)))
-binom_plot(r3,'r3: Refrigerator in home',0.65)
+AmericasBarometer::binom_plot(r3,'r3: Refrigerator in home',0.65)
 ```
 
 Refrigerators are on the rise.
@@ -67,7 +89,7 @@ Refrigerators are on the rise.
 ```{r}
 r4 <- ddply(lapop.trends,~year,summarize,x=sum(!is.na(r4) & r4==1),
              n=sum(!is.na(r4) & (r4==0 | r4==1)))
-binom_plot(r4,'r4: Landline telephone in home')
+AmericasBarometer::binom_plot(r4,'r4: Landline telephone in home')
 ```
 
 Landlines are on their way out.
@@ -75,7 +97,7 @@ Landlines are on their way out.
 ```{r}
 r4a <- ddply(lapop.trends,~year,summarize,x=sum(!is.na(r4a) & r4a==1),
              n=sum(!is.na(r4a) & (r4a==0 | r4a==1)))
-binom_plot(r4a,'r4a: Cellular telephone in home',0.8)
+AmericasBarometer::binom_plot(r4a,'r4a: Cellular telephone in home',0.8)
 ```
 
 The cell phone market looks like it saturated in about 2010.
@@ -86,7 +108,8 @@ cp6 <- ddply(lapop.trends,~year,summarize,
              monthly=sum(cp6==2,na.rm=TRUE) / sum(cp6 < 5,na.rm=TRUE),
              annual=sum(cp6==3,na.rm=TRUE) / sum(cp6 < 5,na.rm=TRUE),
              never=sum(cp6==4,na.rm=TRUE) / sum(cp6 < 5,na.rm=TRUE))
-multi_lines(cp6)
+
+AmericasBarometer::multi_lines(cp6)
 ```
 
 The number of occasional churchgoers has been pretty constant (and low); it looks like the population of weekly churchgoers has been growing while non-attenders have been dropping since 2008. What changed in 2008?
@@ -94,7 +117,7 @@ The number of occasional churchgoers has been pretty constant (and low); it look
 ```{r}
 jc10 <- ddply(lapop.trends,~year,summarize,x=sum(!is.na(jc10) & jc10==2),
             n=sum(!is.na(jc10) & (jc10==1 | jc10==2)))
-binom_plot(jc10,'jc10: Military coup is justified if crime is high',0.6)
+AmericasBarometer::binom_plot(jc10,'jc10: Military coup is justified if crime is high',0.6)
 ```
 
 Whatever happened in 2008, it also coincided with a sudden rise in the number of people who are open to the idea of a military coup.

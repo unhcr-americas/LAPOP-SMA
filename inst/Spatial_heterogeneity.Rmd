@@ -68,6 +68,7 @@ To get a more global view, we can calculate this geo-variance for all of the reg
 drop <- c("formatq","sexi","colori","uniq_id","pais","idnum","estratopri",
           "estratosec","upm","prov","municipio","cluster","tamano","idiomaq",
           "fecha","wt","ti",'sex')
+
 # Also remove unordered categorical variables
 unord_common <- c('idiomaq','a4','vic2','vic2aa','aoj22','env1','vb1',
                   'vb4new','vb101','vb20','for1n','for4',
@@ -82,6 +83,7 @@ d$tr_idx <- tr_all
 d$w_idx <- w_all
 d$crit_idx <- crit_all
 d$aut_idx <- aut_all
+
 # TODO: Eventually I want to systematically include dummy variables; for now
 # I'll just manually create a couple that I need
 d$q3c_5 <- as.numeric(lapop.2014.all$q3c==5)
@@ -137,3 +139,4 @@ head(sl[,c('pais_text','muni_text','est','pval')])
 ```
 
 Again, we should be careful about interpreting these, because results aren't necessarily representative at the municipal level. I'd be more inclined to trust what we see for big cities than for small ones.
+

@@ -1,6 +1,10 @@
 ---
 title: "Out of fear of being a crime victim"
-output: rmarkdown::html_vignette
+output:
+  rmarkdown::html_vignette:
+    toc: yes
+    fig_width: 8
+    fig_height: 6
 vignette: >
   %\VignetteIndexEntry{Out of fear of being a crime victim}
   %\VignetteEngine{knitr::rmarkdown}
@@ -9,10 +13,12 @@ vignette: >
 
 
 ```{r setup, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>"
-)
+knitr::opts_chunk$set(echo = FALSE, 
+                      message = FALSE, 
+                      warning = FALSE, 
+                      collapse = FALSE,
+                      comment = "#>",
+                      fig.align = "center")
 ```
 
 Binomial variables are those that can take on two values: 0/1, yes/no, male/female, etc. A *lot* of the Americas Barometer variables are of this type.
@@ -61,7 +67,8 @@ There are two things going on in that statement. `vic40==1` creates a string of 
 Averages can be misleading -- they didn't ask everyone, and so the real average might not be exactly 34%. We can see what the likely range of values is by using an exact binomial test:
 
 ```{r}
-stats::binom.test(sum(my_data==1),length(my_data))
+# stats::binom.test(sum(my_data==1),
+#                   length(my_data))
 ```
 
 This tells us that, out of 1558 people who answered the question, 531 said "yes", so the population average (what we would get if we really asked everybody) has a 95% chance of being between 31.7% and 36.5%.
@@ -69,7 +76,8 @@ This tells us that, out of 1558 people who answered the question, 531 said "yes"
 Just for fun, we can see what would happen if the LAPOP team had only asked 100 people:
 
 ```{r}
-stats::binom.test(sum(head(my_data,100)==1),100)
+stats::binom.test(sum(head(my_data,100)==1),
+                  100)
 ```
 
 If we only had the first 100 survey responses, we can only be confident that the population average is between 21.2% and 40%. Asking more people matters!
@@ -90,19 +98,26 @@ offset=length(my_data)*0.05 # Move labels down a bit from the top of bars
 ```{r fig.height=6, fig.width=8, message=FALSE, warning=FALSE}
 
 ggplot(f,aes(factor(ans,labels=c('Yes','No')))) + 
-  geom_bar(fill='goldenrod') +
+  geom_bar(fill = unhcRstyle::unhcr_blue) +
   annotate('text',label=yes_text,      # add 'yes' label
            size=8,x=1,y=sum(my_data==1)-offset,hjust=0.5,vjust=0) +
   annotate('text',label=no_text,       # add 'no' label
            size=8,x=2,y=sum(my_data==2)-offset,hjust=0.5,vjust=0) +
   annotate('text',label=str_wrap(q_text,width=32),  # add question text
            size=5,x=0.5,y=q_y,hjust=0,vjust=1) +
-  theme_classic() +
-  theme(text=element_text(size=20),
-        axis.title.y=element_blank(),
-        axis.title.x=element_blank(),
-        axis.text.x=element_blank(),
-        axis.ticks.x=element_blank()) 
+  
+  coord_flip() +
+  labs(title = "Out of fear of being a crime victim", 
+             subtitle = "In the last 12 months have you limited the places where you go shop?",
+             x = " ", 
+             y = "",
+             caption = "Latin American Public Opinion Project / Vanderbilt University") +
+          unhcRstyle::unhcr_theme() +
+          theme(axis.text = element_text(size = 6),
+                legend.position = "none",
+                panel.grid.major.x = element_line(color = "#cbcbcb"), 
+                panel.grid.major.y = element_blank()) +### changing grid line that should appear) +
+        geom_hline(yintercept = 0, size = 0.7, colour = "#333333")
 ```
 
 That's all nice, but there's probably more we can do with this indicator. For example, we can test for correlations with other binomial variables. For example, are men or women more likely to change their shopping patterns? We can do this using [Fisher's exact test](http://www.cookbook-r.com/Statistical_analysis/Frequency_tests/).
@@ -134,24 +149,37 @@ fisher.test(ct)
 
 Now we have an odds ratio close to 3 -- being a victim of crime makes people about 3x as likely to change their shopping habits. Our very low p-value means that this is probably a significant correlation. If you want something more visual, you could try this:
 
-```{r}
+```{r message=FALSE, warning=FALSE}
 plotme <- my_data3
 plotme[plotme==2] <- 1.5
+
 ggplot(plotme,aes(x=vic1ext,y=vic40)) + 
   geom_jitter(color='darkgreen',size=5, alpha=0.2, position = position_jitter(w = 0.2, h = 0.2)) + 
-  annotate('text',label='Changed shopping',    
-           size=7,x=1,y=1.8,hjust=0.5,vjust=0) +
-  annotate('text',label="Didn't change",    
-           size=7,x=1.5,y=1.8,hjust=0.5,vjust=0) +
-  annotate('text',label="Crime victim",    
-           size=7,x=0.75,y=1,hjust=1,vjust=0) +
-  annotate('text',label="Non-victim",    
-           size=7,x=0.75,y=1.5,hjust=1,vjust=0) +
+  
+  annotate('text',label='Changed shopping',  size=7,x=1,y=1.4,hjust=0.5,vjust=0) +
+  annotate('text',label="Didn't change", size=7,x=1.5,y=1.4,hjust=0.5,vjust=0) +
+  annotate('text',label="Crime victim",     size=7,x=0.75,y=0,hjust=1,vjust=0) +
+  annotate('text',label="Non-victim", size=7,x=0.75,y=1,hjust=1,vjust=0) +
+  
   scale_x_continuous(limits=c(0.5,1.7)) +
-  theme_classic() +
-  theme(line=element_blank(),
-        title=element_blank(),
-        text=element_blank())
+  scale_y_continuous(limits=c(-0.5,1.7)) +
+  labs(title = "Out of fear of being a crime victim", 
+             subtitle = "in the last 12 months have you limited the places where you go shop?",
+             x = " ", 
+             y = "",
+             caption = "Latin American Public Opinion Project / Vanderbilt University") +
+          unhcRstyle::unhcr_theme() +
+          theme(axis.text = element_text(size = 6),
+                legend.position = "none",line=element_blank(),
+               title=element_blank(),
+               text=element_blank(),
+               #line=element_blank(),
+                panel.grid.major.x = element_line(color = "#cbcbcb"), 
+                panel.grid.major.y = element_blank()) #+### changing grid line that should appear) 
+  # theme_classic() +
+  # theme(line=element_blank(),
+  #       title=element_blank(),
+  #       text=element_blank())
 ```
 
 Now it's really obvious that most non-victims haven't changed their shopping habits, while a larger fraction of victims have changed theirs.
@@ -211,41 +239,41 @@ print(g,'chart')
 So this is OK -- it tells us which departments showed the largest and smallest average values for `vic40`. Hover over the map with your mouse to see department names and average values. Another way of visualizing this that might be useful is to figure out which departments showed values of `vic40` that are significantly above-average (according to an exact Fisher test) and highlight those.
 
 ```{r,results='asis'}
-vic40gt <- function(x) {
-  ct <- table(map_data$vic40,map_data$prov==x)
-  ft <- fisher.test(ct)
-  if (ft$p.value < 0.095 & ft$estimate > 1) {
-    return(1)
-  }
-  return(0)
-}
-is.gt <- data.frame(gt=sapply(unique(map_data$prov),vic40gt))
-is.gt$Code <- rownames(is.gt)
-joined <- merge(is.gt,joined,by='Code')
-g <- gvisGeoChart(joined,locationvar='Code',colorvar='gt',hovervar='Name',
-                  options=list(region="HN",resolution="provinces",
-                               colorAxis="{minValue: 0,  colors: ['#FFFFFF', '#C11B17']}"))
-print(g,'chart')
+# vic40gt <- function(x) {
+#   ct <- table(map_data$vic40,map_data$prov==x)
+#   ft <- fisher.test(ct)
+#   if (ft$p.value < 0.095 & ft$estimate > 1) {
+#     return(1)
+#   }
+#   return(0)
+# }
+# is.gt <- data.frame(gt=sapply(unique(map_data$prov),vic40gt))
+# is.gt$Code <- rownames(is.gt)
+# joined <- merge(is.gt,joined,by='Code')
+# g <- gvisGeoChart(joined,locationvar='Code',colorvar='gt',hovervar='Name',
+#                   options=list(region="HN",resolution="provinces",
+#                                colorAxis="{minValue: 0,  colors: ['#FFFFFF', '#C11B17']}"))
+# print(g,'chart')
 ```
 
 We can also look to see which departments have below-average values of `vic40`:
 
 ```{r,results='asis'}
-vic40lt <- function(x) {
-  ct <- table(map_data$vic40,map_data$prov==x)
-  ft <- fisher.test(ct)
-  if (ft$p.value < 0.095 & ft$estimate < 1) {
-    return(1)
-  }
-  return(0)
-}
-is.lt <- data.frame(lt=sapply(unique(map_data$prov),vic40lt))
-is.lt$Code <- rownames(is.lt)
-joined <- merge(is.lt,joined,by='Code')
-g <- gvisGeoChart(joined,locationvar='Code',colorvar='lt',hovervar='Name',
-                  options=list(region="HN",resolution="provinces",
-                               colorAxis="{minValue: 0,  colors: ['#FFFFFF', '#3EA055']}"))
-print(g,'chart')
+# vic40lt <- function(x) {
+#   ct <- table(map_data$vic40,map_data$prov==x)
+#   ft <- fisher.test(ct)
+#   if (ft$p.value < 0.095 & ft$estimate < 1) {
+#     return(1)
+#   }
+#   return(0)
+# }
+# is.lt <- data.frame(lt=sapply(unique(map_data$prov),vic40lt))
+# is.lt$Code <- rownames(is.lt)
+# joined <- merge(is.lt,joined,by='Code')
+# g <- gvisGeoChart(joined,locationvar='Code',colorvar='lt',hovervar='Name',
+#                   options=list(region="HN",resolution="provinces",
+#                                colorAxis="{minValue: 0,  colors: ['#FFFFFF', '#3EA055']}"))
+# print(g,'chart')
 ```
 
 So let's go back to the high-`vic40` areas. What's special about Cortes and Atlantida? Cortes contains San Pedro Sula, which is Honduras's 2nd-largest city, and Choloma, which is #3. The 4th-largest, La Ceiba, is in Atlantida. Is it possible that all we're seeing here is urbanization -- people in cities experience more crime and more shopping options, so they're more likely to change their shopping habits? First, let's see whether `vic40` correlates with the urbanization indicator, `ur` (1=urban, 2=rural).

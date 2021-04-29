@@ -44,21 +44,38 @@ set.seed(12345)
 
 ## pulling the last available dataset from NCA
 
-srcs <-
-  list(guatemala = "http://datasets.americasbarometer.org/database/files/Guatemala%20LAPOP%20AmericasBarometer%202019%20v1.0_W.dta",
-       honduras = "http://datasets.americasbarometer.org/database/files/Honduras%20LAPOP%20AmericasBarometer%202018%20v1.0_W.dta",
-       elsalvador = "http://datasets.americasbarometer.org/database/files/ElSalvador%20LAPOP%20AmericasBarometer%202018%20v1.0_W.dta")
+# srcs <-
+#   list(guatemala = "http://datasets.americasbarometer.org/database/files/Guatemala%20LAPOP%20AmericasBarometer%202019%20v1.0_W.dta",
+#        honduras = "http://datasets.americasbarometer.org/database/files/Honduras%20LAPOP%20AmericasBarometer%202018%20v1.0_W.dta",
+#        elsalvador = "http://datasets.americasbarometer.org/database/files/ElSalvador%20LAPOP%20AmericasBarometer%202018%20v1.0_W.dta")
+# 
+# data <- srcs %>% map_dfr(compose(as_factor, read_dta))
 
-data <- srcs %>% map_dfr(compose(as_factor, read_dta))
+mainDir <- getwd()
+## If you save your analysis under vignette folder...
+mainDirroot <- substring(mainDir, 0 , nchar(mainDir) - 10)
 
 mainDir <- getwd()
 ## If you save your analysis under vignette folder...
 mainDirroot <- substring(mainDir, 0 , nchar(mainDir) - 10)
 
 
-data1 <- read.csv(paste0(mainDirroot, "/data/dataLAPOP.csv"))
+lapop.2019.GTM <- read.csv(paste0(mainDirroot, "/data-raw/lapop.2019.GTM.csv"), stringsAsFactors = TRUE)
+lapop.2018.SLV <- read.csv(paste0(mainDirroot, "/data-raw/lapop.2018.SLV.csv"), stringsAsFactors = TRUE)
+lapop.2018.HND <- read.csv(paste0(mainDirroot, "/data-raw/lapop.2018.HND.csv"), stringsAsFactors = TRUE)
 
-data <- data1[ which(data1$year %in% c("2018", "2019")),  ] 
+
+common <- Reduce(intersect,list(names(lapop.2019.GTM),
+                                names(lapop.2018.SLV),
+                                names(lapop.2018.HND)))
+data <- rbind(lapop.2019.GTM[,common],
+              lapop.2018.SLV[,common],
+              lapop.2018.HND[,common])
+
+
+#data1 <- read.csv(paste0(mainDirroot, "/data/dataLAPOP.csv"))
+
+#data <- data1[ which(data1$year %in% c("2018", "2019")),  ] 
 
 data <- data %>% mutate(across(where(is.factor), ~na_if(., "No sabe")), 
                         across(where(is.factor), ~na_if(., "No responde")),

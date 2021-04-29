@@ -307,7 +307,7 @@ binom_plot <- function(f,
     geom_errorbar(aes(ymin=ymin,
                       ymax=ymax,
                       width=0.5)) +
-    scale_x_continuous(breaks=seq(2004,2014,2)) +
+    scale_x_continuous(breaks=seq(2004,2018,2)) +
     annotate('text',
              label=str_wrap(label,width=32),
              size=8,
@@ -357,7 +357,7 @@ bar_plot <- function(f) {
 #' @export 
 multi_lines <- function(f) {
 
-  m <- melt(f,id.vars='year')
+  m <- reshape2::melt(f,id.vars='year')
   n <- length(unique(m$variable))
   col <- brewer.pal(n,"Dark2")  
   ggplot(m,aes(x=year,y=value,group=variable,color=variable)) + 
@@ -370,7 +370,17 @@ multi_lines <- function(f) {
 }
 
 
-
+#' cor_data_bin
+#' 
+#' cor_data_bin
+#' @md
+#' @param  f data frame f needs to contain a year column all other columns will 
+#' become the names of data series that will be plotted together
+#' @examples
+#' \dontrun{
+#'  
+#' }
+#' @export 
 cor_data_bin <- function(d,my_var,bin_vars,ord_vars,idx_vars,unord_vars) {
   cor_bin <- ldply(bin_vars, function(x) bin_bin(d,x,my_var)) 
   cor_ord <- ldply(ord_vars, function(x) ord_bin(d,x,my_var)) 

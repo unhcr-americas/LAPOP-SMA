@@ -28,10 +28,24 @@ library(stringr)
 To systematically explore all possible correlations with our fear index, we first need to see which haven't been accounted for in one of our other composite indices.
 
 ```{r}
-source('../utils/classify_vars.R')
+#source('../utils/classify_vars.R')
+mainDir <- getwd()
+## If you save your analysis under vignette folder...
+mainDirroot <- substring(mainDir, 0 , nchar(mainDir) - 10)
+
+
+lapop.2014.GTM <- read.csv(paste0(mainDirroot, "/data-raw/lapop.2014.GTM.csv"))
+lapop.2014.SLV <- read.csv(paste0(mainDirroot, "/data-raw/lapop.2014.SLV.csv"))
+lapop.2014.HND <- read.csv(paste0(mainDirroot, "/data-raw/lapop.2014.HND.csv"))
+
+
+common <- Reduce(intersect,list(names(lapop.2014.GTM),names(lapop.2014.SLV),
+                                names(lapop.2014.HND)))
+lapop.2014.all <- rbind(lapop.2014.GTM[,common],lapop.2014.SLV[,common],
+                        lapop.2014.HND[,common])
 ```
 
-The appopriate method for finding correlations will be different for each of these three types of variables. I've defined three functions that take the same inputs and produce similar outputs, so that all can be combined and compared at the end.
+The appropriate method for finding correlations will be different for each of these three types of variables. I've defined three functions that take the same inputs and produce similar outputs, so that all can be combined and compared at the end.
 
 Note that all of the functions below set the p-value cutoff, by default, to `1/ncol(data)` This is appropriate in cases (like this one) where we're looking at a large number of variables -- if we have more variables then we're more likely to observe spurious correlations so we need to be stricter. 
 

@@ -6,7 +6,7 @@ The analysis is based on longitudinal analysis of [Latin American Public Opinion
 
 The [AmericasBarometer](https://www.vanderbilt.edu/lapop/about-americasbarometer.php) is a periodic study of 34 countries in the Western Hemisphere, with stratified nationally representative samples drawn in each country, a common questionnaire core, and country-specific modules. It is the only scientifically rigorous comparative survey of democratic values and behaviors that covers all independent countries in North, Central, and South America, as well as a significant number of countries in the Caribbean. The Americas Barometer measures attitudes, evaluations, experiences, and behavior in the Americas using national probability samples of voting-age adults. Standardizing methods and a common core questionnaire permit valid comparisons across countries and over time on topics including the economy, rule of law, state capacity, trust in institutions, individual values, corruption, security, and more.
 
-Each country survey is implemented based on a national probability design. In some cases, oversamples are collected to allow precise analysis of opinion within sub-national regions. 
+Each country survey is implemented based on a national probability design. In some cases, oversamples are collected to allow precise analysis of opinion within sub-national regions. These data were supplied by the Latin American Public Opinion Project at Vanderbilt University, which takes no responsibility for any interpretation of the data. 
 
 This projects build from analysis of other shared repositories such as [LAPOP-SMA](https://github.com/ccjolley/LAPOP-SMA) from [Craig Jolley](jolleycraig@gmail.com), Snr Data Scientist @ USAID, [lapop-dashboard](https://github.com/vanderbilt-data-science/lapop-dashboard) from Vanderbilt Data Science Team or [LAPOP-predictive-models](https://github.com/carmen-canedo/LAPOP-predictive-models)
  
@@ -73,8 +73,6 @@ This will generate the full package documentation in the `docs` folder
     
  * Wealth index `w_idx`  
     
- * Possession index `p_idx`
-    
 In addition the following are also available:
 
  * Verify correlations
@@ -91,7 +89,7 @@ In addition the following are also available:
 
 The package includes functions stored in the `R` folder:
 
- 1. Pull survey data - download all of the merged files that exist for each country individually from the [LAPOP Datasets](http://datasets.americasbarometer.org/database/index.php). Because of the [dataset licence](datasets.americasbarometer.org/database/agreement.html), data are not included in the package
+ 1. Pull survey data - download all of the merged files that exist for each country individually from the [LAPOP Datasets](http://datasets.americasbarometer.org/database/index.php). Because of the [dataset licence](http://datasets.americasbarometer.org/database/agreement.html), data are not included in the package
 
  2. Map and merge all survey from different year and country. This implies:
  * Adding Wave Column: Creates a column that contains the correct wave for datasets.

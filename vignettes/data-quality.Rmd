@@ -1,6 +1,10 @@
 ---
 title: "Calculating some high-level data quality points"
-output: rmarkdown::html_vignette
+output:
+  rmarkdown::html_vignette:
+    toc: yes
+    fig_width: 8
+    fig_height: 6
 vignette: >
   %\VignetteIndexEntry{Calculating some high-level data quality points}
   %\VignetteEngine{knitr::rmarkdown}
@@ -8,34 +12,57 @@ vignette: >
 ---
 
 ```{r setup, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>"
-)
+knitr::opts_chunk$set(echo = FALSE, 
+                      message = FALSE, 
+                      warning = FALSE, 
+                      collapse = FALSE,
+                      comment = "#>",
+                      fig.align = "center")
+#knitr::opts_chunk$set(fig.width = 8, fig.height = 6)
+set.seed(1)
+extrafont::loadfonts(quiet=TRUE)
+options(scipen = 999) # turn-off scientific notation like 1e+48
+
+
+```
+
+
+```{r,message=FALSE}
+library(unhcRstyle)
+library(ggplot2)
+library(mice)
+library(plyr) 
+library(GGally)
+library(ggfortify)
+library(stargazer)
+library(lubridate)
+library(VennDiagram)
+library(RColorBrewer)
+#source('../utils/make_trends.R')
+
+mainDir <- getwd()
+## If you save your analysis under vignette folder...
+mainDirroot <- substring(mainDir, 0 , nchar(mainDir) - 10)
+
+
+lapop.2014.GTM <- read.csv(paste0(mainDirroot, "/data-raw/lapop.2014.GTM.csv"))
+lapop.2014.SLV <- read.csv(paste0(mainDirroot, "/data-raw/lapop.2014.SLV.csv"))
+lapop.2014.HND <- read.csv(paste0(mainDirroot, "/data-raw/lapop.2014.HND.csv"))
+
+# Get useful non-numeric variables
+date_time <- rbind(lapop.2014.GTM[,c('pais','fecha' #,'ti'
+                                     )],
+                   lapop.2014.SLV[,c('pais','fecha'#,'ti'
+                                     )],
+                   lapop.2014.HND[,c('pais','fecha'#,'ti'
+                                     )])
+
 ```
 
 
 
 
 ```{r,message=FALSE}
-library(plyr)
-library(ggplot2)
-library(lubridate)
-library(VennDiagram)
-library(RColorBrewer)
-source('../utils/make_trends.R')
-
-# Load data
-setwd("C:/Users/Craig/Desktop/SMA/VSFS/LAPOP-SMA/viz")
-lapop.2014.HND <- read.csv("../../HND-2014.csv",stringsAsFactors=FALSE)
-lapop.2014.GTM <- read.csv("../../GTM-2014.csv",stringsAsFactors=FALSE)
-lapop.2014.SLV <- read.csv("../../SLV-2014.csv",stringsAsFactors=FALSE)
-# Get useful non-numeric variables
-date_time <- rbind(lapop.2014.GTM[,c('pais','fecha','ti')],
-                   lapop.2014.SLV[,c('pais','fecha','ti')],
-                   lapop.2014.HND[,c('pais','fecha','ti')])
-
-
 fixdata <- function(x) {
   y <- x
   # vic1exta asks about the frequency of crime victimization and is NR if 
@@ -89,7 +116,12 @@ ggplot(basic,aes(x=country,y=nq,fill=country)) +
         axis.line=element_blank(),
         axis.title=element_blank(),
         text=element_text(size=20))
+```
 
+
+
+
+```{r,message=FALSE}
 # num of responses
 ggplot(basic,aes(x=country,y=nr,fill=country)) +
   geom_bar(stat="identity") +
@@ -103,6 +135,12 @@ ggplot(basic,aes(x=country,y=nr,fill=country)) +
         axis.line=element_blank(),
         axis.title=element_blank(),
         text=element_text(size=20))
+```
+
+
+
+
+```{r,message=FALSE, warning=FALSE}
 # Venn diagram of overlapping questions
 plot.new()
 draw.triple.venn(ncol(lapop.2014.GTM),ncol(lapop.2014.SLV),ncol(lapop.2014.GTM),
@@ -116,37 +154,42 @@ draw.triple.venn(ncol(lapop.2014.GTM),ncol(lapop.2014.SLV),ncol(lapop.2014.GTM),
                  alpha=rep(0.1,3),col=rep(NA,3),
                  cat.just=list(c(0,0.5),c(1,0.5),c(0.5,0)),
                  euler.d=TRUE,scaled=TRUE)
+```
 
+
+
+
+```{r,message=FALSE}
 # Questions with time series
 
-# Create test data.
-ts = data.frame(count=c(ncol(lapop.trends), ncol(lapop.2014.all)-ncol(lapop.trends)), 
-                category=c('trend','notrend'))
-
-# Add addition columns, needed for drawing with geom_rect.
-ts$fraction = ts$count / sum(ts$count)
-ts = ts[order(ts$fraction), ]
-ts$ymax = cumsum(ts$fraction)
-ts$ymin = c(0, head(ts$ymax, n=-1))
-ggplot(ts, aes(fill=category, ymax=ymax, ymin=ymin, xmax=4, xmin=2)) +
-     geom_rect() +
-     coord_polar(theta="y") +
-     xlim(c(0, 4)) +
-     annotate('text',x=4,y=0.25,
-              label='2004-2014 time series',size=10,hjust=0.85) +
-     annotate('text',x=4,y=0.82,
-              label='No time series',size=10,hjust=0.3) +
-     theme_classic() +
-     theme(legend.position='none',
-           axis.ticks=element_blank(),
-           axis.text=element_blank(),
-           axis.line=element_blank(),
-           axis.title=element_blank())
+# # Create test data.
+# ts = data.frame(count=c(ncol(lapop.trends), ncol(lapop.2014.all)-ncol(lapop.trends)), 
+#                 category=c('trend','notrend'))
+# 
+# # Add addition columns, needed for drawing with geom_rect.
+# ts$fraction = ts$count / sum(ts$count)
+# ts = ts[order(ts$fraction), ]
+# ts$ymax = cumsum(ts$fraction)
+# ts$ymin = c(0, head(ts$ymax, n=-1))
+# ggplot(ts, aes(fill=category, ymax=ymax, ymin=ymin, xmax=4, xmin=2)) +
+#      geom_rect() +
+#      coord_polar(theta="y") +
+#      xlim(c(0, 4)) +
+#      annotate('text',x=4,y=0.25,
+#               label='2004-2014 time series',size=10,hjust=0.85) +
+#      annotate('text',x=4,y=0.82,
+#               label='No time series',size=10,hjust=0.3) +
+#      theme_classic() +
+#      theme(legend.position='none',
+#            axis.ticks=element_blank(),
+#            axis.text=element_blank(),
+#            axis.line=element_blank(),
+#            axis.title=element_blank())
 ```
 
 # Missing values 
 
-```{r}
+```{r message=FALSE, warning=FALSE}
 # Average missing values
 mean(is.na(lapop.2014.GTM)) # 8.9% in GTM
 mean(is.na(lapop.2014.SLV)) # 9.0% in SLV
@@ -194,7 +237,7 @@ In general, questions with many missing answers were requesting information abou
 
 For some reason, a single response in Guatemala was from 1/1/2012, while the rest are from the spring of 2014
 
-```{r}
+```{r message=FALSE, warning=FALSE}
 Sys.setlocale("LC_TIME", "usa")
 date_time <- date_time[-1407,] # remove outlier
 date_time$date <- dmy(date_time$fecha)
@@ -210,26 +253,31 @@ ggplot(date_time,aes(x=date,fill=country)) +
         axis.line=element_blank(),
         axis.title.y=element_blank(),
         text=element_text(size=20))
+```
 
 
-ggplot(date_time,aes(x=ti,fill=country)) +
-  geom_density(alpha=0.2,adjust=0.25) +
-  scale_x_continuous(limits=c(15,90)) +
-  scale_fill_manual(values=brewer.pal(3,"Dark2")) +
-  theme_classic() +
-  xlab('Survey time (minutes)') +
-  theme(axis.ticks=element_blank(),
-        axis.text.y=element_blank(),
-        axis.line=element_blank(),
-        axis.title.y=element_blank(),
-        text=element_text(size=20))
+
+
+```{r,message=FALSE}
+
+# ggplot(date_time,aes(x=ti,fill=country)) +
+#   geom_density(alpha=0.2,adjust=0.25) +
+#   scale_x_continuous(limits=c(15,90)) +
+#   scale_fill_manual(values=brewer.pal(3,"Dark2")) +
+#   theme_classic() +
+#   xlab('Survey time (minutes)') +
+#   theme(axis.ticks=element_blank(),
+#         axis.text.y=element_blank(),
+#         axis.line=element_blank(),
+#         axis.title.y=element_blank(),
+#         text=element_text(size=20))
 ```
 
 Most people took 30-60 minutes to complete the survey.
 
 # Basic Demographics 
 
-```{r}
+```{r message=FALSE, warning=FALSE}
 mean(lapop.2014.all$sex==2) # 51.8% female
 ages <- lapop.2014.all[,c('pais','q2')]
 ages$country <- countries[ages$pais]
@@ -244,3 +292,4 @@ ggplot(ages,aes(x=q2,fill=country)) +
         axis.title.y=element_blank(),
         text=element_text(size=20))
 
+```
