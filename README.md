@@ -43,7 +43,14 @@ You will be then able to use all functions with the prefix: `AmericasBarometer::
 Once installed, you need to download and reshape the data with 
 
 ```{r}
+## Load data from remote site and save them locally
 AmericasBarometer::get_dataLAPOP()
+
+## merge all dataset together
+AmericasBarometer::merge_dataLAPOP()
+
+## generate a mapping data dictionnary - also based on https://github.com/unhcr-americas/LAPOP-SMA/blob/master/data/LAPOP_Dictionnary.xlsx
+AmericasBarometer::merge_dicoLAPOP()
 ```
 
 ### Vignettes

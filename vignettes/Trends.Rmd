@@ -34,6 +34,12 @@ mainDirroot <- substring(mainDir, 0 , nchar(mainDir) - 10)
 
 lapop.trends <- read.csv(paste0(mainDirroot, "/data/dataLAPOP.csv"))
 
+#table(lapop.trends$year, useNA= "ifany") 
+## let's put 2019 & 2018 together
+
+lapop.trends$year[lapop.trends$year=="2019"] <- "2018"
+lapop.trends$year <- as.integer(lapop.trends$year)
+
 ```
 
 
@@ -43,6 +49,311 @@ Time trends are here assemble by stitching together individual files for the thr
 
 *NOTE:* While indicator names might be consistent from year to year, values aren't necessarily. In 2014, `cp5` (tried to solve a community problem) was on a scale of 1-4 (4=never). Earlier years just used 1=yes, 2=no, so it looks like there was a big jump in 2008.
 
+## Migration	
+
+###  q14 Intends to Live or Work Abroad
+	
+```{r}
+#table(lapop.trends$q14, useNA= "ifany") 
+q14  <- ddply(lapop.trends,~year,summarize,x=sum(!is.na(q14 ) & q14 ==1),
+            n=sum(!is.na(q14) & (q14==2 | q14==1)))
+
+AmericasBarometer::trend_plot(q14,
+                              'Intends to Live or Work Abroad',
+                              '  ')
+```	
+
+###  q10a	Receives Remittances
+	
+```{r}
+#table(lapop.trends$q10, useNA= "ifany") 
+
+```	
+
+## Civic and Political Engagement	
+
+## Policial ideology
+The distribution of political ideology (`l1`) is interesting; the largest group puts themselves smack in the middle, rather than tilting left or right. This centrist group (most likely politically disengaged) has stayed pretty constant over the last decade, while on average the right is losing out to the left.
+```{r}
+bar_plot(data.frame(x=na.omit(lapop.trends$l1)))
+# Three logical groupings: left, center, right
+l1 <- ddply(lapop.trends,~year,summarize,
+            left=sum(l1<5,na.rm=TRUE) / sum(l1<11,na.rm=TRUE),
+            center=sum(l1==5 | l1==6,na.rm=TRUE) / sum(l1<11,na.rm=TRUE),
+            right=sum(l1>6,na.rm=TRUE) / sum(l1<11,na.rm=TRUE))
+
+AmericasBarometer::multi_lines(l1)
+```
+
+
+###  cp13	Attendance at Meetings of Political Parties
+	
+```{r}
+#table(lapop.trends$cp13, useNA= "ifany") 
+ 
+```	
+
+
+###  cp2	Requested Help from a Member of the Legislature
+	
+```{r}
+#table(lapop.trends$cp2, useNA= "ifany") 
+cp2  <- ddply(lapop.trends,~year,summarize,x=sum(!is.na(cp2 ) & cp2 ==1),
+            n=sum(!is.na(cp2) & (cp2==2 | cp2==1)))
+
+AmericasBarometer::trend_plot(cp2,
+                              'Requested Help from a Member of the Legislature',
+                              '  ')
+```	
+
+### cp20	Attendance at Meetings of Women's Group
+	
+```{r}
+#table(lapop.trends$cp20, useNA= "ifany") 
+cp20 <- ddply(lapop.trends,~year,summarize,
+             weekly=sum(cp20==1,na.rm=TRUE) / sum(cp20 < 5,na.rm=TRUE),
+             monthly=sum(cp20==2,na.rm=TRUE) / sum(cp20 < 5,na.rm=TRUE),
+             annual=sum(cp20==3,na.rm=TRUE) / sum(cp20 < 5,na.rm=TRUE),
+             never=sum(cp20==4,na.rm=TRUE) / sum(cp20 < 5,na.rm=TRUE))
+
+AmericasBarometer::multi_lines(cp20) 
+```	
+
+### cp6	Attendance at Meetings of Religious Organization
+
+
+The number of occasional churchgoers has been pretty constant (and low); it looks like the population of weekly churchgoers has been growing while non-attenders have been dropping since 2008. What changed in 2008?
+
+```{r}
+#table(lapop.trends$cp6, useNA= "ifany") 
+
+cp6 <- ddply(lapop.trends,~year,summarize,
+             weekly=sum(cp6==1,na.rm=TRUE) / sum(cp6 < 5,na.rm=TRUE),
+             monthly=sum(cp6==2,na.rm=TRUE) / sum(cp6 < 5,na.rm=TRUE),
+             annual=sum(cp6==3,na.rm=TRUE) / sum(cp6 < 5,na.rm=TRUE),
+             never=sum(cp6==4,na.rm=TRUE) / sum(cp6 < 5,na.rm=TRUE))
+
+AmericasBarometer::multi_lines(cp6)
+```
+
+### cp7	Attendance at Meetings of Parent Association
+	
+```{r}
+#table(lapop.trends$cp7, useNA= "ifany") 
+cp7 <- ddply(lapop.trends,~year,summarize,
+             weekly=sum(cp7==1,na.rm=TRUE) / sum(cp7 < 5,na.rm=TRUE),
+             monthly=sum(cp7==2,na.rm=TRUE) / sum(cp7 < 5,na.rm=TRUE),
+             annual=sum(cp7==3,na.rm=TRUE) / sum(cp7 < 5,na.rm=TRUE),
+             never=sum(cp7==4,na.rm=TRUE) / sum(cp7 < 5,na.rm=TRUE))
+
+AmericasBarometer::multi_lines(cp7)
+```	
+
+### cp8	Attendance at Meetings for Community Improvements
+	
+```{r}
+#table(lapop.trends$cp8, useNA= "ifany") 
+cp8 <- ddply(lapop.trends,~year,summarize,
+             weekly=sum(cp8==1,na.rm=TRUE) / sum(cp8 < 5,na.rm=TRUE),
+             monthly=sum(cp8==2,na.rm=TRUE) / sum(cp8 < 5,na.rm=TRUE),
+             annual=sum(cp8==3,na.rm=TRUE) / sum(cp8 < 5,na.rm=TRUE),
+             never=sum(cp8==4,na.rm=TRUE) / sum(cp8 < 5,na.rm=TRUE))
+
+AmericasBarometer::multi_lines(cp8)
+```	
+
+### prot3	Participated in a Protest
+	
+```{r}
+#table(lapop.trends$prot3, useNA= "ifany") 
+prot3  <- ddply(lapop.trends,~year,summarize,x=sum(!is.na(prot3 ) & prot3 ==1),
+            n=sum(!is.na(prot3) & (prot3==2 | prot3==1)))
+
+AmericasBarometer::trend_plot(prot3,
+                              'Participated in a Protest',
+                              '  ')
+```	
+
+### vb10	Identifies with a Political Party
+	
+```{r}
+#table(lapop.trends$vb10, useNA= "ifany") 
+vb10  <- ddply(lapop.trends,~year,summarize,x=sum(!is.na(vb10 ) & vb10 ==1),
+            n=sum(!is.na(vb10) & (vb10==2 | vb10==1)))
+
+AmericasBarometer::trend_plot(vb10,
+                              'Identifies with a Political Party',
+                              '  ')
+```	
+
+### vb2	Voted in Last Presidential Election
+	
+```{r}
+#table(lapop.trends$q14, useNA= "ifany") 
+q14  <- ddply(lapop.trends,~year,summarize,x=sum(!is.na(q14 ) & q14 ==1),
+            n=sum(!is.na(q14) & (q14==2 | q14==1)))
+
+AmericasBarometer::trend_plot(q14,
+                              'Intends to Live or Work Abroad',
+                              '  ')
+```	
+
+### vb20	Vote Intention for President
+	
+```{r}
+#table(lapop.trends$q14, useNA= "ifany") 
+q14  <- ddply(lapop.trends,~year,summarize,x=sum(!is.na(q14 ) & q14 ==1),
+            n=sum(!is.na(q14) & (q14==2 | q14==1)))
+
+AmericasBarometer::trend_plot(q14,
+                              'Intends to Live or Work Abroad',
+                              '  ')
+```	
+
+
+The question about approval of political demonstrations (`e5`) lets people express a range from strong approval to strong disapproval -- most are somewhere in the middle. People who are actively approving of political demonstrations seem to be  losing ground to those who are either wishy-washy or disapproving
+
+Again, 2008 looks like some kind of turning point.
+```{r}
+# This reminds me a bit of the political ideology chart -- lots concentrated at either end
+e5 <- ddply(lapop.trends,~year,summarize,
+            disapprove=sum(e5<4,na.rm=TRUE) / sum(e5<11,na.rm=TRUE),
+            meh=sum(e5>3 & e5<8,na.rm=TRUE) / sum(e5<11,na.rm=TRUE),
+            approve=sum(e5>7,na.rm=TRUE) / sum(e5<11,na.rm=TRUE))
+
+AmericasBarometer::multi_lines(e5)
+```
+
+
+	
+## Climate Change/Disaster Risk Reduction	
+
+### drk1	Likelihood of Death or Harm from Natural Disaster
+	
+```{r}
+#table(lapop.trends$q14, useNA= "ifany") 
+q14  <- ddply(lapop.trends,~year,summarize,x=sum(!is.na(q14 ) & q14 ==1),
+            n=sum(!is.na(q14) & (q14==2 | q14==1)))
+
+AmericasBarometer::trend_plot(q14,
+                              'Intends to Live or Work Abroad',
+                              '  ')
+```	
+
+### dst1b	Spend More to Enforce Building Codes
+	
+```{r}
+#table(lapop.trends$q14, useNA= "ifany") 
+q14  <- ddply(lapop.trends,~year,summarize,x=sum(!is.na(q14 ) & q14 ==1),
+            n=sum(!is.na(q14) & (q14==2 | q14==1)))
+
+AmericasBarometer::trend_plot(q14,
+                              'Intends to Live or Work Abroad',
+                              '  ')
+```	
+
+### env1c	Higher Priority for Protecting Environment or Promoting Economic Growth
+	
+```{r}
+#table(lapop.trends$q14, useNA= "ifany") 
+q14  <- ddply(lapop.trends,~year,summarize,x=sum(!is.na(q14 ) & q14 ==1),
+            n=sum(!is.na(q14) & (q14==2 | q14==1)))
+
+AmericasBarometer::trend_plot(q14,
+                              'Intends to Live or Work Abroad',
+                              '  ')
+```	
+
+### env2b	Seriousness of Climate Change
+	
+```{r}
+#table(lapop.trends$q14, useNA= "ifany") 
+q14  <- ddply(lapop.trends,~year,summarize,x=sum(!is.na(q14 ) & q14 ==1),
+            n=sum(!is.na(q14) & (q14==2 | q14==1)))
+
+AmericasBarometer::trend_plot(q14,
+                              'Intends to Live or Work Abroad',
+                              '  ')
+```	
+
+
+	
+## Corruption	
+
+### exc11	Asked to Pay Bribe to Process Document in Municipality
+	
+```{r}
+#table(lapop.trends$q14, useNA= "ifany") 
+q14  <- ddply(lapop.trends,~year,summarize,x=sum(!is.na(q14 ) & q14 ==1),
+            n=sum(!is.na(q14) & (q14==2 | q14==1)))
+
+AmericasBarometer::trend_plot(q14,
+                              'Intends to Live or Work Abroad',
+                              '  ')
+```	
+
+### exc13	Asked to Pay a Bribe at Work
+	
+```{r}
+#table(lapop.trends$q14, useNA= "ifany") 
+q14  <- ddply(lapop.trends,~year,summarize,x=sum(!is.na(q14 ) & q14 ==1),
+            n=sum(!is.na(q14) & (q14==2 | q14==1)))
+
+AmericasBarometer::trend_plot(q14,
+                              'Intends to Live or Work Abroad',
+                              '  ')
+```	
+
+### exc14	Asked to Pay a Bribe to the Courts
+	
+```{r}
+#table(lapop.trends$q14, useNA= "ifany") 
+q14  <- ddply(lapop.trends,~year,summarize,x=sum(!is.na(q14 ) & q14 ==1),
+            n=sum(!is.na(q14) & (q14==2 | q14==1)))
+
+AmericasBarometer::trend_plot(q14,
+                              'Intends to Live or Work Abroad',
+                              '  ')
+```	
+
+### exc15	Asked to Pay a Bribe to use Public Health Services
+	
+```{r}
+#table(lapop.trends$q14, useNA= "ifany") 
+q14  <- ddply(lapop.trends,~year,summarize,x=sum(!is.na(q14 ) & q14 ==1),
+            n=sum(!is.na(q14) & (q14==2 | q14==1)))
+
+AmericasBarometer::trend_plot(q14,
+                              'Intends to Live or Work Abroad',
+                              '  ')
+```	
+
+### exc16	Asked to Pay a Bribe at School
+	
+```{r}
+#table(lapop.trends$q14, useNA= "ifany") 
+q14  <- ddply(lapop.trends,~year,summarize,x=sum(!is.na(q14 ) & q14 ==1),
+            n=sum(!is.na(q14) & (q14==2 | q14==1)))
+
+AmericasBarometer::trend_plot(q14,
+                              'Intends to Live or Work Abroad',
+                              '  ')
+```	
+
+### exc18	Paying a Bribe is Justified
+	
+```{r}
+#table(lapop.trends$q14, useNA= "ifany") 
+q14  <- ddply(lapop.trends,~year,summarize,x=sum(!is.na(q14 ) & q14 ==1),
+            n=sum(!is.na(q14) & (q14==2 | q14==1)))
+
+AmericasBarometer::trend_plot(q14,
+                              'Intends to Live or Work Abroad',
+                              '  ')
+```	
+
+### exc2	Police Officer Asked for a Bribe
+	
 ```{r}
  
 exc2 <- ddply(lapop.trends,~year,summarize,x=sum(!is.na(exc2) & exc2==1),
@@ -53,8 +364,162 @@ AmericasBarometer::trend_plot(exc2,
                               'exc2:  ')
 ``` 
 
-Police asking for bribes seems to be on the rise.
+###	exc20	Soldier Requested a Bribe
+	
+```{r}
+#table(lapop.trends$q14, useNA= "ifany") 
+q14  <- ddply(lapop.trends,~year,summarize,x=sum(!is.na(q14 ) & q14 ==1),
+            n=sum(!is.na(q14) & (q14==2 | q14==1)))
 
+AmericasBarometer::trend_plot(q14,
+                              'Intends to Live or Work Abroad',
+                              '  ')
+```	
+
+### exc6	Government Employee Asked for a Bribe
+	
+```{r}
+#table(lapop.trends$q14, useNA= "ifany") 
+q14  <- ddply(lapop.trends,~year,summarize,x=sum(!is.na(q14 ) & q14 ==1),
+            n=sum(!is.na(q14) & (q14==2 | q14==1)))
+
+AmericasBarometer::trend_plot(q14,
+                              'Intends to Live or Work Abroad',
+                              '  ')
+```	
+
+### exc7	Perception of Public Corruption among Public Officials
+	
+```{r}
+#table(lapop.trends$q14, useNA= "ifany") 
+q14  <- ddply(lapop.trends,~year,summarize,x=sum(!is.na(q14 ) & q14 ==1),
+            n=sum(!is.na(q14) & (q14==2 | q14==1)))
+
+AmericasBarometer::trend_plot(q14,
+                              'Intends to Live or Work Abroad',
+                              '  ')
+```	
+
+### exc7new	Amount of Corruption among Politicians
+	
+```{r}
+#table(lapop.trends$q14, useNA= "ifany") 
+q14  <- ddply(lapop.trends,~year,summarize,x=sum(!is.na(q14 ) & q14 ==1),
+            n=sum(!is.na(q14) & (q14==2 | q14==1)))
+
+AmericasBarometer::trend_plot(q14,
+                              'Intends to Live or Work Abroad',
+                              '  ')
+```	
+
+ 
+	
+	
+## Crime, Insecurity, and Policy Preferences	
+
+### aoj11	Perception of Neighborhood Insecurity
+	aoj12	Confidence that Judiciary will Punish the Guilty
+	vic1ext	Victim of Crime
+	vic1exta	Victim of Crime in the Last 12 Months (Frequency)
+	
+## Evaluation of Institutions, Political System and Other Persons	
+
+a4	Most Important Problem
+	b1	Courts Guarantee Fair Trial
+	b12	Trust in Armed Forces
+	b13	Trust in the National Legislature
+	b18	Trust in National Police
+	b2	Respect for Political Institutions
+	b20	Trust in Catholic Church
+	b20a	Trust in Evangelical/Protestant Church
+	b21	Trust in Political Parties
+	b21a	Trust in Executive
+	b3	Basic Rights are Protected
+	b31	Trust in the Supreme Court of Justice
+	b32	Trust in Local Government
+	b37	Trust in the Media
+	b4	Pride in Political System
+	b47a	Trust in Elections
+	b6	People Should Support the Political System
+	eff1	Leaders Are Interested in What People Think
+	eff2	Understands Important Political Issues
+	it1	Interpersonal Trust
+	lib1	Level of Freedom of the Press Today
+	lib2c	Level of Freedom to Express Political Opinions without Fear
+	m1	Executive Job Approval
+
+Whatever happened in 2008, it also coincided with a sudden rise in the number of people who are open to the idea of a military coup.
+```{r}
+jc10 <- ddply(lapop.trends,~year,summarize,x=sum(!is.na(jc10) & jc10==2),
+            n=sum(!is.na(jc10) & (jc10==1 | jc10==2)))
+AmericasBarometer::trend_plot(jc10,
+                              'Military coup is justified if crime is high',
+                              'jc10')
+```
+	
+## Foreign Relations	
+
+mil10a	Trustworthiness of Chinese Government
+	mil10e	Trustworthiness of US Government
+
+## Gender	
+
+v58	Children Suffer with Working Mothers
+	vb50	Men Are Better Political Leaders than Women
+	vb51	Men or Women: More Corrupt as Politicians
+	vb52	Men or Women: Better Manager of Economy
+	w14a	Abortion Justified
+	
+## Local Government	
+  infrax	Police Response Time
+	np1	Attendance at Municipal Meeting
+	sd2new2	Satisfaction with Roads
+	sd3new2	Satisfaction with Public Schools
+	sd6new2	Satisfaction with Public Medical and Health Services
+	
+
+
+## Possession
+
+### Refrigerator in home
+
+Refrigerators are on the rise.
+```{r}
+r3 <- ddply(lapop.trends,~year,summarize,x=sum(!is.na(r3) & r3==1),
+            n=sum(!is.na(r3) & (r3==0 | r3==1)))
+AmericasBarometer::trend_plot(r3,
+                              'Refrigerator in home',
+                               'r3')
+```
+
+### Landline telephone in home
+Landlines are on their way out.
+```{r}
+r4 <- ddply(lapop.trends,~year,summarize,x=sum(!is.na(r4) & r4==1),
+             n=sum(!is.na(r4) & (r4==0 | r4==1)))
+AmericasBarometer::trend_plot(r4,
+                              'Landline telephone in home',
+                              'r4')
+```
+
+### Cellular telephone in home
+
+
+
+The cell phone market looks like it saturated in about 2010.
+
+```{r}
+r4a <- ddply(lapop.trends,~year,summarize,x=sum(!is.na(r4a) & r4a==1),
+             n=sum(!is.na(r4a) & (r4a==0 | r4a==1)))
+AmericasBarometer::trend_plot(r4a,
+                              'Cellular telephone in home',
+                              'r4a')
+```
+
+ 
+
+## Education 
+Education seems to be improving -- there has been a decrease in people with less than five years of education, while the fraction of elementary-school graduates is holding fairly steady and the fraction of high-school graduates is increasing. It would be easy enough to subset this analysis to individual countries or regions.
 ```{r}
 ed <- lapop.trends[lapop.trends$year %in% c(2004,2008,2014,2016,2018),c('ed','year')]
 ed$year <- as.character(ed$year)
@@ -75,84 +540,15 @@ ggplot(ed,aes(x=ed,group=year,color=year)) +
         axis.line.y=element_blank()) 
 ```
 
-Education seems to be improving -- there has been a decrease in people with less than five years of education, while the fraction of elementary-school graduates is holding fairly steady and the fraction of high-school graduates is increasing. It would be easy enough to subset this analysis to individual countries or regions.
 
-```{r}
-r3 <- ddply(lapop.trends,~year,summarize,x=sum(!is.na(r3) & r3==1),
-            n=sum(!is.na(r3) & (r3==0 | r3==1)))
-AmericasBarometer::trend_plot(r3,
-                              'Refrigerator in home',
-                               'r3')
-```
 
-Refrigerators are on the rise.
 
-```{r}
-r4 <- ddply(lapop.trends,~year,summarize,x=sum(!is.na(r4) & r4==1),
-             n=sum(!is.na(r4) & (r4==0 | r4==1)))
-AmericasBarometer::trend_plot(r4,
-                              'Landline telephone in home',
-                              'r4')
-```
 
-Landlines are on their way out.
 
-```{r}
-r4a <- ddply(lapop.trends,~year,summarize,x=sum(!is.na(r4a) & r4a==1),
-             n=sum(!is.na(r4a) & (r4a==0 | r4a==1)))
-AmericasBarometer::trend_plot(r4a,
-                              'Cellular telephone in home',
-                              'r4a')
-```
 
-The cell phone market looks like it saturated in about 2010.
 
-```{r}
-cp6 <- ddply(lapop.trends,~year,summarize,
-             weekly=sum(cp6==1,na.rm=TRUE) / sum(cp6 < 5,na.rm=TRUE),
-             monthly=sum(cp6==2,na.rm=TRUE) / sum(cp6 < 5,na.rm=TRUE),
-             annual=sum(cp6==3,na.rm=TRUE) / sum(cp6 < 5,na.rm=TRUE),
-             never=sum(cp6==4,na.rm=TRUE) / sum(cp6 < 5,na.rm=TRUE))
 
-AmericasBarometer::multi_lines(cp6)
-```
 
-The number of occasional churchgoers has been pretty constant (and low); it looks like the population of weekly churchgoers has been growing while non-attenders have been dropping since 2008. What changed in 2008?
 
-```{r}
-jc10 <- ddply(lapop.trends,~year,summarize,x=sum(!is.na(jc10) & jc10==2),
-            n=sum(!is.na(jc10) & (jc10==1 | jc10==2)))
-AmericasBarometer::trend_plot(jc10,
-                              'Military coup is justified if crime is high',
-                              'jc10')
-```
 
-Whatever happened in 2008, it also coincided with a sudden rise in the number of people who are open to the idea of a military coup.
-
-```{r}
-# This reminds me a bit of the political ideology chart -- lots concentrated at either end
-e5 <- ddply(lapop.trends,~year,summarize,
-            disapprove=sum(e5<4,na.rm=TRUE) / sum(e5<11,na.rm=TRUE),
-            meh=sum(e5>3 & e5<8,na.rm=TRUE) / sum(e5<11,na.rm=TRUE),
-            approve=sum(e5>7,na.rm=TRUE) / sum(e5<11,na.rm=TRUE))
-
-AmericasBarometer::multi_lines(e5)
-```
-
-The question about approval of political demonstrations (`e5`) lets people express a range from strong approval to strong disapproval -- most are somewhere in the middle. People who are actively approving of political demonstrations seem to be  losing ground to those who are either wishy-washy or disapproving
-
-Again, 2008 looks like some kind of turning point.
-
-```{r}
-bar_plot(data.frame(x=na.omit(lapop.trends$l1)))
-# Three logical groupings: left, center, right
-l1 <- ddply(lapop.trends,~year,summarize,
-            left=sum(l1<5,na.rm=TRUE) / sum(l1<11,na.rm=TRUE),
-            center=sum(l1==5 | l1==6,na.rm=TRUE) / sum(l1<11,na.rm=TRUE),
-            right=sum(l1>6,na.rm=TRUE) / sum(l1<11,na.rm=TRUE))
-
-AmericasBarometer::multi_lines(l1)
-```
-
-The distribution of political ideology (`l1`) is interesting; the largest group puts themselves smack in the middle, rather than tilting left or right. This centrist group (most likely politically disengaged) has stayed pretty constant over the last decade, while on average the right is losing out to the left.
 

@@ -289,7 +289,7 @@ merge_dicoLAPOP <- function( ){
     
     ## All merge
     lapop.dico <- dplyr::full_join(lapop.dico, lapop.dico1, by = "var")
-    lapop.dico.inner <- dplyr::full_join(lapop.dico.inner, lapop.dico1, by = "var")
+    lapop.dico.inner <- dplyr::inner_join(lapop.dico.inner, lapop.dico1, by = "var")
 
   }
   
@@ -300,7 +300,7 @@ merge_dicoLAPOP <- function( ){
   
   ## Merge with dico from vanderbylt
   questions <- readxl::read_excel(paste0(getwd(),"/data/LAPOP_Dictionnary.xlsx"), sheet = "question")
-  lapop.dico.all <- dplyr::full_join(lapop.dico.all, questions, by = "var")
+  lapop.dico.all <- dplyr::full_join(questions,lapop.dico.all,  by = "var")
   
   ## save in raw-data folder
   if(!dir.exists("data")) dir.create("data") 
