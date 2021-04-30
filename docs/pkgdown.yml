@@ -3,9 +3,11 @@ pkgdown: 1.6.1
 pkgdown_sha: ~
 articles:
   Building_indices: Building_indices.html
-  Trends: Trends.html
-  bribes: bribes.html
-  data-quality: data-quality.html
-  fear_being_victim: fear_being_victim.html
-last_built: 2021-04-29T15:22Z
+  Explaining_Intention_Migrate: Explaining_Intention_Migrate.html
+  Explaining_fear_being_victim: Explaining_fear_being_victim.html
+  Explaining_risk_bribes: Explaining_risk_bribes.html
+  Profiling_Intended_Migrant: Profiling_Intended_Migrant.html
+  Survey_wave_content: Survey_wave_content.html
+  Trends_per_year_by_topic: Trends_per_year_by_topic.html
+last_built: 2021-04-30T19:44Z
 

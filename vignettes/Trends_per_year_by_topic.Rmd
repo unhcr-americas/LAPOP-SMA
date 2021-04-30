@@ -39,6 +39,7 @@ lapop.trends <- read.csv(paste0(mainDirroot, "/data/dataLAPOP.csv"))
 
 lapop.trends$year[lapop.trends$year=="2019"] <- "2018"
 lapop.trends$year <- as.integer(lapop.trends$year)
+lapop.trends$wave <- paste0(lapop.trends$ctrycollect, lapop.trends$year)
 
 ```
 
@@ -63,36 +64,41 @@ AmericasBarometer::trend_plot(q14,
                               '  ')
 ```	
 
-###  q10a	Receives Remittances
-	
-```{r}
-#table(lapop.trends$q10, useNA= "ifany") 
 
+	
+	
+
+
+```{r}
+###  q10a	Receives Remittances
+#Problem with variable encoding in 2006...
+#table(lapop.trends$q10a, useNA= "ifany")
+# table(lapop.trends$q10a, lapop.trends$wave, useNA= "ifany") 
+# q10  <- ddply(lapop.trends,~year,summarize,x=sum(!is.na(q10 ) & q10 ==1),
+#             n=sum(!is.na(q10) & (q10==2 | q10==1)))
+# 
+# AmericasBarometer::trend_plot(q10,
+#                               'Receives Remittances',
+#                               '  ')
 ```	
 
 ## Civic and Political Engagement	
 
-## Policial ideology
+## Political ideology
 The distribution of political ideology (`l1`) is interesting; the largest group puts themselves smack in the middle, rather than tilting left or right. This centrist group (most likely politically disengaged) has stayed pretty constant over the last decade, while on average the right is losing out to the left.
 ```{r}
-bar_plot(data.frame(x=na.omit(lapop.trends$l1)))
+#bar_plot(data.frame(x=na.omit(lapop.trends$l1)))
+#table(lapop.trends$l1, lapop.trends$wave, useNA= "ifany")
 # Three logical groupings: left, center, right
 l1 <- ddply(lapop.trends,~year,summarize,
             left=sum(l1<5,na.rm=TRUE) / sum(l1<11,na.rm=TRUE),
             center=sum(l1==5 | l1==6,na.rm=TRUE) / sum(l1<11,na.rm=TRUE),
             right=sum(l1>6,na.rm=TRUE) / sum(l1<11,na.rm=TRUE))
 
-AmericasBarometer::multi_lines(l1)
+AmericasBarometer::multi_lines(l1,
+                              'Political ideology',
+                              '  ')
 ```
-
-
-###  cp13	Attendance at Meetings of Political Parties
-	
-```{r}
-#table(lapop.trends$cp13, useNA= "ifany") 
- 
-```	
-
 
 ###  cp2	Requested Help from a Member of the Legislature
 	
@@ -106,6 +112,23 @@ AmericasBarometer::trend_plot(cp2,
                               '  ')
 ```	
 
+###  cp13	Attendance at Meetings of Political Parties
+	
+```{r}
+#table(lapop.trends$cp13, useNA= "ifany") 
+cp13 <- ddply(lapop.trends,~year,summarize,
+             weekly=sum(cp13==1,na.rm=TRUE) / sum(cp13 < 5,na.rm=TRUE),
+             monthly=sum(cp13==2,na.rm=TRUE) / sum(cp13 < 5,na.rm=TRUE),
+             annual=sum(cp13==3,na.rm=TRUE) / sum(cp13 < 5,na.rm=TRUE),
+             never=sum(cp13==4,na.rm=TRUE) / sum(cp13 < 5,na.rm=TRUE))
+
+AmericasBarometer::multi_lines(cp13,
+                              'Attendance at Meetings of Political Parties',
+                              '  ')  
+```	
+
+
+
 ### cp20	Attendance at Meetings of Women's Group
 	
 ```{r}
@@ -116,7 +139,9 @@ cp20 <- ddply(lapop.trends,~year,summarize,
              annual=sum(cp20==3,na.rm=TRUE) / sum(cp20 < 5,na.rm=TRUE),
              never=sum(cp20==4,na.rm=TRUE) / sum(cp20 < 5,na.rm=TRUE))
 
-AmericasBarometer::multi_lines(cp20) 
+AmericasBarometer::multi_lines(cp20,
+                              'Attendance at Meetings of Women  Group',
+                              '  ') 
 ```	
 
 ### cp6	Attendance at Meetings of Religious Organization
@@ -133,7 +158,9 @@ cp6 <- ddply(lapop.trends,~year,summarize,
              annual=sum(cp6==3,na.rm=TRUE) / sum(cp6 < 5,na.rm=TRUE),
              never=sum(cp6==4,na.rm=TRUE) / sum(cp6 < 5,na.rm=TRUE))
 
-AmericasBarometer::multi_lines(cp6)
+AmericasBarometer::multi_lines(cp6,
+                              'Attendance at Meetings of Religious Organization',
+                              '  ')
 ```
 
 ### cp7	Attendance at Meetings of Parent Association
@@ -146,7 +173,9 @@ cp7 <- ddply(lapop.trends,~year,summarize,
              annual=sum(cp7==3,na.rm=TRUE) / sum(cp7 < 5,na.rm=TRUE),
              never=sum(cp7==4,na.rm=TRUE) / sum(cp7 < 5,na.rm=TRUE))
 
-AmericasBarometer::multi_lines(cp7)
+AmericasBarometer::multi_lines(cp7,
+                              'Attendance at Meetings of Parent Association',
+                              '  ')
 ```	
 
 ### cp8	Attendance at Meetings for Community Improvements
@@ -159,13 +188,17 @@ cp8 <- ddply(lapop.trends,~year,summarize,
              annual=sum(cp8==3,na.rm=TRUE) / sum(cp8 < 5,na.rm=TRUE),
              never=sum(cp8==4,na.rm=TRUE) / sum(cp8 < 5,na.rm=TRUE))
 
-AmericasBarometer::multi_lines(cp8)
+AmericasBarometer::multi_lines(cp8,
+                              'Attendance at Meetings for Community Improvements',
+                              '  ')
 ```	
 
 ### prot3	Participated in a Protest
 	
 ```{r}
 #table(lapop.trends$prot3, useNA= "ifany") 
+
+# table(lapop.trends$prot3, lapop.trends$wave, useNA= "ifany") 
 prot3  <- ddply(lapop.trends,~year,summarize,x=sum(!is.na(prot3 ) & prot3 ==1),
             n=sum(!is.na(prot3) & (prot3==2 | prot3==1)))
 
@@ -189,24 +222,33 @@ AmericasBarometer::trend_plot(vb10,
 ### vb2	Voted in Last Presidential Election
 	
 ```{r}
-#table(lapop.trends$q14, useNA= "ifany") 
-q14  <- ddply(lapop.trends,~year,summarize,x=sum(!is.na(q14 ) & q14 ==1),
-            n=sum(!is.na(q14) & (q14==2 | q14==1)))
+#table(lapop.trends$vb2, useNA= "ifany") 
+vb2  <- ddply(lapop.trends,~year,summarize,x=sum(!is.na(vb2 ) & vb2 ==1),
+            n=sum(!is.na(vb2) & (vb2==2 | vb2==1)))
 
-AmericasBarometer::trend_plot(q14,
-                              'Intends to Live or Work Abroad',
+AmericasBarometer::trend_plot(vb2,
+                              'Declared that voted in Last Presidential Election',
                               '  ')
 ```	
 
 ### vb20	Vote Intention for President
 	
 ```{r}
-#table(lapop.trends$q14, useNA= "ifany") 
-q14  <- ddply(lapop.trends,~year,summarize,x=sum(!is.na(q14 ) & q14 ==1),
-            n=sum(!is.na(q14) & (q14==2 | q14==1)))
+#table(lapop.trends$vb20, useNA= "ifany") 
 
-AmericasBarometer::trend_plot(q14,
-                              'Intends to Live or Work Abroad',
+# 1             No votaría
+# 2             Votaría por el candidato o partido del actual presidente/administración
+#3             Votaría por algún candidato o partido diferente                 del actual gobierno
+#4             Iría a votar pero dejaría la boleta en blanco o                 la anularía
+
+vb20 <- ddply(lapop.trends,~year,summarize,
+             NoVote=sum(vb20==1,na.rm=TRUE) / sum(vb20 < 5,na.rm=TRUE),
+             ActualAdministration=sum(vb20==2,na.rm=TRUE) / sum(vb20 < 5,na.rm=TRUE),
+             OtherAdministration=sum(vb20==3,na.rm=TRUE) / sum(vb20 < 5,na.rm=TRUE),
+             Blank=sum(vb20==4,na.rm=TRUE) / sum(vb20 < 5,na.rm=TRUE))
+
+AmericasBarometer::multi_lines(vb20,
+                              'Vote Intention for President',
                               '  ')
 ```	
 
@@ -218,10 +260,12 @@ Again, 2008 looks like some kind of turning point.
 # This reminds me a bit of the political ideology chart -- lots concentrated at either end
 e5 <- ddply(lapop.trends,~year,summarize,
             disapprove=sum(e5<4,na.rm=TRUE) / sum(e5<11,na.rm=TRUE),
-            meh=sum(e5>3 & e5<8,na.rm=TRUE) / sum(e5<11,na.rm=TRUE),
+            meutral=sum(e5>3 & e5<6,na.rm=TRUE) / sum(e5<11,na.rm=TRUE),
             approve=sum(e5>7,na.rm=TRUE) / sum(e5<11,na.rm=TRUE))
 
-AmericasBarometer::multi_lines(e5)
+AmericasBarometer::multi_lines(e5,
+                              'Approval of Those Participating in Legal Demonstration',
+                              '  ')
 ```
 
 
@@ -231,48 +275,59 @@ AmericasBarometer::multi_lines(e5)
 ### drk1	Likelihood of Death or Harm from Natural Disaster
 	
 ```{r}
-#table(lapop.trends$q14, useNA= "ifany") 
-q14  <- ddply(lapop.trends,~year,summarize,x=sum(!is.na(q14 ) & q14 ==1),
-            n=sum(!is.na(q14) & (q14==2 | q14==1)))
+#table(lapop.trends$drk1, useNA= "ifany") 
+drk1 <- ddply(lapop.trends,~year,summarize,
+             Not_probable=sum(drk1==1,na.rm=TRUE) / sum(drk1 < 5,na.rm=TRUE),
+             Unlikely=sum(drk1==2,na.rm=TRUE) / sum(drk1 < 5,na.rm=TRUE),
+             Possible=sum(drk1==3,na.rm=TRUE) / sum(drk1 < 5,na.rm=TRUE),
+             Very_Possible=sum(drk1==4,na.rm=TRUE) / sum(drk1 < 5,na.rm=TRUE))
 
-AmericasBarometer::trend_plot(q14,
-                              'Intends to Live or Work Abroad',
+AmericasBarometer::multi_lines(drk1,
+                              'Likelihood of Death or Harm from Natural Disaster',
                               '  ')
 ```	
 
 ### dst1b	Spend More to Enforce Building Codes
 	
 ```{r}
-#table(lapop.trends$q14, useNA= "ifany") 
-q14  <- ddply(lapop.trends,~year,summarize,x=sum(!is.na(q14 ) & q14 ==1),
-            n=sum(!is.na(q14) & (q14==2 | q14==1)))
+#table(lapop.trends$dst1b, useNA= "ifany") 
+dst1b <- ddply(lapop.trends,~year,summarize,
+            disapprove=sum(dst1b<4,na.rm=TRUE) / sum(dst1b<11,na.rm=TRUE),
+            meutral=sum(dst1b>3 & dst1b<6,na.rm=TRUE) / sum(dst1b<11,na.rm=TRUE),
+            approve=sum(dst1b>7,na.rm=TRUE) / sum(dst1b<11,na.rm=TRUE))
 
-AmericasBarometer::trend_plot(q14,
-                              'Intends to Live or Work Abroad',
+AmericasBarometer::multi_lines(dst1b,
+                              'Approval to Spend More to Enforce Building Codes',
                               '  ')
 ```	
 
-### env1c	Higher Priority for Protecting Environment or Promoting Economic Growth
 	
 ```{r}
-#table(lapop.trends$q14, useNA= "ifany") 
-q14  <- ddply(lapop.trends,~year,summarize,x=sum(!is.na(q14 ) & q14 ==1),
-            n=sum(!is.na(q14) & (q14==2 | q14==1)))
 
-AmericasBarometer::trend_plot(q14,
-                              'Intends to Live or Work Abroad',
-                              '  ')
+### env1c	Higher Priority for Protecting Environment or Promoting Economic Growth
+#table(lapop.trends$env1c, useNA= "ifany") 
+# env1c <- ddply(lapop.trends,~year,summarize,
+#             disapprove=sum(env1c<4,na.rm=TRUE) / sum(env1c<8,na.rm=TRUE),
+#             meutral=sum(env1c>3 & env1c<6,na.rm=TRUE) / sum(env1c<8,na.rm=TRUE),
+#             approve=sum(env1c>7,na.rm=TRUE) / sum(env1c<8,na.rm=TRUE))
+# 
+# AmericasBarometer::multi_lines(env1c,
+#                               'Higher Priority for Protecting Environment or Promoting Economic Growth',
+#                               '  ')
 ```	
 
 ### env2b	Seriousness of Climate Change
 	
 ```{r}
-#table(lapop.trends$q14, useNA= "ifany") 
-q14  <- ddply(lapop.trends,~year,summarize,x=sum(!is.na(q14 ) & q14 ==1),
-            n=sum(!is.na(q14) & (q14==2 | q14==1)))
+#table(lapop.trends$env2b,lapop.trends$wave, useNA= "ifany") 
+env2b <- ddply(lapop.trends,~year,summarize,
+             Very_serious=sum(env2b==1,na.rm=TRUE) / sum(env2b < 5,na.rm=TRUE),
+             Serious=sum(env2b==2,na.rm=TRUE) / sum(env2b < 5,na.rm=TRUE),
+             Little_serious=sum(env2b==3,na.rm=TRUE) / sum(env2b < 5,na.rm=TRUE),
+             Not_Serious=sum(env2b==4,na.rm=TRUE) / sum(env2b < 5,na.rm=TRUE))
 
-AmericasBarometer::trend_plot(q14,
-                              'Intends to Live or Work Abroad',
+AmericasBarometer::multi_lines(env2b,
+                              'Seriousness of Climate Change',
                               '  ')
 ```	
 
@@ -283,72 +338,72 @@ AmericasBarometer::trend_plot(q14,
 ### exc11	Asked to Pay Bribe to Process Document in Municipality
 	
 ```{r}
-#table(lapop.trends$q14, useNA= "ifany") 
-q14  <- ddply(lapop.trends,~year,summarize,x=sum(!is.na(q14 ) & q14 ==1),
-            n=sum(!is.na(q14) & (q14==2 | q14==1)))
+#table(lapop.trends$exc11, useNA= "ifany") 
+exc11  <- ddply(lapop.trends,~year,summarize,x=sum(!is.na(exc11 ) & exc11 ==1),
+            n=sum(!is.na(exc11) & (exc11==0 | exc11==1)))
 
-AmericasBarometer::trend_plot(q14,
-                              'Intends to Live or Work Abroad',
+AmericasBarometer::trend_plot(exc11,
+                              'Asked to Pay Bribe to Process Document in Municipality',
                               '  ')
 ```	
 
 ### exc13	Asked to Pay a Bribe at Work
 	
 ```{r}
-#table(lapop.trends$q14, useNA= "ifany") 
-q14  <- ddply(lapop.trends,~year,summarize,x=sum(!is.na(q14 ) & q14 ==1),
-            n=sum(!is.na(q14) & (q14==2 | q14==1)))
+#table(lapop.trends$exc13, useNA= "ifany") 
+exc13  <- ddply(lapop.trends,~year,summarize,x=sum(!is.na(exc13 ) & exc13 ==1),
+            n=sum(!is.na(exc13) & (exc13==0 | exc13==1)))
 
-AmericasBarometer::trend_plot(q14,
-                              'Intends to Live or Work Abroad',
+AmericasBarometer::trend_plot(exc13,
+                              'Asked to Pay a Bribe at Work',
                               '  ')
 ```	
 
 ### exc14	Asked to Pay a Bribe to the Courts
 	
 ```{r}
-#table(lapop.trends$q14, useNA= "ifany") 
-q14  <- ddply(lapop.trends,~year,summarize,x=sum(!is.na(q14 ) & q14 ==1),
-            n=sum(!is.na(q14) & (q14==2 | q14==1)))
+#table(lapop.trends$exc14, useNA= "ifany") 
+exc14  <- ddply(lapop.trends,~year,summarize,x=sum(!is.na(exc14 ) & exc14 ==1),
+            n=sum(!is.na(exc14) & (exc14==0 | exc14==1)))
 
-AmericasBarometer::trend_plot(q14,
-                              'Intends to Live or Work Abroad',
+AmericasBarometer::trend_plot(exc14,
+                              'Asked to Pay a Bribe to the Courts',
                               '  ')
 ```	
 
 ### exc15	Asked to Pay a Bribe to use Public Health Services
 	
 ```{r}
-#table(lapop.trends$q14, useNA= "ifany") 
-q14  <- ddply(lapop.trends,~year,summarize,x=sum(!is.na(q14 ) & q14 ==1),
-            n=sum(!is.na(q14) & (q14==2 | q14==1)))
+#table(lapop.trends$exc15, useNA= "ifany") 
+exc15  <- ddply(lapop.trends,~year,summarize,x=sum(!is.na(exc15 ) & exc15 ==1),
+            n=sum(!is.na(exc15) & (exc15==0 | exc15==1)))
 
-AmericasBarometer::trend_plot(q14,
-                              'Intends to Live or Work Abroad',
+AmericasBarometer::trend_plot(exc15,
+                              'Asked to Pay a Bribe to use Public Health Services',
                               '  ')
 ```	
 
 ### exc16	Asked to Pay a Bribe at School
 	
 ```{r}
-#table(lapop.trends$q14, useNA= "ifany") 
-q14  <- ddply(lapop.trends,~year,summarize,x=sum(!is.na(q14 ) & q14 ==1),
-            n=sum(!is.na(q14) & (q14==2 | q14==1)))
+#table(lapop.trends$exc16, useNA= "ifany") 
+exc16  <- ddply(lapop.trends,~year,summarize,x=sum(!is.na(exc16 ) & exc16 ==1),
+            n=sum(!is.na(exc16) & (exc16==0 | exc16==1)))
 
-AmericasBarometer::trend_plot(q14,
-                              'Intends to Live or Work Abroad',
+AmericasBarometer::trend_plot(exc16,
+                              'Asked to Pay a Bribe at School',
                               '  ')
 ```	
 
 ### exc18	Paying a Bribe is Justified
 	
 ```{r}
-#table(lapop.trends$q14, useNA= "ifany") 
-q14  <- ddply(lapop.trends,~year,summarize,x=sum(!is.na(q14 ) & q14 ==1),
-            n=sum(!is.na(q14) & (q14==2 | q14==1)))
+#table(lapop.trends$exc18, useNA= "ifany") 
+exc18  <- ddply(lapop.trends,~year,summarize,x=sum(!is.na(exc18 ) & exc18 ==1),
+            n=sum(!is.na(exc18) & (exc18==0 | exc18==1)))
 
-AmericasBarometer::trend_plot(q14,
-                              'Intends to Live or Work Abroad',
+AmericasBarometer::trend_plot(exc18,
+                              'Paying a Bribe is Justified',
                               '  ')
 ```	
 
@@ -361,54 +416,58 @@ exc2 <- ddply(lapop.trends,~year,summarize,x=sum(!is.na(exc2) & exc2==1),
 
 AmericasBarometer::trend_plot(exc2,
                               'Asked for a bribe by a police officer?',
-                              'exc2:  ')
+                              '   ')
 ``` 
 
 ###	exc20	Soldier Requested a Bribe
 	
 ```{r}
-#table(lapop.trends$q14, useNA= "ifany") 
-q14  <- ddply(lapop.trends,~year,summarize,x=sum(!is.na(q14 ) & q14 ==1),
-            n=sum(!is.na(q14) & (q14==2 | q14==1)))
+#table(lapop.trends$exc20, useNA= "ifany") 
+exc20  <- ddply(lapop.trends,~year,summarize,x=sum(!is.na(exc20 ) & exc20 ==1),
+            n=sum(!is.na(exc20) & (exc20==0 | exc20==1)))
 
-AmericasBarometer::trend_plot(q14,
-                              'Intends to Live or Work Abroad',
+AmericasBarometer::trend_plot(exc20,
+                              'Soldier Requested a Bribe',
                               '  ')
 ```	
 
 ### exc6	Government Employee Asked for a Bribe
 	
 ```{r}
-#table(lapop.trends$q14, useNA= "ifany") 
-q14  <- ddply(lapop.trends,~year,summarize,x=sum(!is.na(q14 ) & q14 ==1),
-            n=sum(!is.na(q14) & (q14==2 | q14==1)))
+#table(lapop.trends$exc6, useNA= "ifany") 
+exc6  <- ddply(lapop.trends,~year,summarize,x=sum(!is.na(exc6 ) & exc6 ==1),
+            n=sum(!is.na(exc6) & (exc6==0 | exc6==1)))
 
-AmericasBarometer::trend_plot(q14,
-                              'Intends to Live or Work Abroad',
+AmericasBarometer::trend_plot(exc6,
+                              'Government Employee Asked for a Bribe',
                               '  ')
 ```	
 
 ### exc7	Perception of Public Corruption among Public Officials
 	
 ```{r}
-#table(lapop.trends$q14, useNA= "ifany") 
-q14  <- ddply(lapop.trends,~year,summarize,x=sum(!is.na(q14 ) & q14 ==1),
-            n=sum(!is.na(q14) & (q14==2 | q14==1)))
+#table(lapop.trends$exc7, useNA= "ifany") 
+exc7  <- ddply(lapop.trends,~year,summarize,x=sum(!is.na(exc7 ) & exc7 ==1),
+            n=sum(!is.na(exc7) & (exc7==2 | exc7==1)))
 
-AmericasBarometer::trend_plot(q14,
-                              'Intends to Live or Work Abroad',
+AmericasBarometer::trend_plot(exc7,
+                              'Perception of Public Corruption among Public Officials',
                               '  ')
 ```	
 
 ### exc7new	Amount of Corruption among Politicians
 	
 ```{r}
-#table(lapop.trends$q14, useNA= "ifany") 
-q14  <- ddply(lapop.trends,~year,summarize,x=sum(!is.na(q14 ) & q14 ==1),
-            n=sum(!is.na(q14) & (q14==2 | q14==1)))
+#table(lapop.trends$exc7new	,lapop.trends$wave	, useNA= "ifany") 
+exc7new <- ddply(lapop.trends,~year,summarize,
+             Nonne=sum(exc7new==1,na.rm=TRUE) / sum(exc7new < 6,na.rm=TRUE),
+             Less_than_Half=sum(exc7new==2,na.rm=TRUE) / sum(exc7new < 6,na.rm=TRUE),
+             Half=sum(exc7new==3,na.rm=TRUE) / sum(exc7new < 6,na.rm=TRUE),
+             More_then_half=sum(exc7new==4,na.rm=TRUE) / sum(exc7new < 6,na.rm=TRUE),
+             All=sum(exc7new==5,na.rm=TRUE) / sum(exc7new < 6,na.rm=TRUE))
 
-AmericasBarometer::trend_plot(q14,
-                              'Intends to Live or Work Abroad',
+AmericasBarometer::multi_lines(exc7new,
+                              'Amount of Corruption among Politicians',
                               '  ')
 ```	
 
@@ -418,35 +477,335 @@ AmericasBarometer::trend_plot(q14,
 ## Crime, Insecurity, and Policy Preferences	
 
 ### aoj11	Perception of Neighborhood Insecurity
-	aoj12	Confidence that Judiciary will Punish the Guilty
-	vic1ext	Victim of Crime
-	vic1exta	Victim of Crime in the Last 12 Months (Frequency)
+	
+```{r}
+#table(lapop.trends$exc7, useNA= "ifany") 
+exc7  <- ddply(lapop.trends,~year,summarize,x=sum(!is.na(exc7 ) & exc7 ==1),
+            n=sum(!is.na(exc7) & (exc7==2 | exc7==1)))
+
+AmericasBarometer::trend_plot(exc7,
+                              'Perception of Public Corruption among Public Officials',
+                              '  ')
+```	
+
+###	aoj12	Confidence that Judiciary will Punish the Guilty
+	
+```{r}
+#table(lapop.trends$exc7, useNA= "ifany") 
+exc7  <- ddply(lapop.trends,~year,summarize,x=sum(!is.na(exc7 ) & exc7 ==1),
+            n=sum(!is.na(exc7) & (exc7==2 | exc7==1)))
+
+AmericasBarometer::trend_plot(exc7,
+                              'Perception of Public Corruption among Public Officials',
+                              '  ')
+```	
+
+###	vic1ext	Victim of Crime
+	
+```{r}
+#table(lapop.trends$exc7, useNA= "ifany") 
+exc7  <- ddply(lapop.trends,~year,summarize,x=sum(!is.na(exc7 ) & exc7 ==1),
+            n=sum(!is.na(exc7) & (exc7==2 | exc7==1)))
+
+AmericasBarometer::trend_plot(exc7,
+                              'Perception of Public Corruption among Public Officials',
+                              '  ')
+```	
+
+###	vic1exta	Victim of Crime in the Last 12 Months (Frequency)
+	
+```{r}
+#table(lapop.trends$exc7, useNA= "ifany") 
+exc7  <- ddply(lapop.trends,~year,summarize,x=sum(!is.na(exc7 ) & exc7 ==1),
+            n=sum(!is.na(exc7) & (exc7==2 | exc7==1)))
+
+AmericasBarometer::trend_plot(exc7,
+                              'Perception of Public Corruption among Public Officials',
+                              '  ')
+```	
+
+
 	
 ## Evaluation of Institutions, Political System and Other Persons	
 
-a4	Most Important Problem
-	b1	Courts Guarantee Fair Trial
-	b12	Trust in Armed Forces
-	b13	Trust in the National Legislature
-	b18	Trust in National Police
-	b2	Respect for Political Institutions
-	b20	Trust in Catholic Church
-	b20a	Trust in Evangelical/Protestant Church
-	b21	Trust in Political Parties
-	b21a	Trust in Executive
-	b3	Basic Rights are Protected
-	b31	Trust in the Supreme Court of Justice
-	b32	Trust in Local Government
-	b37	Trust in the Media
-	b4	Pride in Political System
-	b47a	Trust in Elections
-	b6	People Should Support the Political System
-	eff1	Leaders Are Interested in What People Think
-	eff2	Understands Important Political Issues
-	it1	Interpersonal Trust
-	lib1	Level of Freedom of the Press Today
-	lib2c	Level of Freedom to Express Political Opinions without Fear
-	m1	Executive Job Approval
+
+### a4	Most Important Problem
+	
+```{r}
+#table(lapop.trends$exc7, useNA= "ifany") 
+exc7  <- ddply(lapop.trends,~year,summarize,x=sum(!is.na(exc7 ) & exc7 ==1),
+            n=sum(!is.na(exc7) & (exc7==2 | exc7==1)))
+
+AmericasBarometer::trend_plot(exc7,
+                              'Perception of Public Corruption among Public Officials',
+                              '  ')
+```	
+
+###	b1	Courts Guarantee Fair Trial
+	
+```{r}
+#table(lapop.trends$exc7, useNA= "ifany") 
+exc7  <- ddply(lapop.trends,~year,summarize,x=sum(!is.na(exc7 ) & exc7 ==1),
+            n=sum(!is.na(exc7) & (exc7==2 | exc7==1)))
+
+AmericasBarometer::trend_plot(exc7,
+                              'Perception of Public Corruption among Public Officials',
+                              '  ')
+```	
+
+###	b12	Trust in Armed Forces
+	
+```{r}
+#table(lapop.trends$exc7, useNA= "ifany") 
+exc7  <- ddply(lapop.trends,~year,summarize,x=sum(!is.na(exc7 ) & exc7 ==1),
+            n=sum(!is.na(exc7) & (exc7==2 | exc7==1)))
+
+AmericasBarometer::trend_plot(exc7,
+                              'Perception of Public Corruption among Public Officials',
+                              '  ')
+```	
+
+###	b13	Trust in the National Legislature
+	
+```{r}
+#table(lapop.trends$exc7, useNA= "ifany") 
+exc7  <- ddply(lapop.trends,~year,summarize,x=sum(!is.na(exc7 ) & exc7 ==1),
+            n=sum(!is.na(exc7) & (exc7==2 | exc7==1)))
+
+AmericasBarometer::trend_plot(exc7,
+                              'Perception of Public Corruption among Public Officials',
+                              '  ')
+```	
+
+###	b18	Trust in National Police
+	
+```{r}
+#table(lapop.trends$exc7, useNA= "ifany") 
+exc7  <- ddply(lapop.trends,~year,summarize,x=sum(!is.na(exc7 ) & exc7 ==1),
+            n=sum(!is.na(exc7) & (exc7==2 | exc7==1)))
+
+AmericasBarometer::trend_plot(exc7,
+                              'Perception of Public Corruption among Public Officials',
+                              '  ')
+```	
+
+###	b2	Respect for Political Institutions
+	
+```{r}
+#table(lapop.trends$exc7, useNA= "ifany") 
+exc7  <- ddply(lapop.trends,~year,summarize,x=sum(!is.na(exc7 ) & exc7 ==1),
+            n=sum(!is.na(exc7) & (exc7==2 | exc7==1)))
+
+AmericasBarometer::trend_plot(exc7,
+                              'Perception of Public Corruption among Public Officials',
+                              '  ')
+```	
+
+###	b20	Trust in Catholic Church
+	
+```{r}
+#table(lapop.trends$exc7, useNA= "ifany") 
+exc7  <- ddply(lapop.trends,~year,summarize,x=sum(!is.na(exc7 ) & exc7 ==1),
+            n=sum(!is.na(exc7) & (exc7==2 | exc7==1)))
+
+AmericasBarometer::trend_plot(exc7,
+                              'Perception of Public Corruption among Public Officials',
+                              '  ')
+```	
+
+###	b20a	Trust in Evangelical/Protestant Church
+	
+```{r}
+#table(lapop.trends$exc7, useNA= "ifany") 
+exc7  <- ddply(lapop.trends,~year,summarize,x=sum(!is.na(exc7 ) & exc7 ==1),
+            n=sum(!is.na(exc7) & (exc7==2 | exc7==1)))
+
+AmericasBarometer::trend_plot(exc7,
+                              'Perception of Public Corruption among Public Officials',
+                              '  ')
+```	
+
+###	b21	Trust in Political Parties
+	
+```{r}
+#table(lapop.trends$exc7, useNA= "ifany") 
+exc7  <- ddply(lapop.trends,~year,summarize,x=sum(!is.na(exc7 ) & exc7 ==1),
+            n=sum(!is.na(exc7) & (exc7==2 | exc7==1)))
+
+AmericasBarometer::trend_plot(exc7,
+                              'Perception of Public Corruption among Public Officials',
+                              '  ')
+```	
+
+###	b21a	Trust in Executive
+	
+```{r}
+#table(lapop.trends$exc7, useNA= "ifany") 
+exc7  <- ddply(lapop.trends,~year,summarize,x=sum(!is.na(exc7 ) & exc7 ==1),
+            n=sum(!is.na(exc7) & (exc7==2 | exc7==1)))
+
+AmericasBarometer::trend_plot(exc7,
+                              'Perception of Public Corruption among Public Officials',
+                              '  ')
+```	
+
+###	b3	Basic Rights are Protected
+	
+```{r}
+#table(lapop.trends$exc7, useNA= "ifany") 
+exc7  <- ddply(lapop.trends,~year,summarize,x=sum(!is.na(exc7 ) & exc7 ==1),
+            n=sum(!is.na(exc7) & (exc7==2 | exc7==1)))
+
+AmericasBarometer::trend_plot(exc7,
+                              'Perception of Public Corruption among Public Officials',
+                              '  ')
+```	
+
+###	b31	Trust in the Supreme Court of Justice
+	
+```{r}
+#table(lapop.trends$exc7, useNA= "ifany") 
+exc7  <- ddply(lapop.trends,~year,summarize,x=sum(!is.na(exc7 ) & exc7 ==1),
+            n=sum(!is.na(exc7) & (exc7==2 | exc7==1)))
+
+AmericasBarometer::trend_plot(exc7,
+                              'Perception of Public Corruption among Public Officials',
+                              '  ')
+```	
+
+###	b32	Trust in Local Government
+	
+```{r}
+#table(lapop.trends$exc7, useNA= "ifany") 
+exc7  <- ddply(lapop.trends,~year,summarize,x=sum(!is.na(exc7 ) & exc7 ==1),
+            n=sum(!is.na(exc7) & (exc7==2 | exc7==1)))
+
+AmericasBarometer::trend_plot(exc7,
+                              'Perception of Public Corruption among Public Officials',
+                              '  ')
+```	
+
+###	b37	Trust in the Media
+	
+```{r}
+#table(lapop.trends$exc7, useNA= "ifany") 
+exc7  <- ddply(lapop.trends,~year,summarize,x=sum(!is.na(exc7 ) & exc7 ==1),
+            n=sum(!is.na(exc7) & (exc7==2 | exc7==1)))
+
+AmericasBarometer::trend_plot(exc7,
+                              'Perception of Public Corruption among Public Officials',
+                              '  ')
+```	
+
+###	b4	Pride in Political System
+	
+```{r}
+#table(lapop.trends$exc7, useNA= "ifany") 
+exc7  <- ddply(lapop.trends,~year,summarize,x=sum(!is.na(exc7 ) & exc7 ==1),
+            n=sum(!is.na(exc7) & (exc7==2 | exc7==1)))
+
+AmericasBarometer::trend_plot(exc7,
+                              'Perception of Public Corruption among Public Officials',
+                              '  ')
+```	
+
+###	b47a	Trust in Elections
+	
+```{r}
+#table(lapop.trends$exc7, useNA= "ifany") 
+exc7  <- ddply(lapop.trends,~year,summarize,x=sum(!is.na(exc7 ) & exc7 ==1),
+            n=sum(!is.na(exc7) & (exc7==2 | exc7==1)))
+
+AmericasBarometer::trend_plot(exc7,
+                              'Perception of Public Corruption among Public Officials',
+                              '  ')
+```	
+
+###	b6	People Should Support the Political System
+	
+```{r}
+#table(lapop.trends$exc7, useNA= "ifany") 
+exc7  <- ddply(lapop.trends,~year,summarize,x=sum(!is.na(exc7 ) & exc7 ==1),
+            n=sum(!is.na(exc7) & (exc7==2 | exc7==1)))
+
+AmericasBarometer::trend_plot(exc7,
+                              'Perception of Public Corruption among Public Officials',
+                              '  ')
+```	
+
+###	eff1	Leaders Are Interested in What People Think
+	
+```{r}
+#table(lapop.trends$exc7, useNA= "ifany") 
+exc7  <- ddply(lapop.trends,~year,summarize,x=sum(!is.na(exc7 ) & exc7 ==1),
+            n=sum(!is.na(exc7) & (exc7==2 | exc7==1)))
+
+AmericasBarometer::trend_plot(exc7,
+                              'Perception of Public Corruption among Public Officials',
+                              '  ')
+```	
+
+###	eff2	Understands Important Political Issues
+	
+```{r}
+#table(lapop.trends$exc7, useNA= "ifany") 
+exc7  <- ddply(lapop.trends,~year,summarize,x=sum(!is.na(exc7 ) & exc7 ==1),
+            n=sum(!is.na(exc7) & (exc7==2 | exc7==1)))
+
+AmericasBarometer::trend_plot(exc7,
+                              'Perception of Public Corruption among Public Officials',
+                              '  ')
+```	
+
+###	it1	Interpersonal Trust
+	
+```{r}
+#table(lapop.trends$exc7, useNA= "ifany") 
+exc7  <- ddply(lapop.trends,~year,summarize,x=sum(!is.na(exc7 ) & exc7 ==1),
+            n=sum(!is.na(exc7) & (exc7==2 | exc7==1)))
+
+AmericasBarometer::trend_plot(exc7,
+                              'Perception of Public Corruption among Public Officials',
+                              '  ')
+```	
+
+###	lib1	Level of Freedom of the Press Today
+	
+```{r}
+#table(lapop.trends$exc7, useNA= "ifany") 
+exc7  <- ddply(lapop.trends,~year,summarize,x=sum(!is.na(exc7 ) & exc7 ==1),
+            n=sum(!is.na(exc7) & (exc7==2 | exc7==1)))
+
+AmericasBarometer::trend_plot(exc7,
+                              'Perception of Public Corruption among Public Officials',
+                              '  ')
+```	
+
+###	lib2c	Level of Freedom to Express Political Opinions without Fear
+	
+```{r}
+#table(lapop.trends$exc7, useNA= "ifany") 
+exc7  <- ddply(lapop.trends,~year,summarize,x=sum(!is.na(exc7 ) & exc7 ==1),
+            n=sum(!is.na(exc7) & (exc7==2 | exc7==1)))
+
+AmericasBarometer::trend_plot(exc7,
+                              'Perception of Public Corruption among Public Officials',
+                              '  ')
+```	
+
+###	m1	Executive Job Approval
+	
+```{r}
+#table(lapop.trends$exc7, useNA= "ifany") 
+exc7  <- ddply(lapop.trends,~year,summarize,x=sum(!is.na(exc7 ) & exc7 ==1),
+            n=sum(!is.na(exc7) & (exc7==2 | exc7==1)))
+
+AmericasBarometer::trend_plot(exc7,
+                              'Perception of Public Corruption among Public Officials',
+                              '  ')
+```	
+
+###	Military coup is justified if crime is high
 
 Whatever happened in 2008, it also coincided with a sudden rise in the number of people who are open to the idea of a military coup.
 ```{r}
@@ -459,24 +818,156 @@ AmericasBarometer::trend_plot(jc10,
 	
 ## Foreign Relations	
 
-mil10a	Trustworthiness of Chinese Government
-	mil10e	Trustworthiness of US Government
+###	mil10a	Trustworthiness of Chinese Government
+	
+```{r}
+#table(lapop.trends$exc7, useNA= "ifany") 
+exc7  <- ddply(lapop.trends,~year,summarize,x=sum(!is.na(exc7 ) & exc7 ==1),
+            n=sum(!is.na(exc7) & (exc7==2 | exc7==1)))
+
+AmericasBarometer::trend_plot(exc7,
+                              'Perception of Public Corruption among Public Officials',
+                              '  ')
+```	
+
+###	mil10e	Trustworthiness of US Government
+	
+```{r}
+#table(lapop.trends$exc7, useNA= "ifany") 
+exc7  <- ddply(lapop.trends,~year,summarize,x=sum(!is.na(exc7 ) & exc7 ==1),
+            n=sum(!is.na(exc7) & (exc7==2 | exc7==1)))
+
+AmericasBarometer::trend_plot(exc7,
+                              'Perception of Public Corruption among Public Officials',
+                              '  ')
+```	
+
+
 
 ## Gender	
 
 v58	Children Suffer with Working Mothers
-	vb50	Men Are Better Political Leaders than Women
-	vb51	Men or Women: More Corrupt as Politicians
-	vb52	Men or Women: Better Manager of Economy
-	w14a	Abortion Justified
+	
+```{r}
+#table(lapop.trends$exc7, useNA= "ifany") 
+exc7  <- ddply(lapop.trends,~year,summarize,x=sum(!is.na(exc7 ) & exc7 ==1),
+            n=sum(!is.na(exc7) & (exc7==2 | exc7==1)))
+
+AmericasBarometer::trend_plot(exc7,
+                              'Perception of Public Corruption among Public Officials',
+                              '  ')
+```	
+
+###	vb50	Men Are Better Political Leaders than Women
+	
+```{r}
+#table(lapop.trends$exc7, useNA= "ifany") 
+exc7  <- ddply(lapop.trends,~year,summarize,x=sum(!is.na(exc7 ) & exc7 ==1),
+            n=sum(!is.na(exc7) & (exc7==2 | exc7==1)))
+
+AmericasBarometer::trend_plot(exc7,
+                              'Perception of Public Corruption among Public Officials',
+                              '  ')
+```	
+
+###	vb51	Men or Women: More Corrupt as Politicians
+	
+```{r}
+#table(lapop.trends$exc7, useNA= "ifany") 
+exc7  <- ddply(lapop.trends,~year,summarize,x=sum(!is.na(exc7 ) & exc7 ==1),
+            n=sum(!is.na(exc7) & (exc7==2 | exc7==1)))
+
+AmericasBarometer::trend_plot(exc7,
+                              'Perception of Public Corruption among Public Officials',
+                              '  ')
+```	
+
+###	vb52	Men or Women: Better Manager of Economy
+	
+```{r}
+#table(lapop.trends$exc7, useNA= "ifany") 
+exc7  <- ddply(lapop.trends,~year,summarize,x=sum(!is.na(exc7 ) & exc7 ==1),
+            n=sum(!is.na(exc7) & (exc7==2 | exc7==1)))
+
+AmericasBarometer::trend_plot(exc7,
+                              'Perception of Public Corruption among Public Officials',
+                              '  ')
+```	
+
+###	w14a	Abortion Justified
+	
+```{r}
+#table(lapop.trends$exc7, useNA= "ifany") 
+exc7  <- ddply(lapop.trends,~year,summarize,x=sum(!is.na(exc7 ) & exc7 ==1),
+            n=sum(!is.na(exc7) & (exc7==2 | exc7==1)))
+
+AmericasBarometer::trend_plot(exc7,
+                              'Perception of Public Corruption among Public Officials',
+                              '  ')
+```	
+
+
 	
 ## Local Government	
-  infrax	Police Response Time
-	np1	Attendance at Municipal Meeting
-	sd2new2	Satisfaction with Roads
-	sd3new2	Satisfaction with Public Schools
-	sd6new2	Satisfaction with Public Medical and Health Services
+###	  infrax	Police Response Time
 	
+```{r}
+#table(lapop.trends$exc7, useNA= "ifany") 
+exc7  <- ddply(lapop.trends,~year,summarize,x=sum(!is.na(exc7 ) & exc7 ==1),
+            n=sum(!is.na(exc7) & (exc7==2 | exc7==1)))
+
+AmericasBarometer::trend_plot(exc7,
+                              'Perception of Public Corruption among Public Officials',
+                              '  ')
+```	
+
+###	np1	Attendance at Municipal Meeting
+	
+```{r}
+#table(lapop.trends$exc7, useNA= "ifany") 
+exc7  <- ddply(lapop.trends,~year,summarize,x=sum(!is.na(exc7 ) & exc7 ==1),
+            n=sum(!is.na(exc7) & (exc7==2 | exc7==1)))
+
+AmericasBarometer::trend_plot(exc7,
+                              'Perception of Public Corruption among Public Officials',
+                              '  ')
+```	
+
+###	sd2new2	Satisfaction with Roads
+	
+```{r}
+#table(lapop.trends$exc7, useNA= "ifany") 
+exc7  <- ddply(lapop.trends,~year,summarize,x=sum(!is.na(exc7 ) & exc7 ==1),
+            n=sum(!is.na(exc7) & (exc7==2 | exc7==1)))
+
+AmericasBarometer::trend_plot(exc7,
+                              'Perception of Public Corruption among Public Officials',
+                              '  ')
+```	
+
+###	sd3new2	Satisfaction with Public Schools
+	
+```{r}
+#table(lapop.trends$exc7, useNA= "ifany") 
+exc7  <- ddply(lapop.trends,~year,summarize,x=sum(!is.na(exc7 ) & exc7 ==1),
+            n=sum(!is.na(exc7) & (exc7==2 | exc7==1)))
+
+AmericasBarometer::trend_plot(exc7,
+                              'Perception of Public Corruption among Public Officials',
+                              '  ')
+```	
+
+###	sd6new2	Satisfaction with Public Medical and Health Services
+	
+```{r}
+#table(lapop.trends$sd6new2, useNA= "ifany") 
+exc7  <- ddply(lapop.trends,~year,summarize,x=sum(!is.na(exc7 ) & exc7 ==1),
+            n=sum(!is.na(exc7) & (exc7==2 | exc7==1)))
+
+AmericasBarometer::trend_plot(exc7,
+                              'Perception of Public Corruption among Public Officials',
+                              '  ')
+```	
 
 
 ## Possession
@@ -489,7 +980,7 @@ r3 <- ddply(lapop.trends,~year,summarize,x=sum(!is.na(r3) & r3==1),
             n=sum(!is.na(r3) & (r3==0 | r3==1)))
 AmericasBarometer::trend_plot(r3,
                               'Refrigerator in home',
-                               'r3')
+                               '')
 ```
 
 ### Landline telephone in home
@@ -499,7 +990,7 @@ r4 <- ddply(lapop.trends,~year,summarize,x=sum(!is.na(r4) & r4==1),
              n=sum(!is.na(r4) & (r4==0 | r4==1)))
 AmericasBarometer::trend_plot(r4,
                               'Landline telephone in home',
-                              'r4')
+                              '')
 ```
 
 ### Cellular telephone in home
@@ -513,7 +1004,7 @@ r4a <- ddply(lapop.trends,~year,summarize,x=sum(!is.na(r4a) & r4a==1),
              n=sum(!is.na(r4a) & (r4a==0 | r4a==1)))
 AmericasBarometer::trend_plot(r4a,
                               'Cellular telephone in home',
-                              'r4a')
+                              '')
 ```
 
  

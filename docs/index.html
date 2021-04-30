@@ -57,16 +57,22 @@
       <a href="articles/Building_indices.html">Building Indices</a>
     </li>
     <li>
-      <a href="articles/Trends.html">Trends analysis</a>
+      <a href="articles/Explaining_Intention_Migrate.html">Profiling_Intended_Migrant</a>
     </li>
     <li>
-      <a href="articles/bribes.html">Statistics on bribery</a>
+      <a href="articles/Explaining_fear_being_victim.html">Explaining fear of being a crime victim</a>
     </li>
     <li>
-      <a href="articles/data-quality.html">Calculating some high-level data quality points</a>
+      <a href="articles/Explaining_risk_bribes.html">Explaining occurence of Bribery</a>
     </li>
     <li>
-      <a href="articles/fear_being_victim.html">Out of fear of being a crime victim</a>
+      <a href="articles/Profiling_Intended_Migrant.html">Profiling_Intended_Migrant</a>
+    </li>
+    <li>
+      <a href="articles/Survey_wave_content.html">Comparing survey contents between different waves</a>
+    </li>
+    <li>
+      <a href="articles/Trends_per_year_by_topic.html">Trends analysis</a>
     </li>
   </ul>
 </li>
@@ -94,7 +100,7 @@
 <div class="page-header"><h1 class="hasAnchor">
 <a href="#latin-american-public-opinion-project-lapop-analysis" class="anchor"></a>Latin American Public Opinion Project (LAPOP) Analysis</h1></div>
 <p>Project to better understand <strong>population movement drivers in the Northern Triangle</strong> (<em>Honduras, El Salvador &amp; Guatemala</em>). The <strong><a href="summary.html">Analysis Executive summary is here</a></strong></p>
-<p>The analysis is based on longitudinal analysis of <a href="http://datasets.americasbarometer.org/database/index.php">Latin American Public Opinion Project (LAPOP)</a> survey from 2004 to 2018 (<em>i.e. 8 survey dataset per country</em>).</p>
+<p>The analysis is based on longitudinal analysis of <a href="http://datasets.americasbarometer.org/database/index.php">Latin American Public Opinion Project (LAPOP)</a> survey from 2004 to 2018 (<em>i.e. 8 survey dataset per country</em>) and complements the exploration already available for <a href="https://www.vanderbilt.edu/lapop/honduras/AB2018-19_Honduras_RRR_W_09.25.19.pdf">Honduras</a>, <a href="https://www.vanderbilt.edu/lapop/es/AB2018-19_El_Salvador_RRR_Presentation_W_09.25.19.pdf">El Salvador</a> &amp; <a href="https://www.vanderbilt.edu/lapop/guatemala/AB2018-19_Guatemala_RRR_Presentation_W_09.25.19.pdf">Guatemala</a>.</p>
 <p>The <a href="https://www.vanderbilt.edu/lapop/about-americasbarometer.php">AmericasBarometer</a> is a periodic study of 34 countries in the Western Hemisphere, with stratified nationally representative samples drawn in each country, a common questionnaire core, and country-specific modules. It is the only scientifically rigorous comparative survey of democratic values and behaviors that covers all independent countries in North, Central, and South America, as well as a significant number of countries in the Caribbean. The Americas Barometer measures attitudes, evaluations, experiences, and behavior in the Americas using national probability samples of voting-age adults. Standardizing methods and a common core questionnaire permit valid comparisons across countries and over time on topics including the economy, rule of law, state capacity, trust in institutions, individual values, corruption, security, and more.</p>
 <p>Each country survey is implemented based on a national probability design. In some cases, oversamples are collected to allow precise analysis of opinion within sub-national regions. These data were supplied by the Latin American Public Opinion Project at Vanderbilt University, which takes no responsibility for any interpretation of the data.</p>
 <p>This projects build from analysis of other shared repositories such as <a href="https://github.com/ccjolley/LAPOP-SMA">LAPOP-SMA</a> from <a href="jolleycraig@gmail.com">Craig Jolley</a>, Snr Data Scientist @ USAID, <a href="https://github.com/vanderbilt-data-science/lapop-dashboard">lapop-dashboard</a> from Vanderbilt Data Science Team or <a href="https://github.com/carmen-canedo/LAPOP-predictive-models">LAPOP-predictive-models</a></p>
@@ -118,7 +124,7 @@
 <td align="left">Resources allocation to protection intervention vs economic support</td>
 </tr>
 <tr class="even">
-<td align="left">Can we identify displacement hot-spots? What make those hospots specific?</td>
+<td align="left">Can we identify displacement hot-spots? What make those hot-spots specific?</td>
 <td align="left">Geographic targeting and area-based approach for service delivery design</td>
 </tr>
 <tr class="odd">
@@ -144,7 +150,14 @@
 <pre class="{r}"><code><a href="https://devtools.r-lib.org//reference/install.html">devtools::install()</a></code></pre>
 <p>In order to use the package, the following packages will also be installed <a href="https://www.tidyverse.org/packages/">tidyverse</a>, <a href="https://cran.r-project.org/web/packages/haven/haven.pdf">haven</a>, <a href="https://cran.r-project.org/web/packages/labelled/vignettes/intro_labelled.html">labelled</a>, <a href="https://cran.r-project.org/web/packages/sjmisc/sjmisc.pdf">sjmisc</a>, <a href="https://cran.r-project.org/web/packages/assertr/vignettes/assertr.html">assertr</a>, <a href="https://cran.r-project.org/web/packages/janitor/janitor.pdf">janitor</a>, <a href="https://cran.r-project.org/web/packages/rlang/rlang.pdf">rlang</a>.</p>
 <p>You will be then able to use all functions with the prefix: <code>AmericasBarometer::</code> Once installed, you need to download and reshape the data with</p>
-<pre class="{r}"><code><a href="reference/get_dataLAPOP.html">AmericasBarometer::get_dataLAPOP()</a></code></pre>
+<pre class="{r}"><code><a href="reference/get_dataLAPOP.html">## Load data from remote site and save them locally
+AmericasBarometer::get_dataLAPOP()
+
+## merge all dataset together
+AmericasBarometer::merge_dataLAPOP()
+
+## generate a mapping data dictionnary - also based on https://github.com/unhcr-americas/LAPOP-SMA/blob/master/data/LAPOP_Dictionnary.xlsx
+AmericasBarometer::merge_dicoLAPOP()</a></code></pre>
 </div>
 <div id="vignettes" class="section level3">
 <h3 class="hasAnchor">

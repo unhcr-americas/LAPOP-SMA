@@ -1,0 +1,220 @@
+---
+title: "Profiling_Intended_Migrant"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Profiling_Intended_Migrant}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = FALSE, 
+                      message = FALSE, 
+                      warning = FALSE, 
+                      collapse = FALSE,
+                      comment = "#>",
+                      fig.align = "center")
+knitr::opts_chunk$set(fig.width = 8, fig.height = 6)
+set.seed(1)
+extrafont::loadfonts(quiet=TRUE)
+options(scipen = 999) # turn-off scientific notation like 1e+48
+library(unhcRstyle)
+library(tidyverse)
+library(tidymodels)
+library(patchwork)
+library(embed)
+library(haven)
+library(readxl)
+
+```
+
+
+
+
+
+```{r getdata}
+
+set.seed(12345)
+
+mainDir <- getwd()
+## If you save your analysis under vignette folder...
+mainDirroot <- substring(mainDir, 0 , nchar(mainDir) - 10)
+
+# lapop.2019.GTM <- read.csv(paste0(mainDirroot, "/data-raw/lapop.2019.GTM.csv"), stringsAsFactors = TRUE)
+# lapop.2018.SLV <- read.csv(paste0(mainDirroot, "/data-raw/lapop.2018.SLV.csv"), stringsAsFactors = TRUE)
+# lapop.2018.HND <- read.csv(paste0(mainDirroot, "/data-raw/lapop.2018.HND.csv"), stringsAsFactors = TRUE)
+
+# lapop.2019.GTM <- haven::read_dta(paste0(mainDirroot, "/data/lapop.2019.GTM.dta"))
+# lapop.2018.SLV <- haven::read_dta(paste0(mainDirroot, "/data/lapop.2018.SLV.dta"))
+# lapop.2018.HND <- haven::read_dta(paste0(mainDirroot, "/data/lapop.2018.HND.dta"))
+
+srcs <-
+  list(guatemala = paste0(mainDirroot, "/data/lapop.2019.GTM.dta"),
+       honduras = paste0(mainDirroot, "/data/lapop.2018.SLV.dta"),
+       elsalvador = paste0(mainDirroot, "/data/lapop.2018.HND.dta"))
+data <- srcs %>% map_dfr(compose(as_factor, read_dta))
+
+
+dico <- read.csv(paste0(mainDirroot, "/data/dataLAPOPdico.csv"), stringsAsFactors = TRUE)
+
+# lapop.2019.GTM <- data$guatemala
+# lapop.2018.SLV <- data$elsalvador
+# lapop.2018.HND <- data$honduras
+
+# common <- Reduce(intersect,list(names(lapop.2019.GTM),
+#                                  names(lapop.2018.SLV),
+#                                  names(lapop.2018.HND)))
+# data <- rbind(lapop.2019.GTM[,common],
+#                lapop.2018.SLV[,common],
+#                lapop.2018.HND[,common])
+
+
+# data1 <- read.csv(paste0(mainDirroot, "/data/dataLAPOP.csv"))
+# 
+# data <- data1[ which(data1$year %in% c("2018", "2019")),  ]
+
+## Put all no response options to NA
+data <- data %>% mutate(across(where(is.factor), ~na_if(., "No sabe")), 
+                        across(where(is.factor), ~na_if(., "No responde")),
+                        across(where(is.factor), ~na_if(., "No Aplica")))
+
+
+
+
+```
+
+
+ 
+
+```{r cars}
+data1 <- 
+  data %>% 
+  transmute(# age = as.numeric(as.character(q2)), 
+            sex = q1, # == "Hombre",
+            marital_status = q11n,
+              # case_when(q11n == "Soltero" ~ "Single",
+              #           q11n == "Casado" | q11n == "Unión Libre (acompañado)" ~ "Couple",
+              #           TRUE ~ "Other"),
+            country = pais, 
+            location = estratopri, 
+            urban = ur, 
+            municipality = tamano,
+            hhsize = fct_recode(q12c, "20" = "20+") %>% 
+                compose(as.numeric, as.character)(),
+            education =  ed %>%
+              fct_recode("0" = "Ninguno", "18" = "18+") %>%
+              compose(as.numeric, as.character)(),
+            employment_status = ocup4a,
+              # case_when(ocup4a == "Trabajando" | ocup4a == "No está trabajando en este momento pero tiene trabajo" ~ "Employed",
+              #           ocup4a == "Está buscando trabajo activamente" ~ "Searching for work",
+              #           TRUE ~ "Outside the labor force"),
+            # occupation = ocupoit,
+            # religion = q3cn,
+            # ethnicity = etid,
+            experienced_crime = vic1ext, # == "Sí",
+            unsafe_neighborhood = aoj11,
+              # str_detect(aoj11, "inseguro"),
+            # food_insecure = fs2, # == "Sí",
+            # perc_econ = soct2, 
+            # perc_safety = pese2,
+            # perc_trust = it1 == "Algo confiable" | it1 == "Muy confiable",
+            # perc_natural_disaster = drk1, perc_env_severity = env2b,
+            # trust_political_system = b3 == "4" | b3 == "5" | b3 == "6" | b3 == "Mucho",
+            intent = q14 == "Sí") %>% 
+  filter(!is.na(intent))
+
+data1 <- data1 %>% 
+  mutate(across(c(where(is.logical), -intent), as_factor))
+
+```
+
+
+ 
+
+```{r }
+f <- function(x) {
+  x %>% 
+    select(-country) %>%
+    recipe(intent ~ .) %>% 
+    step_unknown(all_nominal()) %>%
+    step_meanimpute(all_numeric()) %>% 
+    step_other(all_nominal(), threshold = .05) %>% 
+    step_lencode_mixed(all_nominal(), -intent, outcome = vars(intent)) %>%
+    step_nzv(all_predictors()) %>% 
+    step_normalize(all_predictors()) %>%
+    step_umap(all_predictors()) %>%
+    prep()
+}
+
+#table(data1$intent)
+
+## prepare table only for those who intend to migrate - and do clustering 
+data0 <- 
+  data1 %>% 
+  split(.$country) %>% 
+  map(~bind_cols(., f(.) %>% 
+  juice() %>% 
+  select(-intent)) %>% 
+  filter(intent)) %>% 
+  map_dfr(~mutate(., cluster = select(., umap_1, umap_2) %>% 
+  dist() %>% 
+  hclust(method = "average") %>% 
+  cutree(4) %>% 
+  as_factor()))
+
+```
+
+
+
+```{r }
+data0 %>% ggplot() + 
+  geom_point(aes(umap_1, umap_2, color = cluster)) + 
+  facet_wrap(vars(country)) +
+  labs(title = "Statistical clusters within population intending to migrate in 2018", 
+             subtitle = "  ",
+             y = "  ", x = "  ",
+             caption = "Latin American Public Opinion Project / Vanderbilt University") +
+  unhcRstyle::unhcr_theme() +
+  theme(axis.text = element_text(size = 2),
+        plot.title = element_text(size = 15),
+        plot.subtitle = element_text(size = 12),
+                legend.position = "none",
+                panel.grid.major.x = element_line(color = "#cbcbcb"), 
+                panel.grid.major.y = element_blank()) 
+```
+
+
+
+```{r }
+symmary_ctry <- data0 %>% 
+  count(country, cluster, sex) %>%
+  group_by(country, cluster) %>% 
+  mutate(p = n/sum(n))
+
+
+```
+
+
+
+```{r }
+symmary_ctry2 <- data0 %>% 
+  select(-umap_1, -umap_2) %>% 
+  mutate(across(where(is.factor), fct_drop)) %>% 
+  group_by(country, cluster) %>% 
+  summarize(# across(where(is.numeric), mean, na.rm = TRUE),
+            across(where(is.factor), compose(list, fct_count))) %>% 
+  # mutate(across(where(is.numeric), list)) %>% 
+  pivot_longer(c(-country, -cluster), names_to = "dim", values_to = "val") %>% 
+  unnest(val) %>% 
+  group_by(country, cluster, dim) %>% 
+  mutate(n = n/sum(n, na.rm = TRUE)) %>% 
+  ungroup() %>% 
+  mutate(cluster = str_c("cluster_", cluster)) %>% 
+  pivot_wider(names_from = "cluster", values_from = "n") %>% 
+  filter(across(contains("cluster"), ~.!=0)) %>% 
+  mutate(across(contains("cluster"), replace_na, 0)) 
+
+```
+

@@ -286,6 +286,7 @@ binom.high <- function(x,n) { binom.test(x,n,alternative='two.sided')$conf.int[2
 #'    x = number of 1's observed that year 
 #'    n = total observations in that year
 #' @param plotTittle plot title
+#' @param plotsubTittle plot title
 #' @examples
 #' \dontrun{
 #'  
@@ -294,6 +295,9 @@ binom.high <- function(x,n) { binom.test(x,n,alternative='two.sided')$conf.int[2
 trend_plot <- function(f, 
                        plotTittle='',
                        plotsubTittle = '') {
+  # f <- cp2
+  f <- f[ !(is.na(f$n)), ]
+  f <- f[ f$n != 0, ]
   f$mean <- f$x / f$n
   # if (label_y == 0 ) {
   #   label_y <- 1.1*max(f$mean)
@@ -310,6 +314,7 @@ trend_plot <- function(f,
                       width=0.5)) +
     ## Display every 2 years
     scale_x_continuous(breaks=seq(2004,2018,2)) +
+    scale_y_continuous(labels = scales::percent) +
     # annotate('text',
     #          label=str_wrap(label,width=32),
     #          size=8,
@@ -318,8 +323,8 @@ trend_plot <- function(f,
     #          hjust=0,
     #          vjust=0) +
     
-    labs(title = str_wrap(plotTittle,width=32),
-         subtitle = str_wrap(plotsubTittle,width=32),
+    labs(title = str_wrap(plotTittle,width=80),
+         subtitle = str_wrap(plotsubTittle,width=80),
          x = " ",
          y = " ",
          caption = "Latin American Public Opinion Project / Vanderbilt University") +
@@ -342,19 +347,30 @@ trend_plot <- function(f,
 #' @md
 #' @param  f data frame f needs to contain a year column all other columns will 
 #' become the names of data series that will be plotted together
+#' @param plotTittle plot title
+#' @param plotsubTittle plot title
 #' 
 #' @examples
 #' \dontrun{
 #'  
 #' }
 #' @export 
-bar_plot <- function(f) {
+bar_plot <- function(f, 
+                     plotTittle='',
+                     plotsubTittle = '') {
   ggplot(f,aes(factor(x))) + 
     geom_bar() +
-    theme_classic() +
-    theme(text=element_text(size=20),
-          axis.title.y=element_blank(),
-          axis.title.x=element_blank()) 
+    
+    labs(title = str_wrap(plotTittle,width=80),
+         subtitle = str_wrap(plotsubTittle,width=80),
+         x = " ",
+         y = " ",
+         caption = "Latin American Public Opinion Project / Vanderbilt University") +
+    unhcRstyle::unhcr_theme() +
+    theme(axis.text = element_text(size = 6),
+          legend.position = "none",
+          panel.grid.major.x = element_line(color = "#cbcbcb"),
+          panel.grid.major.y = element_blank())
 }
 
 #' multi_lines
@@ -363,12 +379,16 @@ bar_plot <- function(f) {
 #' @md
 #' @param  f data frame f needs to contain a year column all other columns will 
 #' become the names of data series that will be plotted together
+#' @param plotTittle plot title
+#' @param plotsubTittle plot title
 #' @examples
 #' \dontrun{
 #'  
 #' }
 #' @export 
-multi_lines <- function(f) {
+multi_lines <- function(f, 
+                        plotTittle='',
+                        plotsubTittle = '') {
 
   m <- reshape2::melt(f,id.vars='year')
   n <- length(unique(m$variable))
@@ -376,10 +396,17 @@ multi_lines <- function(f) {
   ggplot(m,aes(x=year,y=value,group=variable,color=variable)) + 
     geom_line(size=1.5) +
     scale_color_manual(values=col) +
-    theme_classic() +
-    theme(text=element_text(size=20),
-          axis.title.y=element_blank()) +
-    xlab("Year") 
+    scale_y_continuous(labels = scales::percent) +
+    labs(title = str_wrap(plotTittle,width=80),
+         subtitle = str_wrap(plotsubTittle,width=80),
+         x = " ",
+         y = " ",
+         caption = "Latin American Public Opinion Project / Vanderbilt University") +
+    unhcRstyle::unhcr_theme() +
+    theme(axis.text = element_text(size = 6),
+          #legend.position = "none",
+          panel.grid.major.x = element_line(color = "#cbcbcb"),
+          panel.grid.major.y = element_blank())
 }
 
 
