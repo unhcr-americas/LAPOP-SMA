@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Explaining fear of being a crime victim • AmericasBarometer</title>
-<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous">
+<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/yeti/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="../bootstrap-toc.css">
 <script src="../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
@@ -37,15 +37,6 @@
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-<li>
-  <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
-<li>
-  <a href="../reference/index.html">Reference</a>
-</li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
     Articles
@@ -54,27 +45,30 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/Building_indices.html">Building Indices</a>
+      <a href="../articles/Survey_wave_content.html">Survey wave content</a>
     </li>
     <li>
-      <a href="../articles/Explaining_Intention_Migrate.html">Profiling_Intended_Migrant</a>
+      <a href="../articles/Trends_per_year_by_topic.html">Trends per year by topic</a>
     </li>
     <li>
-      <a href="../articles/Explaining_fear_being_victim.html">Explaining fear of being a crime victim</a>
+      <a href="../articles/Explaining_Intention_Migrate.html">Explaining_Intention_Migrate</a>
     </li>
     <li>
-      <a href="../articles/Explaining_risk_bribes.html">Explaining occurence of Bribery</a>
+      <a href="../articles/Explaining_fear_being_victim.html">Explaining_fear_being_victim</a>
     </li>
     <li>
-      <a href="../articles/Profiling_Intended_Migrant.html">Profiling_Intended_Migrant</a>
+      <a href="../articles/Explaining_risk_bribes.html">Explaining_risk_bribes</a>
     </li>
     <li>
-      <a href="../articles/Survey_wave_content.html">Comparing survey contents between different waves</a>
+      <a href="../articles/Building_indices.html">Building indices</a>
     </li>
     <li>
-      <a href="../articles/Trends_per_year_by_topic.html">Trends analysis</a>
+      <a href="../articles/Profiling_Intended_Migrant.html">Profiling Intended Migrant</a>
     </li>
   </ul>
+</li>
+<li>
+  <a href="../reference/index.html">Reference</a>
 </li>
       </ul>
 <ul class="nav navbar-nav navbar-right">
@@ -170,12 +164,12 @@
 <p>Where do the people who have made these changes live? I’m going to map this out using the Google Charts API, which looks like the easiest way to make interactive maps in R. For now, we’ll map results by department, which are encoded in the <code>prov</code> indicator. These numeric values need to be translated into <a href="https://en.wikipedia.org/wiki/ISO_3166-2:HN#II-3">ISO-3116-2 region codes</a>.</p>
 <p>Now, let’s make our map:</p>
 <!-- GeoChart generated in R 4.0.3 by googleVis 0.6.10 package -->
-<!-- Fri Apr 30 14:45:23 2021 -->
+<!-- Fri Apr 30 15:08:33 2021 -->
 <!-- jsHeader -->
 <script type="text/javascript">
  
 // jsData 
-function gvisDataGeoChartID6eb03dd21397 () {
+function gvisDataGeoChartID8231335d3ab2 () {
 var data = new google.visualization.DataTable();
 var datajson =
 [
@@ -278,8 +272,8 @@ return(data);
 }
  
 // jsDrawChart
-function drawChartGeoChartID6eb03dd21397() {
-var data = gvisDataGeoChartID6eb03dd21397();
+function drawChartGeoChartID8231335d3ab2() {
+var data = gvisDataGeoChartID8231335d3ab2();
 var options = {};
 options["width"] = 556;
 options["height"] = 347;
@@ -288,7 +282,7 @@ options["resolution"] = "provinces";
 options["colorAxis"] = {minValue: 0,  colors: ['#FFFFFF', '#2B65EC']};
 
     var chart = new google.visualization.GeoChart(
-    document.getElementById('GeoChartID6eb03dd21397')
+    document.getElementById('GeoChartID8231335d3ab2')
     );
     chart.draw(data,options);
     
@@ -312,9 +306,9 @@ if (newPackage)
   pkgs.push(chartid);
   
 // Add the drawChart function to the global list of callbacks
-callbacks.push(drawChartGeoChartID6eb03dd21397);
+callbacks.push(drawChartGeoChartID8231335d3ab2);
 })();
-function displayChartGeoChartID6eb03dd21397() {
+function displayChartGeoChartID8231335d3ab2() {
   var pkgs = window.__gvisPackages = window.__gvisPackages || [];
   var callbacks = window.__gvisCallbacks = window.__gvisCallbacks || [];
   window.clearTimeout(window.__gvisLoad);
@@ -335,7 +329,7 @@ callbacks.shift()();
 }
  
 // jsFooter
-</script><!-- jsChart --><script type="text/javascript" src="https://www.google.com/jsapi?callback=displayChartGeoChartID6eb03dd21397"></script><!-- divChart --><div id="GeoChartID6eb03dd21397" style="width: 556; height: 347;">
+</script><!-- jsChart --><script type="text/javascript" src="https://www.google.com/jsapi?callback=displayChartGeoChartID8231335d3ab2"></script><!-- divChart --><div id="GeoChartID8231335d3ab2" style="width: 556; height: 347;">
 
 </div>
 <p>So this is OK – it tells us which departments showed the largest and smallest average values for <code>vic40</code>. Hover over the map with your mouse to see department names and average values. Another way of visualizing this that might be useful is to figure out which departments showed values of <code>vic40</code> that are significantly above-average (according to an exact Fisher test) and highlight those.</p>

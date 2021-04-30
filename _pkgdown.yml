@@ -1,0 +1,48 @@
+title: AmericasBarometer
+url: https://unhcr-americas.github.io/LAPOP-SMA/docs/
+template:
+  params:
+    bootswatch: yeti
+
+navbar:
+  title: AmericasBarometer
+  left:
+  - text: "Articles"
+    menu:
+     - text: Survey wave content
+       href: articles/Survey_wave_content.html
+     - text: Trends per year by topic
+       href: articles/Trends_per_year_by_topic.html   
+     - text: Explaining_Intention_Migrate
+       href: articles/Explaining_Intention_Migrate.html
+     - text: Explaining_fear_being_victim
+       href: articles/Explaining_fear_being_victim.html
+     - text: Explaining_risk_bribes
+       href: articles/Explaining_risk_bribes.html
+     - text: Building indices
+       href: articles/Building_indices.html
+     - text: Profiling Intended Migrant
+       href: articles/Profiling_Intended_Migrant.html
+  - text: Reference
+    href: reference/index.html
+
+reference:
+  - title: Data Preparation function
+    contents:
+      - get_dataLAPOP
+      - data_raw_dir
+      - get_outliers
+      - fixdata
+      - sanity_check
+      - sig_diff
+      - make_codebook
+      - make_idx
+  - title: Plotting function
+    contents:
+      - bar_plot
+      - multi_lines
+      - trend_plot
+      - binom.high
+      - binom.low
+      - cor_data_bin
+      - lm_plot

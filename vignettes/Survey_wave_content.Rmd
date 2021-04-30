@@ -112,7 +112,7 @@ ggplot(basic,aes(x=reorder(country, nq),
   geom_text(aes(y=nq,label=nq,vjust=1.5),size=6) +
  # scale_fill_manual(values=brewer.pal(3,"Dark2")) +
   coord_flip() +
-  labs(title = "Numbr of available analysis variables per country & Wave", 
+  labs(title = "Number of available analysis variables per country & Wave", 
             # subtitle = " ",
              x = " ", 
              y = "",
@@ -137,7 +137,7 @@ ggplot(basic,aes(x=reorder(country, nq),
   geom_text(aes(y=nr,label=nr,vjust=1.5),size=6) +
   #  scale_fill_manual(values=brewer.pal(3,"Dark2")) +
   coord_flip() +
-  labs(title = "Numbr of respondents per country & Wave", 
+  labs(title = "Number of respondents per country & Wave", 
             # subtitle = " ",
              x = " ", 
              y = "",
@@ -245,11 +245,6 @@ ggplot(missing_row,aes(x=x,fill=country)) +
                 panel.grid.major.x = element_line(color = "#cbcbcb"), 
                 panel.grid.major.y = element_blank()) +### changing grid line that should appear) +
         geom_hline(yintercept = 0, size = 0.7, colour = "#333333")
-  theme(axis.ticks=element_blank(),
-        axis.text.y=element_blank(),
-        axis.line=element_blank(),
-        axis.title.y=element_blank(),
-        text=element_text(size=20))
 
 ```
 
@@ -351,10 +346,5 @@ ggplot(ages,aes(x=q2,fill=country)) +
                 panel.grid.major.x = element_line(color = "#cbcbcb"), 
                 panel.grid.major.y = element_blank()) +### changing grid line that should appear) +
         geom_hline(yintercept = 0, size = 0.7, colour = "#333333")
-  theme(axis.ticks=element_blank(),
-        axis.text.y=element_blank(),
-        axis.line=element_blank(),
-        axis.title.y=element_blank(),
-        text=element_text(size=20))
 
 ```

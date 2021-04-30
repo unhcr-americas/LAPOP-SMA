@@ -12,8 +12,8 @@
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/yeti/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous" />
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
 
@@ -77,16 +77,7 @@
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-        <li>
-  <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
-<li>
-  <a href="../reference/index.html">Reference</a>
-</li>
-<li class="dropdown">
+        <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
     Articles
      
@@ -94,27 +85,30 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/Building_indices.html">Building Indices</a>
+      <a href="../articles/Survey_wave_content.html">Survey wave content</a>
     </li>
     <li>
-      <a href="../articles/Explaining_Intention_Migrate.html">Profiling_Intended_Migrant</a>
+      <a href="../articles/Trends_per_year_by_topic.html">Trends per year by topic</a>
     </li>
     <li>
-      <a href="../articles/Explaining_fear_being_victim.html">Explaining fear of being a crime victim</a>
+      <a href="../articles/Explaining_Intention_Migrate.html">Explaining_Intention_Migrate</a>
     </li>
     <li>
-      <a href="../articles/Explaining_risk_bribes.html">Explaining occurence of Bribery</a>
+      <a href="../articles/Explaining_fear_being_victim.html">Explaining_fear_being_victim</a>
     </li>
     <li>
-      <a href="../articles/Profiling_Intended_Migrant.html">Profiling_Intended_Migrant</a>
+      <a href="../articles/Explaining_risk_bribes.html">Explaining_risk_bribes</a>
     </li>
     <li>
-      <a href="../articles/Survey_wave_content.html">Comparing survey contents between different waves</a>
+      <a href="../articles/Building_indices.html">Building indices</a>
     </li>
     <li>
-      <a href="../articles/Trends_per_year_by_topic.html">Trends analysis</a>
+      <a href="../articles/Profiling_Intended_Migrant.html">Profiling Intended Migrant</a>
     </li>
   </ul>
+</li>
+<li>
+  <a href="../reference/index.html">Reference</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -151,7 +145,68 @@
     <tbody>
       <tr>
         <th colspan="2">
-          <h2 id="section-all-functions" class="hasAnchor"><a href="#section-all-functions" class="anchor"></a>All functions</h2>
+          <h2 id="section-data-preparation-function" class="hasAnchor"><a href="#section-data-preparation-function" class="anchor"></a>Data Preparation function</h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr>
+      
+      
+    </tbody><tbody>
+      
+      
+      <tr>
+        
+        <td>
+          <p><code><a href="get_dataLAPOP.html">get_dataLAPOP()</a></code> </p>
+        </td>
+        <td><p>get_dataLAPOP</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="data_raw_dir.html">data_raw_dir()</a></code> </p>
+        </td>
+        <td><p>data_raw_dir</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="get_outliers.html">get_outliers()</a></code> </p>
+        </td>
+        <td><p>get_outliers</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="fixdata.html">fixdata()</a></code> </p>
+        </td>
+        <td><p>fixdata</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="sanity_check.html">sanity_check()</a></code> </p>
+        </td>
+        <td><p>sanity_check</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="sig_diff.html">sig_diff()</a></code> </p>
+        </td>
+        <td><p>sig_diff</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="make_codebook.html">make_codebook()</a></code> </p>
+        </td>
+        <td><p>make_codebook</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="make_idx.html">make_idx()</a></code> </p>
+        </td>
+        <td><p>make_idx</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-plotting-function" class="hasAnchor"><a href="#section-plotting-function" class="anchor"></a>Plotting function</h2>
           <p class="section-desc"></p>
         </th>
       </tr>
@@ -166,6 +221,19 @@
           <p><code><a href="bar_plot.html">bar_plot()</a></code> </p>
         </td>
         <td><p>bar_plot</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="multi_lines.html">multi_lines()</a></code> </p>
+        </td>
+        <td><p>multi_lines</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="trend_plot.html">trend_plot()</a></code> </p>
+        </td>
+        <td><p>trend_plot
+use this to make plots of a binomial variable (one that takes only 0/1 values)</p></td>
       </tr><tr>
         
         <td>
@@ -187,70 +255,9 @@
       </tr><tr>
         
         <td>
-          <p><code><a href="data_raw_dir.html">data_raw_dir()</a></code> </p>
-        </td>
-        <td><p>data_raw_dir</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="fixdata.html">fixdata()</a></code> </p>
-        </td>
-        <td><p>fixdata</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="get_dataLAPOP.html">get_dataLAPOP()</a></code> </p>
-        </td>
-        <td><p>get_dataLAPOP</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="get_outliers.html">get_outliers()</a></code> </p>
-        </td>
-        <td><p>get_outliers</p></td>
-      </tr><tr>
-        
-        <td>
           <p><code><a href="lm_plot.html">lm_plot()</a></code> </p>
         </td>
         <td><p>lm_plot</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="make_codebook.html">make_codebook()</a></code> </p>
-        </td>
-        <td><p>make_codebook</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="make_idx.html">make_idx()</a></code> </p>
-        </td>
-        <td><p>make_idx</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="multi_lines.html">multi_lines()</a></code> </p>
-        </td>
-        <td><p>multi_lines</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="sanity_check.html">sanity_check()</a></code> </p>
-        </td>
-        <td><p>sanity_check</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="sig_diff.html">sig_diff()</a></code> </p>
-        </td>
-        <td><p>sig_diff</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="trend_plot.html">trend_plot()</a></code> </p>
-        </td>
-        <td><p>trend_plot
-use this to make plots of a binomial variable (one that takes only 0/1 values)</p></td>
       </tr>
     </tbody>
     </table>
