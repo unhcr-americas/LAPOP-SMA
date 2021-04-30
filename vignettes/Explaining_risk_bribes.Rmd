@@ -1,8 +1,8 @@
 ---
-title: "Statistics on bribery"
+title: "Explaining occurence of Bribery"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Statistics on bribery}
+  %\VignetteIndexEntry{Explaining occurence of Bribery}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

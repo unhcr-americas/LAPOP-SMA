@@ -1,12 +1,12 @@
 ---
-title: "Out of fear of being a crime victim"
+title: "Explaining fear of being a crime victim"
 output:
   rmarkdown::html_vignette:
     toc: yes
     fig_width: 8
     fig_height: 6
 vignette: >
-  %\VignetteIndexEntry{Out of fear of being a crime victim}
+  %\VignetteIndexEntry{Explaining fear of being a crime victim}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
