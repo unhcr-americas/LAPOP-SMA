@@ -36,31 +36,19 @@ library(readxl)
 
 ```{r getdata}
 
-# mainDir <- getwd()
-# ## If you save your analysis under vignette folder...
-# mainDirroot <- substring(mainDir, 0 , nchar(mainDir) - 10)
-
 set.seed(12345)
-
-## pulling the last available dataset from NCA
-
-# srcs <-
-#   list(guatemala = "http://datasets.americasbarometer.org/database/files/Guatemala%20LAPOP%20AmericasBarometer%202019%20v1.0_W.dta",
-#        honduras = "http://datasets.americasbarometer.org/database/files/Honduras%20LAPOP%20AmericasBarometer%202018%20v1.0_W.dta",
-#        elsalvador = "http://datasets.americasbarometer.org/database/files/ElSalvador%20LAPOP%20AmericasBarometer%202018%20v1.0_W.dta")
-# 
-# data <- srcs %>% map(compose(as_factor, read_dta))
-
-
 
 mainDir <- getwd()
 ## If you save your analysis under vignette folder...
 mainDirroot <- substring(mainDir, 0 , nchar(mainDir) - 10)
 
+# lapop.2019.GTM <- read.csv(paste0(mainDirroot, "/data-raw/lapop.2019.GTM.csv"), stringsAsFactors = TRUE)
+# lapop.2018.SLV <- read.csv(paste0(mainDirroot, "/data-raw/lapop.2018.SLV.csv"), stringsAsFactors = TRUE)
+# lapop.2018.HND <- read.csv(paste0(mainDirroot, "/data-raw/lapop.2018.HND.csv"), stringsAsFactors = TRUE)
 
-lapop.2019.GTM <- read.csv(paste0(mainDirroot, "/data-raw/lapop.2019.GTM.csv"), stringsAsFactors = TRUE)
-lapop.2018.SLV <- read.csv(paste0(mainDirroot, "/data-raw/lapop.2018.SLV.csv"), stringsAsFactors = TRUE)
-lapop.2018.HND <- read.csv(paste0(mainDirroot, "/data-raw/lapop.2018.HND.csv"), stringsAsFactors = TRUE)
+lapop.2019.GTM <- haven::read_dta(paste0(mainDirroot, "/data/lapop.2019.GTM.dta"))
+lapop.2018.SLV <- haven::read_dta(paste0(mainDirroot, "/data/lapop.2018.SLV.dta"))
+lapop.2018.HND <- haven::read_dta(paste0(mainDirroot, "/data/lapop.2018.HND.dta"))
 
 # lapop.2019.GTM <- data$guatemala
 # lapop.2018.SLV <- data$elsalvador

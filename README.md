@@ -19,7 +19,7 @@ The main focus of the study is organized around 3 linked questions that can infl
 |      Reearch      |  Programme Design         |
 |:-------------|:-------------|
 |   What influence the intention to move to another country: push & pull factor? How different measurement of perception are correlated: protection-related push factor vs economic pull factor? Are economic conditions sufficient to motivate the intention to move? | Resources allocation to protection intervention vs economic support |
-|     Can we identify displacement hot-spots? What make those hospots specific?  |   Geographic targeting and area-based approach for service delivery design |
+|     Can we identify displacement hot-spots? What make those hot-spots specific?  |   Geographic targeting and area-based approach for service delivery design |
 |  Are there specific profiles that are intending vs those who do not intend to move? |  Household targeting for cash intervention |
 
 

@@ -15,16 +15,23 @@
 make_codebook <- function(tbl){
   # tbl <- lapop
   n <- ncol(tbl)
-  labels_list <- as.character(map(1:n, function(x) attr(tbl[[x]], "label") ))
+  labels_list <- as.character( purrr::map(1:n, function(x) attr(tbl[[x]], "label") ))
   # if a vector of character strings is preferable
-  #labels_vector <- map_chr(1:n, function(x) attr(tbl[[x]], "label") )
+  #labels_vector <- purrr::map_chr(1:n, function(x) attr(tbl[[x]], "label") )
   
   vars_vector <- labels(tbl)[[2]]
-  levels_vector <- lapply(lapply(tbl, table), length) %>% as_vector()
-  return(tibble("var" = vars_vector, 
-               # "label" = labels_vector,
-                "label" = labels_list, 
-                "levels" = levels_vector))
+  levels_vector <- as.character(lapply(lapply(tbl, table), length)) #%>% as_vector()
+  
+  class(vars_vector)
+  class(levels_vector)
+  class(labels_list)
+  
+  
+  dico <- data.frame("var" = vars_vector, 
+                        # "label" = labels_vector,
+                        "label" = labels_list, 
+                        "levels" = levels_vector) 
+  return(dico)
 }
 
 
@@ -50,10 +57,7 @@ data_raw_dir <- function() {
 
 #' get_dataLAPOP
 #' 
-#' Get all country specific dataset and do a full merge and get the 
-#' full Grand Merge data set.
-#' Create a data frame called lapop.trends containing all indicators 
-#' that are consistent across countries and years.
+#' Get all country specific dataset 
 #'
 #' @md
 #' @param src list of direct URL to dataset - dataset name to be normalised
@@ -121,7 +125,7 @@ get_dataLAPOP <- function( ){
   if(!dir.exists("data-raw")) dir.create("data-raw") 
   
 for (i in 1:nrow(scrcframe))  {
-    # i <- 1
+    # i <- 24
     url1 <- scrcframe[i,c("url")]
     year1  <- scrcframe[i,c("year")]
     ctrycollect1 <- scrcframe[i,c("ctry")]  
@@ -135,14 +139,17 @@ for (i in 1:nrow(scrcframe))  {
     if(inherits(possibleError, "error")) next
     
     #if all is ok then:
-        lapop <- haven::read_dta(url1);
+        download.file(url1, destfile = paste0(getwd(),"/data/",row.names(scrcframe)[i],".dta"))
+    
+        lapop <- haven::read_dta(paste0(getwd(),"/data/",row.names(scrcframe)[i],".dta"));
         names(lapop) <- tolower(names(lapop));
         lapop$year  <- year1;
         lapop$ctrycollect <- ctrycollect1;
         
         cat(paste0("Reading data for ", ctrycollect1, " in ", year1, " : ", nrow(lapop), " observations  & ", ncol(lapop), " variables.\n"))
     
-    ## get dico and save it
+    ## get dico and save it for later to get a full dico
+    if(!dir.exists("inst/dico")) dir.create("inst/dico")     
     write.csv(make_codebook(lapop), paste0(getwd(),"/inst/dico/",row.names(scrcframe)[i],"-dico.csv"), row.names = FALSE) ;
     
     
@@ -173,13 +180,23 @@ for (i in 1:nrow(scrcframe))  {
         while((as.numeric(Sys.time()) - as.numeric(date_time))< 10){}
     
   } ## End loop
-  
- ## grand merge
-  #data <- srcs %>% map_dfr(compose(as_factor, read_dta))
-  
-  ## Get a consolidated data dictionnary
-  #dico <- srcs %>% map_dfr(compose(make_codebook(read_dta)))  
-  
+}
+
+
+#' merge_dataLAPOP
+#' 
+#' Do a full merge and get the 
+#' full Grand Merge data set.
+#' Create a data frame called lapop.trends containing all indicators 
+#' that are consistent across countries and years.
+#'
+#' @md
+#' @examples
+#' \dontrun{
+#' }
+#' @export
+
+merge_dataLAPOP <- function( ){
  datalist <-  list.files(paste0(getwd(),"/data-raw"),full.names=T)
  lapop.trend <- read.csv(datalist[1])
  lapop.trend$ti <- as.character(lapop.trend$ti)
@@ -227,20 +244,65 @@ for (i in 1:nrow(scrcframe))  {
  names.lapop.trend.inter <- as.data.frame(names(lapop.trend.inter))
  names(names.lapop.trend.inter)[1] <- "column_name"
  
- questions <- read.csv("data/questions_categories_v1-2.csv")
- vmodalities <- read.csv("data/values_labels_v1-2.csv")
- 
- names.lapop.trend  <- merge(x = names.lapop.trend,
-                             y = questions, all.x = TRUE)
- names.lapop.trend.inter  <- merge(x = names.lapop.trend.inter,
-                             y = questions, all.x = TRUE)
- 
+ # questions <- read.csv("data/questions_categories_v1-2.csv")
+ # vmodalities <- read.csv("data/values_labels_v1-2.csv")
+ # 
+ # names.lapop.trend  <- merge(x = names.lapop.trend,
+ #                             y = questions, all.x = TRUE)
+ # names.lapop.trend.inter  <- merge(x = names.lapop.trend.inter,
+ #                             y = questions, all.x = TRUE)
+ # 
 
  ## save in raw-data folder
  if(!dir.exists("data")) dir.create("data") 
  write.csv(lapop.trend.inter, "data/dataLAPOPinter.csv", row.names = FALSE)
  write.csv(lapop.trend, "data/dataLAPOP.csv", row.names = FALSE)
  
+}
 
- 
+#' merge_dicoLAPOP
+#' 
+#' Merge data dictionary for all dataset
+#'
+#' @md
+#' @examples
+#' \dontrun{
+#' }
+#' @export
+
+merge_dicoLAPOP <- function( ){
+  dicolist <-  list.files(paste0(getwd(),"/inst/dico"),full.names=T)
+  lapop.dico <- read.csv(dicolist[1])
+  ctryear <- substr( as.character(dicolist[1]),nchar(getwd())+12, nchar(getwd())+25 ) 
+  names(lapop.dico)[2] <- paste0(names(lapop.dico)[2],".",ctryear)
+  names(lapop.dico)[3] <- paste0(names(lapop.dico)[3],".",ctryear)
+  
+  lapop.dico.inner <- lapop.dico
+  
+  for (f in 2:length(dicolist)) {
+    cat(paste0("reading :",f, dicolist[f], "\n"))
+    # f <- 3
+    lapop.dico1 <- read.csv(dicolist[f])
+    ctryear <- substr( as.character(dicolist[f]),nchar(getwd())+12, nchar(getwd())+25 ) 
+    names(lapop.dico1)[2] <- paste0(names(lapop.dico1)[2],".",ctryear)
+    names(lapop.dico1)[3] <- paste0(names(lapop.dico1)[3],".",ctryear)
+    
+    ## All merge
+    lapop.dico <- dplyr::full_join(lapop.dico, lapop.dico1, by = "var")
+    lapop.dico.inner <- dplyr::full_join(lapop.dico.inner, lapop.dico1, by = "var")
+
+  }
+  
+  names(lapop.dico.inner)[2] <- "common"
+  lapop.dico.inner <- lapop.dico.inner[ , c("var", "common")]
+  ## Merge inner & outer to isolate the common var
+  lapop.dico.all <- dplyr::full_join(lapop.dico.inner, lapop.dico, by = "var")
+  
+  ## Merge with dico from vanderbylt
+  questions <- readxl::read_excel(paste0(getwd(),"/data/LAPOP_Dictionnary.xlsx"), sheet = "question")
+  lapop.dico.all <- dplyr::full_join(lapop.dico.all, questions, by = "var")
+  
+  ## save in raw-data folder
+  if(!dir.exists("data")) dir.create("data") 
+  write.csv(lapop.dico.all, "data/dataLAPOPdico.csv", row.names = FALSE)
 }

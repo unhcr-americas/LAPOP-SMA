@@ -1,12 +1,12 @@
 ---
-title: "Calculating some high-level data quality points"
+title: "Comparing survey contents between different waves"
 output:
   rmarkdown::html_vignette:
     toc: yes
     fig_width: 8
     fig_height: 6
 vignette: >
-  %\VignetteIndexEntry{Calculating some high-level data quality points}
+  %\VignetteIndexEntry{Comparing survey contents between different waves}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -104,18 +104,25 @@ basic <- data.frame(country=c('Guatemala','El Salvador','Honduras'),
                     nr=c(nrow(lapop.2014.GTM),nrow(lapop.2014.SLV),
                          nrow(lapop.2014.HND)))
 # num of questions
-ggplot(basic,aes(x=country,y=nq,fill=country)) +
-  geom_bar(stat="identity") +
+ggplot(basic,aes(x=reorder(country, nq),
+                 y=nq #, fill=country
+                 )) +
+  geom_bar(stat="identity", fill = unhcr_blue) +
   ggtitle("Number of questions") +
-  geom_text(aes(y=nq,label=nq,vjust=1.5),size=10) +
-  scale_fill_manual(values=brewer.pal(3,"Dark2")) +
-  theme_classic() +
-  theme(legend.position='none',
-        axis.ticks=element_blank(),
-        axis.text.y=element_blank(),
-        axis.line=element_blank(),
-        axis.title=element_blank(),
-        text=element_text(size=20))
+  geom_text(aes(y=nq,label=nq,vjust=1.5),size=6) +
+ # scale_fill_manual(values=brewer.pal(3,"Dark2")) +
+  coord_flip() +
+  labs(title = "Numbr of available analysis variables per country & Wave", 
+            # subtitle = " ",
+             x = " ", 
+             y = "",
+             caption = "Latin American Public Opinion Project / Vanderbilt University") +
+          unhcRstyle::unhcr_theme() +
+          theme(axis.text = element_text(size = 6),
+                legend.position = "none",
+                panel.grid.major.x = element_line(color = "#cbcbcb"), 
+                panel.grid.major.y = element_blank()) +### changing grid line that should appear) +
+        geom_hline(yintercept = 0, size = 0.7, colour = "#333333")
 ```
 
 
@@ -123,18 +130,24 @@ ggplot(basic,aes(x=country,y=nq,fill=country)) +
 
 ```{r,message=FALSE}
 # num of responses
-ggplot(basic,aes(x=country,y=nr,fill=country)) +
-  geom_bar(stat="identity") +
-  ggtitle("Number of responses") +
-  geom_text(aes(y=nr,label=nr,vjust=1.5),size=10) +
-    scale_fill_manual(values=brewer.pal(3,"Dark2")) +
-  theme_classic() +
-  theme(legend.position='none',
-        axis.ticks=element_blank(),
-        axis.text.y=element_blank(),
-        axis.line=element_blank(),
-        axis.title=element_blank(),
-        text=element_text(size=20))
+ggplot(basic,aes(x=reorder(country, nq),
+                 y=nr #,fill=country
+                 )) +
+  geom_bar(stat="identity", fill = unhcr_blue) +
+  geom_text(aes(y=nr,label=nr,vjust=1.5),size=6) +
+  #  scale_fill_manual(values=brewer.pal(3,"Dark2")) +
+  coord_flip() +
+  labs(title = "Numbr of respondents per country & Wave", 
+            # subtitle = " ",
+             x = " ", 
+             y = "",
+             caption = "Latin American Public Opinion Project / Vanderbilt University") +
+          unhcRstyle::unhcr_theme() +
+          theme(axis.text = element_text(size = 6),
+                legend.position = "none",
+                panel.grid.major.x = element_line(color = "#cbcbcb"), 
+                panel.grid.major.y = element_blank()) +### changing grid line that should appear) +
+        geom_hline(yintercept = 0, size = 0.7, colour = "#333333")
 ```
 
 
@@ -142,18 +155,35 @@ ggplot(basic,aes(x=country,y=nr,fill=country)) +
 
 ```{r,message=FALSE, warning=FALSE}
 # Venn diagram of overlapping questions
-plot.new()
-draw.triple.venn(ncol(lapop.2014.GTM),ncol(lapop.2014.SLV),ncol(lapop.2014.GTM),
+#plot.new()
+venn.plot <- draw.triple.venn(
+                 ncol(lapop.2014.GTM),ncol(lapop.2014.SLV),ncol(lapop.2014.GTM),
                  sum(names(lapop.2014.GTM) %in% names(lapop.2014.SLV)),
                  sum(names(lapop.2014.SLV) %in% names(lapop.2014.HND)),
                  sum(names(lapop.2014.GTM) %in% names(lapop.2014.HND)),
                  ncol(lapop.2014.all),
                  category=c('Guatemala','El Salvador','Honduras'),
                  fill=brewer.pal(3,"Dark2")[c(2,1,3)],
-                 cex=rep(3,7),cat.cex=rep(3,3),
-                 alpha=rep(0.1,3),col=rep(NA,3),
-                 cat.just=list(c(0,0.5),c(1,0.5),c(0.5,0)),
-                 euler.d=TRUE,scaled=TRUE)
+                 ## Font size & type
+                 cex=rep(3,7),
+                 cat.cex=rep(3,3),
+                 cat.fontfamily="Lato",
+                 
+                 alpha=rep(0.1,3),
+                 col=rep(NA,3),
+                 cat.just=list(c(0,0.5),
+                               c(1,0.5),
+                               c(0.5,0)),
+                 euler.d=TRUE,
+                 scaled=TRUE,
+                	main = "Overlapping Questions",
+                	sub = "Between countries & Wave",
+                	main.cex = 2,
+                	sub.cex = 1)
+
+grid.draw(venn.plot);
+grid.newpage();
+
 ```
 
 
@@ -202,24 +232,37 @@ missing_row <- rbind(data.frame(x=rowMeans(is.na(lapop.2014.GTM)),country='GTM')
                      data.frame(x=rowMeans(is.na(lapop.2014.all)),country='all'))
 ggplot(missing_row,aes(x=x,fill=country)) +
   geom_density(alpha=0.2) +
-  theme_classic() +
-  xlab('Missing values per row') +
   scale_fill_manual(values=brewer.pal(4,"Dark2")[c(2,1,3,4)]) +
   scale_x_continuous(limits=c(0,0.3)) +
+  labs(title = "Missing values per row", 
+            # subtitle = " ",
+             x = " ", 
+             y = "",
+             caption = "Latin American Public Opinion Project / Vanderbilt University") +
+          unhcRstyle::unhcr_theme() +
+          theme(axis.text = element_text(size = 6),
+                #legend.position = "none",
+                panel.grid.major.x = element_line(color = "#cbcbcb"), 
+                panel.grid.major.y = element_blank()) +### changing grid line that should appear) +
+        geom_hline(yintercept = 0, size = 0.7, colour = "#333333")
   theme(axis.ticks=element_blank(),
         axis.text.y=element_blank(),
         axis.line=element_blank(),
         axis.title.y=element_blank(),
         text=element_text(size=20))
 
-head(sort(colMeans(is.na(lapop.2014.GTM)),decreasing=TRUE))
-head(sort(colMeans(is.na(lapop.2014.SLV)),decreasing=TRUE))
-head(sort(colMeans(is.na(lapop.2014.HND)),decreasing=TRUE))
-head(sort(colMeans(is.na(lapop.2014.all)),decreasing=TRUE))
-quantile(colMeans(is.na(lapop.2014.GTM)))
-quantile(colMeans(is.na(lapop.2014.SLV)))
-quantile(colMeans(is.na(lapop.2014.HND)))
-quantile(colMeans(is.na(lapop.2014.all)))
+```
+
+
+```{r message=FALSE, warning=FALSE}
+# head(sort(colMeans(is.na(lapop.2014.GTM)),decreasing=TRUE))
+# head(sort(colMeans(is.na(lapop.2014.SLV)),decreasing=TRUE))
+# head(sort(colMeans(is.na(lapop.2014.HND)),decreasing=TRUE))
+head(sort(colMeans(is.na(lapop.2014.all)),decreasing=TRUE),10)
+# quantile(colMeans(is.na(lapop.2014.GTM)))
+# quantile(colMeans(is.na(lapop.2014.SLV)))
+# quantile(colMeans(is.na(lapop.2014.HND)))
+# quantile(colMeans(is.na(lapop.2014.all)))
 ```
 
 The most common missing responses are for:
@@ -239,20 +282,31 @@ For some reason, a single response in Guatemala was from 1/1/2012, while the res
 
 ```{r message=FALSE, warning=FALSE}
 Sys.setlocale("LC_TIME", "usa")
-date_time <- date_time[-1407,] # remove outlier
-date_time$date <- dmy(date_time$fecha)
+date_time <- lapop.2014.all[-1407,] # remove outlier
+date_time$date <- readr::parse_date(as.character(date_time$fecha))
 countries <- c(NA,'Guatemala','El Salvador','Honduras')
+
 date_time$country <- countries[date_time$pais]
-ggplot(date_time,aes(x=date,fill=country)) +
-  geom_density(alpha=0.2,adjust=0.25) +
+
+
+ggplot(date_time,
+       aes(x=date,
+           fill=country)) +
+  geom_density(alpha=0.2,
+               adjust=0.25) +
+  
   scale_fill_manual(values=brewer.pal(3,"Dark2")) +
-  theme_classic() +
-  xlab('Survey date (2014)') +
-  theme(axis.ticks=element_blank(),
-        axis.text.y=element_blank(),
-        axis.line=element_blank(),
-        axis.title.y=element_blank(),
-        text=element_text(size=20))
+  labs(title = "Survey data collection date", 
+            # subtitle = " ",
+             x = " ", 
+             y = "",
+             caption = "Latin American Public Opinion Project / Vanderbilt University") +
+          unhcRstyle::unhcr_theme() +
+          theme(axis.text = element_text(size = 6),
+                #legend.position = "none",
+                panel.grid.major.x = element_line(color = "#cbcbcb"), 
+                panel.grid.major.y = element_blank()) +### changing grid line that should appear) +
+        geom_hline(yintercept = 0, size = 0.7, colour = "#333333")
 ```
 
 
@@ -278,14 +332,25 @@ Most people took 30-60 minutes to complete the survey.
 # Basic Demographics 
 
 ```{r message=FALSE, warning=FALSE}
-mean(lapop.2014.all$sex==2) # 51.8% female
+#mean(lapop.2014.all$sex==2) # 51.8% female
 ages <- lapop.2014.all[,c('pais','q2')]
 ages$country <- countries[ages$pais]
+
+
 ggplot(ages,aes(x=q2,fill=country)) +
   geom_density(alpha=0.2) +
-  theme_classic() +
-  xlab('Age (years)') +
   scale_fill_manual(values=brewer.pal(3,"Dark2")) +
+  labs(title = "Breakdown of main respondent age", 
+            # subtitle = " ",
+             x = "Age (years) ", 
+             y = "",
+             caption = "Latin American Public Opinion Project / Vanderbilt University") +
+          unhcRstyle::unhcr_theme() +
+          theme(axis.text = element_text(size = 6),
+               # legend.position = "none",
+                panel.grid.major.x = element_line(color = "#cbcbcb"), 
+                panel.grid.major.y = element_blank()) +### changing grid line that should appear) +
+        geom_hline(yintercept = 0, size = 0.7, colour = "#333333")
   theme(axis.ticks=element_blank(),
         axis.text.y=element_blank(),
         axis.line=element_blank(),
