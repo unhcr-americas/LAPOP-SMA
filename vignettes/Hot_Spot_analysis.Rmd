@@ -118,6 +118,11 @@ plot1 <- ggplot( ) +
        subtitle = "Displaying index value..",
        caption = "") +
    unhcRstyle::unhcr_theme() +
+   theme(axis.ticks=element_blank(),
+          axis.text.y=element_blank(),
+          axis.line = element_blank(),
+         plot.
+          axis.title.y=element_blank())
   
 plot1
 #ggpubr::ggarrange(unhcRstyle::left_align(plot1, c("caption", "subtitle", "title")), ncol = 1, nrow = 1)
