@@ -1,8 +1,8 @@
 ---
-title: "Profiling_Intended_Migrant"
+title: "Profiling Intended Migrant"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Profiling_Intended_Migrant}
+  %\VignetteIndexEntry{Profiling Intended Migrant}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -27,7 +27,7 @@ library(patchwork)
 library(embed)
 library(haven)
 library(readxl)
-
+library(AmericasBarometer)
 ```
 
 

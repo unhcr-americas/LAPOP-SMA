@@ -1,0 +1,320 @@
+---
+title: "Principal Components Vs Factor Analysis"
+output:
+  rmarkdown::html_vignette:
+    toc: yes
+    fig_width: 8
+    fig_height: 6
+vignette: >
+  %\VignetteIndexEntry{Principal Components Vs Factor Analysis}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, 
+                      message = FALSE, 
+                      warning = FALSE, 
+                      collapse = FALSE,
+                      comment = "#>",
+                      fig.align = "center")
+#knitr::opts_chunk$set(fig.width = 8, fig.height = 6)
+set.seed(1)
+extrafont::loadfonts(quiet=TRUE)
+options(scipen = 999) # turn-off scientific notation like 1e+48
+library(unhcRstyle)
+
+library(car)
+library(foreign)
+library(survey)
+library(ggplot2)
+library(AmericasBarometer)
+```
+
+This example illustrates the use of the method of Principal Components to form an index  
+
+Principal Components is a mathematical technique (not a statistical one!) based off the eigenvalue decomposition/singular value decomposition of a data matrix (or correlation/covariance matrix) Link. This technique re-represents a complicated data set (set of variables) in a simpler form, where the information in the original variables is now represented by fewer components, which represent the majority (we hope!!) of the variance in the original data. This is known as a variable reduction strategy. It is also used commonly to form indices in the behavioral/social sciences. It is closely related to factor analysis Link, and indeed the initial solution of factor analysis is often the exact same as the PCA solution. PCA preserves the orthogonal nature of the components, while factor analysis can violate this assumption.
+
+
+```{r}
+# https://rpubs.com/corey_sparks/65532
+mainDir <- getwd()
+## If you save your analysis under vignette folder...
+mainDirroot <- substring(mainDir, 0 , nchar(mainDir) - 10)
+
+
+lapop.2014.GTM <- read.csv(paste0(mainDirroot, "/data-raw/lapop.2014.GTM.csv"))
+lapop.2014.SLV <- read.csv(paste0(mainDirroot, "/data-raw/lapop.2014.SLV.csv"))
+lapop.2014.HND <- read.csv(paste0(mainDirroot, "/data-raw/lapop.2014.HND.csv"))
+```
+
+
+
+```{r }
+
+v <- c('dem2','dem11','jc13','jc10','jc15a'  )
+my_data <- rbind(lapop.2014.GTM[,v],lapop.2014.SLV[,v],lapop.2014.HND[,v])
+#dem2 has sort of an odd scale -- switch 1 and 2
+my_data$dem2[my_data$dem2==1] <- 100
+my_data$dem2[my_data$dem2==2] <- 1
+my_data$dem2[my_data$dem2==100] <- 2
+my_data <- my_data[,order(names(my_data))] # alphabetize columns
+is.na(my_data[my_data>16]) <- TRUE
+
+
+```
+
+##Analysis
+
+Now we prepare to fit the survey corrected model. Here I just get the names of the variables that i will use, this keeps the size of things down, in terms of memory used
+
+
+We use the prcomp function to do the pca, we specify our variables we want in our index using a formula, the name of the data, we also specify R to z-score the data (center=T removes the mean, scale=T divides by the standard deviation for each variable), and the retx=T will calculate the PC scores for each individual for each component.
+```{r}
+my_complete <- na.omit(my_data)
+
+# Principal Components Analysis
+pr_complete <- stats::prcomp(my_complete,center=TRUE,scale=FALSE)
+
+##plot(pr_complete)
+## Better PCA plot with ggfortify
+# autoplot(pr_complete) +
+#   labs(title = "Principal Componnent Analysis on ", 
+#             subtitle = "Authoritarianism index ",
+#             # x = " ", 
+#             # y = "",
+#              caption = "Latin American Public Opinion Project / Vanderbilt University") +
+#           unhcRstyle::unhcr_theme() +
+#           theme(axis.text = element_text(size = 6),
+#                 legend.position = "none",
+#                 panel.grid.major.x = element_line(color = "#cbcbcb"), 
+#                 panel.grid.major.y = element_blank()) #+### changing grid line that should appear) +
+         
+summary(pr_complete)
+
+```
+
+```{r }
+
+#Screeplot
+screeplot(pr_complete, type = "l")
+abline(h=1)
+
+```
+
+```{r }
+
+pr_complete$rotation
+
+
+```
+
+
+```{r }
+
+#then I plot the first 2 components
+hist(pr_complete$x[,1])
+
+hist(pr_complete$x[,2])
+
+```
+
+
+
+
+The first two components account for 38.8% of the variation in the input variables, that isn’t bad. Also, we see 3 eigenvalues of at least 1, which suggests there are 3 real components among these 9 variables (remember, we are looking for eigenvalues > 1 when using z-scored data).
+
+In terms of the loadings for PC1, we see positive associations with everything but insurace status. We may interpret this component as an index for overall status, since all variables are loading in the same direction.
+
+For PC2 we see a mixture of loadings, some positive, some negative, and the only two variables that aren’t loading heavily are low physical activity (lowact) and fair/poor self rated (badhealth). We may interpret this components as more of a metabolic physical status, since the postive loadings are on the cardio-pulmonary and body mass variables (hpb, hc and bmi), with the exception of insurance coverage, while the more negative loadings are on more ot the behaviors variables.
+
+Of course, interpreting components is more art than science…
+
+Next, I calculate the correlation between the first 2 components to show they are orthogonal, i.e. correlation == 0
+
+
+```{r }
+cor(pr_complete$x[,1:2])
+
+```
+
+
+```{r }
+
+
+my_complete$pc1<-pr_complete$x[,1]
+my_complete$pc2<-pr_complete$x[,2]
+
+```
+
+Here we examine correlation among our variables
+
+```{r }
+
+
+round(cor(my_complete[,c(1:5)]), 3)
+```
+
+
+
+Sometimes it’s easier to look at the correlations among the original variables and the components
+```{r }
+
+
+round(cor(my_complete[,c(1:5, 6:7)]),3)
+```
+# Make the survey design object
+
+```{r }
+
+v <- c('dem2','dem11','jc13','jc10','jc15a', 'wt', 'cluster', 'upm' #'gestrat', 'weight1500'
+       )
+my_data <- rbind(lapop.2014.GTM[,v],lapop.2014.SLV[,v],lapop.2014.HND[,v])
+#dem2 has sort of an odd scale -- switch 1 and 2
+my_data$dem2[my_data$dem2==1] <- 100
+my_data$dem2[my_data$dem2==2] <- 1
+my_data$dem2[my_data$dem2==100] <- 2
+my_complete <- my_data[,order(names(my_data))] 
+# alphabetize columns
+#is.na(my_data[my_data>16]) <- TRUE
+
+
+options(survey.lonely.psu = "adjust")
+my_complete<-my_complete[complete.cases(my_complete),]
+
+des<-svydesign(ids=~upm, strata=~cluster, weights=~wt, data=my_complete , nest=T)
+
+```
+
+
+```{r }
+
+#means of the variables in the index
+svymean(~dem2 + dem11 + jc13 + jc10 + jc15a + wt, des, estimate.only=T )
+
+```
+
+
+The first analysis will look at variation in my index across age, and work status:
+```{r }
+
+# boxplot(pc1~dem11, data=my_complete)
+# 
+# boxplot(pc1~jc15a, data=my_complete)
+```
+
+
+
+The age plot is nice, and really shows that older ages have higher values for our index variable, which confirms our interpretation that higher values of the index are “not good”
+
+Now we do some hypothesis testing. This model will examine variation in my index across age, education, race and two healthcare access variables:
+```{r }
+
+# 
+# fit.1<-svyglm(pc1 ~dem2 + dem11 + jc13 + jc10 + jc15a + wt, des, family=gaussian)
+# summary(fit.1)
+
+```
+
+
+```{r }
+
+# vif(fit.1)
+
+```
+
+
+```{r }
+
+#use survey procedure to do pca
+# svy.pc<-svyprcomp(formula=~dem2 + dem11 + jc13 + jc10 + jc15a , center=T, scale.=T,scores=T, des)
+
+```
+
+
+```{r }
+# 
+# my_complete$pcs1<-svy.pc$x[,1]
+# my_complete$pcs2<-svy.pc$x[,2]
+# 
+# 
+# pr_complete <- stats::prcomp(my_complete[ , c('dem2','dem11','jc13','jc10','jc15a')],center=TRUE,scale=FALSE)
+# my_complete$pc1<-pr_complete$x[,1]
+# my_complete$pc2<-pr_complete$x[,2]
+
+
+```
+
+
+```{r }
+
+# #Just look at the non-survey pc1 vs the survey pc1
+# ggplot(my_complete, aes(x=pc1, y=pcs1))+geom_point(alpha=.05)+theme_gray()
+# 
+# ggplot(my_complete, aes(x=pc1, y=pcs1)) + stat_binhex()
+
+```
+
+
+## Quick Factor analysis
+
+In case you were wondering about how to do basic factor analysis, here you go:
+
+```{r }
+
+# 
+# lapop.fa<-svyfactanal(~dem2 + dem11 + jc13 + jc10 + jc15a, 
+#                       factors=3 , design=des, n="effective", rotation="varimax")
+# lapop.fa
+
+```
+
+
+```{r }
+
+# lapop.fa$loadings
+
+```
+
+
+```{r }
+
+# x<-scale(cbind(my_complete[,c("healthydays", "healthymdays", "ins", "smoke", "lowact", "hbp", "hc", "bmi", "badhealth")]))
+# 
+# lapop.fact.scores <- x%*%solve(cor(x))%*%loadings(lapop.fa)
+
+
+```
+
+
+```{r }
+
+# #then I plot the first 2 factors
+# hist(lapop.fact.scores[,1])
+# 
+# hist(lapop.fact.scores[,2])
+# 
+# my_complete$fa1<-lapop.fact.scores[,1]
+# my_complete$fa2<-lapop.fact.scores[,2]
+# 
+# ggplot(my_complete, aes(x=pcs1, y=fa1))+geom_point(alpha=.05)+theme_gray()
+
+```
+
+
+```{r }
+
+# ggplot(my_complete, aes(x=pcs1, y=fa1)) + stat_binhex()
+
+```
+
+
+```{r }
+
+# cor(my_complete[c("pcs1", "fa1")])
+# ggplot(my_complete, aes(x=fa1, y=fa2))+geom_point(alpha=.05)+theme_gray()
+
+```
+
+So we get a slightly cleaner index with the first factor than with the PCA, in the FA, we see that the first factor is more of a “general index”, with the key variables being the #’s of days and the self rated health, while the second factor corresponds very well with what we saw from the PCA. Often times, factor analysis will often give cleaner looking results than PCA, because you can monkey with the initial solution.
+

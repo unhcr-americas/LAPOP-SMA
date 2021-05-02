@@ -12,10 +12,7 @@ with 3 letters country code plus yer
 like GTM2019}
 }
 \description{
-Get all country specific dataset and do a full merge and get the
-full Grand Merge data set.
-Create a data frame called lapop.trends containing all indicators
-that are consistent across countries and years.
+Get all country specific dataset
 }
 \examples{
 \dontrun{

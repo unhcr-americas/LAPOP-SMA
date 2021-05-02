@@ -4,11 +4,15 @@
 \alias{bar_plot}
 \title{bar_plot}
 \usage{
-bar_plot(f)
+bar_plot(f, plotTittle = "", plotsubTittle = "")
 }
 \arguments{
 \item{f}{data frame f needs to contain a year column all other columns will
 become the names of data series that will be plotted together}
+
+\item{plotTittle}{plot title}
+
+\item{plotsubTittle}{plot title}
 }
 \description{
 ggplot2 bar plot: plot distribution of x (no time resolution here)

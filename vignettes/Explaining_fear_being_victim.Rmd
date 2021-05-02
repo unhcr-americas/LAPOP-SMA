@@ -38,6 +38,7 @@ library(stringr) # also needed for plot
 library(googleVis) # use this for interactive maps
 library(plyr)
 library(ISOcodes) # need this for department names
+library(AmericasBarometer)
 ```
 
 For now, focus on Honduras in 2014. Assuming that you've already downloaded all of the Americas Barometer data (look [here](https://github.com/ccjolley/LAPOP-SMA/blob/master/load_lapop.R) if you haven't), we can load it into an R data frame:

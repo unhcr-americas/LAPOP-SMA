@@ -1,8 +1,8 @@
 ---
-title: "Profiling_Intended_Migrant"
+title: "Explaining intention to Migrate"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Profiling_Intended_Migrant}
+  %\VignetteIndexEntry{Explaining intention to Migrate}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -31,7 +31,24 @@ library(readxl)
 ```
 
 
+## Factors influencing population movement.
 
+__Push factors__ are those associated with the area of origin, while __Pull factors__ are those that are associated with the area of destination.
+
+|      Reasons      |  Pull factors         |  Push factors         |
+|:-------------|:-------------|:-------------|
+|      Economic      |  More jobs, Better jobs, Higher wages, The promise of a “better life”        |  Overpopulation, Few jobs,  Low wages         |
+|      Social      |  Principles of religious tolerance        |  Intolerance towards a certain cultural group, Active religious persecution         |
+|      Physical      |  Attractive environments, such as mountains, seasides and warm climates   |  Climate change, Natural disasters       |
+
+Public policy aiming at the limitation of Population movement shall be designed to in relation with the composition of the different types of push factors that generate them:
+
+ * Intervention in relation with development and poverty alleviation will mostly address economic push factor
+ 
+ * Intervention in relation with international protection  will focus on social push factors
+ 
+ * Intervention in relation with resilience and sustainability will address physical push factors
+ 
 
 
 ```{r getdata}
@@ -86,9 +103,6 @@ data <- data %>% mutate(across(where(is.factor), ~na_if(., "No sabe")),
 ```
 
 
- 
-
-## Predicting Intention
 
 ```{r}
 ridit <- function(x) {
@@ -105,10 +119,11 @@ ridit <- function(x) {
 }
 ```
 
+ 
+
+## Predicting Intentions
 
 ```{r}
-
-##
 
 mdata <-
   data %>%
@@ -226,5 +241,132 @@ per_country %>%
                 panel.grid.major.x = element_line(color = "#cbcbcb"), 
                 panel.grid.major.y = element_blank()) 
 ```
+
+## Predicting Intention
+
+```{r}
+
+mdata <-
+  data %>%
+  transmute(country = pais, 
+            
+            ## Demographic condition
+            urban = ur == "Urbano", #strata = estratopri,
+            age = as.numeric(as.character(q2)), sex = q1,
+            edu =
+              ed %>%
+              fct_recode("0" = "Ninguno", "18" = "18+") %>%
+              compose(as.numeric, as.character)(),
+            marital_status = 
+              case_when(q11n == "Soltero" ~ "Single",
+                        q11n == "Casado" | q11n == "Unión Libre (acompañado)" ~ "Couple",
+                        TRUE ~ "Other"),
+            hhsize = fct_recode(q12c, "20" = "20+") %>% compose(as.numeric, as.character)(),
+            share_children =
+              ((fct_recode(q12bn, "0" = "Ninguno") %>% compose(as.numeric, as.character)())/hhsize) %>%
+              modify_if(~replace_na(.>=1, TRUE), ~NA_real_),
+           # ethnicity = etid,
+            
+            ## Pull Factor
+            ocup = 
+              case_when(ocup4a == "Trabajando" | ocup4a == "No está trabajando en este momento pero tiene trabajo" ~ "Employed",
+                        ocup4a == "Está buscando trabajo activamente" ~ "Searching for work",
+                        TRUE ~ "Outside the labor force") %>% 
+              fct_relevel("Employed", after = Inf),
+            ## perc_econ = soct2, 
+            remittances_or_assistnace = q10a == "Sí" | wf1 == "Sí",
+            wealth_percentile = q10new, 
+            usa_contact = q10cus == "Sí",
+            usa_contact_freq = q16 == "Todos los días" | q16 == "Una o dos veces a la semana" | q16 == "Una o dos veces por mes",
+            
+            food_insecure = fs2 == "Sí",
+            social_media_user = smedia1 == "Sí" | smedia7 == "Sí",
+            
+            ## Push factor
+            perc_safety = pese2,
+            perc_trust = it1 == "Algo confiable" | it1 == "Muy confiable",
+            perc_natural_disaster = drk1, 
+            perc_env_severity = env2b,
+            experienced_crime = vic1ext == "Sí", # crime_neighborhood = vicbar7 == "Sí",
+            unsafe_neighborhood = str_detect(aoj11, "inseguro"),
+            #leave_neighborhood = vic43 == "Sí", # Honduras only!!!
+            trust_judiciary = aoj12 == "Mucho" | aoj12 == "Algo",
+            trust_political_system = b3 == "4" | b3 == "5" | b3 == "6" | b3 == "Mucho",
+            trust_police = infrax %>% 
+             na_if("[No Leer] No hay Policía/ No llegaría nunca"),
+            # trust_police = infrax == "Menos de 10 minutos" | infrax == "Entre 10 y hasta 30 minutos",
+            recv_remittances = q10a == "Sí", rec_assistance = wf1 == "Sí",
+            
+            ## 
+
+            intention = q14 == "Sí"
+            )
+
+mdata <- 
+  mdata %>% 
+  group_by(country) %>% 
+  mutate(wealth_percentile = ridit(wealth_percentile)) %>% 
+  ungroup()
+
+#names(mdata)
+ifelse(check <- sapply(mdata, function(x) length(levels(x))) == 1, "DROP", "NODROP")
+
+
+
+## Logistic regression
+per_country <-
+  mdata %>%
+  split(.$country) %>%
+  map_dfr(~glm(intention~., data = select(., -country), family = "binomial") %>%
+            tidy(exponentiate = TRUE, conf.int = TRUE),
+          .id = "country")
+
+#levels(as.factor(per_country$term))
+# "age"                          
+# "edu"                           "experienced_crimeTRUE"        
+# "food_insecureTRUE"             "hhsize"                       
+# "marital_statusOther"           "marital_statusSingle"         
+# "ocupEmployed"                  "ocupSearching for work"       
+# "perc_safetyIgual"              "perc_safetyMenor"             
+# "remittances_or_assistnaceTRUE" "sexMujer"                     
+# "share_children"                "social_media_userTRUE"        
+# "unsafe_neighborhoodTRUE"       "urbanTRUE"                    
+# "usa_contact_freqTRUE"          "wealth_percentile" 
+```
+
+
+
+```{r }
+per_country %>% 
+  ## Filers variable without sufficient confidence level
+  filter(!(conf.low < 1 & conf.high > 1)) %>%
+  
+  ## Filer out strata & Intercept
+  filter(term != "strata") %>%
+  filter(term != "(Intercept)") %>%
+  
+  ## map push & Pull factor
+  
+  ## Now plot the model
+  ggplot(aes(estimate, term)) + 
+  geom_pointrange(aes(xmin = conf.low, xmax = conf.high, 
+                      color = ifelse(test = estimate >1, yes = "blue",   no = "red"))) + 
+  geom_text(aes(label = scales::label_number(accuracy = .01)(estimate)), 
+            vjust = -0.5) +
+  geom_vline(xintercept =1, size = 0.7, colour = "red") +
+  facet_wrap(vars(country))+
+  labs(title = "What variable impacts intention to migrate in 2018?", 
+             subtitle = "Only reliably predictive variable are displayed.\n Red positive odds,Blue negative odds, Whiskers displays with 95% Confidence Interval ",
+             y = "Factors ", x = "Adjusted odds ratios ",
+             caption = "Latin American Public Opinion Project / Vanderbilt University") +
+  unhcRstyle::unhcr_theme() +
+  theme(axis.text = element_text(size = 2),
+        plot.title = element_text(size = 15),
+        plot.subtitle = element_text(size = 12),
+                legend.position = "none",
+                panel.grid.major.x = element_line(color = "#cbcbcb"), 
+                panel.grid.major.y = element_blank()) 
+```
+
 
 

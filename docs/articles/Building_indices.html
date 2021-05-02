@@ -124,10 +124,13 @@
 <li>
 <code>jc15a</code>: President justified in governing without legislature during crisis (1=yes, 2=no)</li>
 </ul>
+<pre><code>#&gt; All variables for the index are present in the datasetInputed missing percent values: c(0.0218388294387421, 0.05503385018563, 0.0596200043677659, 0.052413190652981, 0.0681371478488753)
+#&gt;  Inputed missing percent values: c("dem11", "dem2", "jc10", "jc13", "jc15a")
+#&gt; The first componnent retained 40.128% of the variance.</code></pre>
 <div id="principal-componnent-analysis-without-imputation" class="section level3">
 <h3 class="hasAnchor">
 <a href="#principal-componnent-analysis-without-imputation" class="anchor"></a>Principal Componnent Analysis without imputation</h3>
-<p><img src="Building_indices_files/figure-html/unnamed-chunk-3-1.png" width="700" style="display: block; margin: auto;"></p>
+<p><img src="Building_indices_files/figure-html/unnamed-chunk-4-1.png" width="700" style="display: block; margin: auto;"></p>
 <pre><code>#&gt; Importance of components:
 #&gt;                           PC1    PC2    PC3     PC4     PC5
 #&gt; Standard deviation     0.7370 0.6143 0.4676 0.31602 0.29372
@@ -138,10 +141,10 @@
 <div id="missing-values-imputation" class="section level3">
 <h3 class="hasAnchor">
 <a href="#missing-values-imputation" class="anchor"></a>Missing values imputation</h3>
-<p><img src="Building_indices_files/figure-html/unnamed-chunk-5-1.png" width="700" style="display: block; margin: auto;"></p>
+<p><img src="Building_indices_files/figure-html/unnamed-chunk-6-1.png" width="700" style="display: block; margin: auto;"></p>
 <p>Most variables had fairly similar numbers of missing values; people were least willing to talk about expanded presidential powers (<code>jc15a</code>) and most willing to talk about mano dura policies (<code>dem11</code>).</p>
 <p>What does PCA look like for one of the five imputed datasets?</p>
-<p><img src="Building_indices_files/figure-html/unnamed-chunk-6-1.png" width="700" style="display: block; margin: auto;"></p>
+<p><img src="Building_indices_files/figure-html/unnamed-chunk-7-1.png" width="700" style="display: block; margin: auto;"></p>
 <pre><code>#&gt; Importance of components:
 #&gt;                           PC1    PC2    PC3     PC4     PC5
 #&gt; Standard deviation     0.7329 0.6160 0.4711 0.33338 0.29818
@@ -154,15 +157,15 @@
 <a href="#scatterplot-matrix" class="anchor"></a>Scatterplot matrix</h3>
 <p>The distribution of PC1 seems to fall into three bands, suggesting that the index is dominated by one variable that takes on three values.</p>
 <p>All of our imputations are really well-correlated, and the lowest-valued band is the most heavily-populated one.</p>
-<p><img src="Building_indices_files/figure-html/unnamed-chunk-8-1.png" width="960" style="display: block; margin: auto;"></p>
+<p><img src="Building_indices_files/figure-html/unnamed-chunk-9-1.png" width="960" style="display: block; margin: auto;"></p>
 </div>
 <div id="influence-of-indicator" class="section level3">
 <h3 class="hasAnchor">
 <a href="#influence-of-indicator" class="anchor"></a>Influence of indicator</h3>
-<p><img src="Building_indices_files/figure-html/unnamed-chunk-9-1.png" width="960" style="display: block; margin: auto;"></p>
+<p><img src="Building_indices_files/figure-html/unnamed-chunk-10-1.png" width="960" style="display: block; margin: auto;"></p>
 <p>Compared to the lowest quantile, the highest quantile of our proposed index has much higher values for <code>dem2</code> and decreasing values for everything else. Lower values for <code>dem2</code> indicate a preference for democracy, while higher values of the binary variables indicate less-authoritarian attitudes. The scale is therefore in pointing in the right direction.</p>
 <p><code>dem2</code> is the only variable that takes on three values; its strong slope in this plot suggests that it is the dominant factor in our index.</p>
-<p><img src="Building_indices_files/figure-html/unnamed-chunk-11-1.png" width="700" style="display: block; margin: auto;"></p>
+<p><img src="Building_indices_files/figure-html/unnamed-chunk-12-1.png" width="700" style="display: block; margin: auto;"></p>
 <p>While all five variables have an impact on the composite index, <code>dem2</code> has by far the strongest influence.</p>
 <p>We can be more rigorous about this by calculating p-values. We’ll have to do this differently for <code>dem2</code> (which takes on three values) than for the ones that only take on two. All are significantly-correlated (especially <code>dem2</code>).</p>
 <pre><code>#&gt;       var        est
@@ -206,7 +209,7 @@
 <div id="principal-componnent-analysis-without-imputation-1" class="section level3">
 <h3 class="hasAnchor">
 <a href="#principal-componnent-analysis-without-imputation-1" class="anchor"></a>Principal Componnent Analysis without imputation</h3>
-<p><img src="Building_indices_files/figure-html/unnamed-chunk-15-1.png" width="700" style="display: block; margin: auto;"></p>
+<p><img src="Building_indices_files/figure-html/unnamed-chunk-16-1.png" width="700" style="display: block; margin: auto;"></p>
 <pre><code>#&gt; Importance of components:
 #&gt;                           PC1    PC2    PC3    PC4     PC5     PC6    PC7
 #&gt; Standard deviation     4.9201 3.2383 2.8796 2.5338 2.18764 2.08894 1.7304
@@ -221,10 +224,10 @@
 <div id="missing-values-imputation-1" class="section level3">
 <h3 class="hasAnchor">
 <a href="#missing-values-imputation-1" class="anchor"></a>Missing values imputation</h3>
-<p><img src="Building_indices_files/figure-html/unnamed-chunk-16-1.png" width="700" style="display: block; margin: auto;"></p>
+<p><img src="Building_indices_files/figure-html/unnamed-chunk-17-1.png" width="700" style="display: block; margin: auto;"></p>
 <p>None of these involved a lot of imputation; in general the questions about the political rights of government critics (<code>d1</code>,<code>d2</code>,<code>d3</code>,<code>d4</code>) needed more imputation than the questions about the appropriateness of protests or anti-government activity.</p>
 <p>Look at PCA for one of our imputed datasets:</p>
-<p><img src="Building_indices_files/figure-html/unnamed-chunk-17-1.png" width="700" style="display: block; margin: auto;"></p>
+<p><img src="Building_indices_files/figure-html/unnamed-chunk-18-1.png" width="700" style="display: block; margin: auto;"></p>
 <pre><code>#&gt; Importance of components:
 #&gt;                          PC1    PC2    PC3    PC4     PC5     PC6     PC7
 #&gt; Standard deviation     4.900 3.2469 2.9053 2.5461 2.19176 2.08978 1.73913
@@ -235,23 +238,23 @@
 #&gt; Proportion of Variance 0.03678
 #&gt; Cumulative Proportion  1.00000</code></pre>
 <p>PCA results look very similar to what we saw without imputation, which is good.</p>
-<p><img src="Building_indices_files/figure-html/unnamed-chunk-18-1.png" width="960" style="display: block; margin: auto;"></p>
+<p><img src="Building_indices_files/figure-html/unnamed-chunk-19-1.png" width="960" style="display: block; margin: auto;"></p>
 </div>
 <div id="scatterplot-matrix-1" class="section level3">
 <h3 class="hasAnchor">
 <a href="#scatterplot-matrix-1" class="anchor"></a>Scatterplot matrix</h3>
 <p>This scatterplot shows a very continuous distribution along PC1; a good sign that a single variable doesn’t really dominate this index. It helps that each variable can take a large number of values, meaning that a large number of combinations are possible (and present).</p>
-<p><img src="Building_indices_files/figure-html/unnamed-chunk-19-1.png" width="960" style="display: block; margin: auto;"></p>
+<p><img src="Building_indices_files/figure-html/unnamed-chunk-20-1.png" width="960" style="display: block; margin: auto;"></p>
 <p>All of our imputations are really well-correlated, and the distributions of PC1 look well-behaved.</p>
 </div>
 <div id="influence-of-indicator-1" class="section level3">
 <h3 class="hasAnchor">
 <a href="#influence-of-indicator-1" class="anchor"></a>Influence of indicator</h3>
-<p><img src="Building_indices_files/figure-html/unnamed-chunk-20-1.png" width="960" style="display: block; margin: auto;"></p>
+<p><img src="Building_indices_files/figure-html/unnamed-chunk-21-1.png" width="960" style="display: block; margin: auto;"></p>
 <p>All variables increase with PC1 – high values indicate greater approval of dissident rights, so our index is pointing in the right direction. The steepest slope (i.e. the largest difference between the lowest and highest quartiles) belongs to <code>d2</code> (approval of critics’ right to hold peaceful demonstrations), while <code>e3</code> (approval of groups trying to overthrow the government) has the shallowest slope. Even the most tolerant people don’t have much patience with revolutionaries.</p>
 <p>Let’s normalize and average PC1:</p>
 <p>Now, let’s see how each variable contributes to the composite score:</p>
-<p><img src="Building_indices_files/figure-html/unnamed-chunk-22-1.png" width="700" style="display: block; margin: auto;"></p>
+<p><img src="Building_indices_files/figure-html/unnamed-chunk-23-1.png" width="700" style="display: block; margin: auto;"></p>
 <p>This is roughly what we’d expect – all variables have an influence, with <code>d2</code> the strongest and <code>e3</code> the weakest.</p>
 <p>We can be more rigorous about this by calculating p-values. As all variables are measured on a 1-10 scale, we can do this using linear regression.</p>
 <pre><code>#&gt;                                                                                                                                                                                                                                                                                  d1 
@@ -290,7 +293,7 @@
 #&gt; Residual standard error: 3.026 on 4547 degrees of freedom
 #&gt; Multiple R-squared:  0.1819, Adjusted R-squared:  0.1817 
 #&gt; F-statistic:  1011 on 1 and 4547 DF,  p-value: &lt; 0.00000000000000022</code></pre>
-<p><img src="Building_indices_files/figure-html/unnamed-chunk-24-1.png" width="700" style="display: block; margin: auto;"></p>
+<p><img src="Building_indices_files/figure-html/unnamed-chunk-25-1.png" width="700" style="display: block; margin: auto;"></p>
 <p>The correlation is far from perfect, but people with a high value of our index are significantly more likely to appove of vigilante justice. It’s interesting that <code>e16</code> seems fairly polarized, with a lot of people answering either 1 or 10.</p>
 <p>Finally, check these values against the comments in <code>make_indices.R</code> to be sure we’re calculating the same index:</p>
 <pre><code>#&gt;          0%         25%         50%         75%        100% 
@@ -315,7 +318,7 @@
 <div id="principal-componnent-analysis-without-imputation-2" class="section level3">
 <h3 class="hasAnchor">
 <a href="#principal-componnent-analysis-without-imputation-2" class="anchor"></a>Principal Componnent Analysis without imputation</h3>
-<p><img src="Building_indices_files/figure-html/unnamed-chunk-27-1.png" width="700" style="display: block; margin: auto;"></p>
+<p><img src="Building_indices_files/figure-html/unnamed-chunk-28-1.png" width="700" style="display: block; margin: auto;"></p>
 <pre><code>#&gt; Importance of components:
 #&gt;                           PC1    PC2    PC3    PC4     PC5
 #&gt; Standard deviation     1.0948 0.8720 0.7153 0.6014 0.53463
@@ -326,31 +329,31 @@
 <div id="missing-values-imputation-2" class="section level3">
 <h3 class="hasAnchor">
 <a href="#missing-values-imputation-2" class="anchor"></a>Missing values imputation</h3>
-<p><img src="Building_indices_files/figure-html/unnamed-chunk-28-1.png" width="700" style="display: block; margin: auto;"></p>
+<p><img src="Building_indices_files/figure-html/unnamed-chunk-29-1.png" width="700" style="display: block; margin: auto;"></p>
 <p>None of the variables stand out as needing too much imputation, with the CLEAR exception of <code>cp20</code>, which was question conditioned on the subject being female.</p>
 <p>Presumably, what the imputation is telling us is that the individual in question would go to women’s groups if men were invited.</p>
-<p><img src="Building_indices_files/figure-html/unnamed-chunk-29-1.png" width="700" style="display: block; margin: auto;"></p>
+<p><img src="Building_indices_files/figure-html/unnamed-chunk-30-1.png" width="700" style="display: block; margin: auto;"></p>
 <pre><code>#&gt; Importance of components:
 #&gt;                           PC1    PC2    PC3    PC4    PC5
 #&gt; Standard deviation     1.0882 0.9017 0.7345 0.6383 0.5821
 #&gt; Proportion of Variance 0.3607 0.2477 0.1643 0.1241 0.1032
 #&gt; Cumulative Proportion  0.3607 0.6084 0.7727 0.8968 1.0000</code></pre>
 <p>With the imputation, we don’t have much change; 37% of variance is concentrated on the first principal component.</p>
-<p><img src="Building_indices_files/figure-html/unnamed-chunk-30-1.png" width="700" style="display: block; margin: auto;"></p>
+<p><img src="Building_indices_files/figure-html/unnamed-chunk-31-1.png" width="700" style="display: block; margin: auto;"></p>
 </div>
 <div id="scatterplot-matrix-2" class="section level3">
 <h3 class="hasAnchor">
 <a href="#scatterplot-matrix-2" class="anchor"></a>Scatterplot matrix</h3>
 <p>Variation along PC1 seems to be fairly continuous, indicating that this index isn’t dominated by a single variable.</p>
-<p><img src="Building_indices_files/figure-html/unnamed-chunk-31-1.png" width="700" style="display: block; margin: auto;"></p>
+<p><img src="Building_indices_files/figure-html/unnamed-chunk-32-1.png" width="700" style="display: block; margin: auto;"></p>
 <p>Our different imputed datasets correlate strongly, and the distribution skews toward low values of PC1.</p>
 </div>
 <div id="influence-of-indicator-2" class="section level3">
 <h3 class="hasAnchor">
 <a href="#influence-of-indicator-2" class="anchor"></a>Influence of indicator</h3>
-<p><img src="Building_indices_files/figure-html/unnamed-chunk-32-1.png" width="960" style="display: block; margin: auto;"></p>
+<p><img src="Building_indices_files/figure-html/unnamed-chunk-33-1.png" width="960" style="display: block; margin: auto;"></p>
 <p>All five variables decrease as the index increases; recall that larger values correspond to less-frequent participation, so our index is pointing in the right direction. Because <code>cp7</code> (parent’s association attendance) has the steepest slope, we suspect that it will have the strongest influence on the composite index.</p>
-<p><img src="Building_indices_files/figure-html/unnamed-chunk-33-1.png" width="700" style="display: block; margin: auto;"></p>
+<p><img src="Building_indices_files/figure-html/unnamed-chunk-34-1.png" width="700" style="display: block; margin: auto;"></p>
 <p>All variables influence the index; the weakest influence comes from <code>cp13</code> (Attended meetings of a political party), apparently because even the most-engaged quartile hardly did this at all.</p>
 <p>Since all variables take on multiple values, we will check p-values using linear regression.</p>
 <pre><code>#&gt;                                                                                                                                     cp5 
@@ -382,7 +385,7 @@
 #&gt; Residual standard error: 0.7678 on 4575 degrees of freedom
 #&gt; Multiple R-squared:  0.3907, Adjusted R-squared:  0.3906 
 #&gt; F-statistic:  2934 on 1 and 4575 DF,  p-value: &lt; 0.00000000000000022</code></pre>
-<p><img src="Building_indices_files/figure-html/unnamed-chunk-35-1.png" width="700" style="display: block; margin: auto;"></p>
+<p><img src="Building_indices_files/figure-html/unnamed-chunk-36-1.png" width="700" style="display: block; margin: auto;"></p>
 <pre><code>#&gt; 
 #&gt; Call:
 #&gt; lm(formula = q ~ w, data = cp13)
@@ -401,7 +404,7 @@
 #&gt; Residual standard error: 0.5842 on 4568 degrees of freedom
 #&gt; Multiple R-squared:  0.06414,    Adjusted R-squared:  0.06394 
 #&gt; F-statistic: 313.1 on 1 and 4568 DF,  p-value: &lt; 0.00000000000000022</code></pre>
-<p><img src="Building_indices_files/figure-html/unnamed-chunk-36-1.png" width="700" style="display: block; margin: auto;"></p>
+<p><img src="Building_indices_files/figure-html/unnamed-chunk-37-1.png" width="700" style="display: block; margin: auto;"></p>
 <pre><code>#&gt; 
 #&gt; Call:
 #&gt; lm(formula = q ~ w, data = cp20)
@@ -420,7 +423,7 @@
 #&gt; Residual standard error: 0.6009 on 2365 degrees of freedom
 #&gt; Multiple R-squared:  0.2156, Adjusted R-squared:  0.2153 
 #&gt; F-statistic: 650.1 on 1 and 2365 DF,  p-value: &lt; 0.00000000000000022</code></pre>
-<p><img src="Building_indices_files/figure-html/unnamed-chunk-37-1.png" width="700" style="display: block; margin: auto;"></p>
+<p><img src="Building_indices_files/figure-html/unnamed-chunk-38-1.png" width="700" style="display: block; margin: auto;"></p>
 <p>Finally, check these values against the comments in <code>make_indices.R</code> to be sure we’re calculating the same index:</p>
 <pre><code>#&gt;          0%         25%         50%         75%        100% 
 #&gt; -4.47333154 -0.57633937  0.06476722  0.93863134  3.52917748</code></pre>
@@ -477,7 +480,7 @@
 <div id="principal-componnent-analysis-without-imputation-3" class="section level3">
 <h3 class="hasAnchor">
 <a href="#principal-componnent-analysis-without-imputation-3" class="anchor"></a>Principal Componnent Analysis without imputation</h3>
-<p><img src="Building_indices_files/figure-html/unnamed-chunk-39-1.png" width="700" style="display: block; margin: auto;"></p>
+<p><img src="Building_indices_files/figure-html/unnamed-chunk-40-1.png" width="700" style="display: block; margin: auto;"></p>
 <pre><code>#&gt; Importance of components:
 #&gt;                           PC1    PC2     PC3     PC4     PC5     PC6     PC7
 #&gt; Standard deviation     2.9789 2.2473 1.28048 1.13165 1.05098 0.94834 0.90026
@@ -496,28 +499,28 @@
 #&gt; Proportion of Variance 0.0000000000000000000 0.0000000000000000000
 #&gt; Cumulative Proportion  1.0000000000000000000 1.0000000000000000000</code></pre>
 <p>41.3% of total variance winds up in the first component. ### Missing values imputation</p>
-<p><img src="Building_indices_files/figure-html/unnamed-chunk-40-1.png" width="700" style="display: block; margin: auto;"></p>
-<p>The only variable that needed a lot of imputation was <code>vicbar1f</code> – the number of burglaries in the neighborhood. I’m guessing this is because people don’t always know about all the burglaries that might be going on. Let’s look at the PCA for one of our imputed datasets.</p>
 <p><img src="Building_indices_files/figure-html/unnamed-chunk-41-1.png" width="700" style="display: block; margin: auto;"></p>
-<p>Imputation decreased the fraction of variance in the first component to 46.7%.</p>
+<p>The only variable that needed a lot of imputation was <code>vicbar1f</code> – the number of burglaries in the neighborhood. I’m guessing this is because people don’t always know about all the burglaries that might be going on. Let’s look at the PCA for one of our imputed datasets.</p>
 <p><img src="Building_indices_files/figure-html/unnamed-chunk-42-1.png" width="700" style="display: block; margin: auto;"></p>
+<p>Imputation decreased the fraction of variance in the first component to 46.7%.</p>
+<p><img src="Building_indices_files/figure-html/unnamed-chunk-43-1.png" width="700" style="display: block; margin: auto;"></p>
 </div>
 <div id="scatterplot-matrix-3" class="section level3">
 <h3 class="hasAnchor">
 <a href="#scatterplot-matrix-3" class="anchor"></a>Scatterplot matrix</h3>
 <p>The distribution along PC1 looks pretty continuous, while the PC2 distribution looks very skewed. Fortunately, we’re only using PC1.</p>
-<p><img src="Building_indices_files/figure-html/unnamed-chunk-43-1.png" width="700" style="display: block; margin: auto;"></p>
+<p><img src="Building_indices_files/figure-html/unnamed-chunk-44-1.png" width="700" style="display: block; margin: auto;"></p>
 <p>Correlations are high, and the distribution is skewed toward high values.</p>
 </div>
 <div id="influence-of-indicator-3" class="section level3">
 <h3 class="hasAnchor">
 <a href="#influence-of-indicator-3" class="anchor"></a>Influence of indicator</h3>
-<p><img src="Building_indices_files/figure-html/unnamed-chunk-44-1.png" width="960" style="display: block; margin: auto;"></p>
+<p><img src="Building_indices_files/figure-html/unnamed-chunk-45-1.png" width="960" style="display: block; margin: auto;"></p>
 <p>The <code>diso</code> variables all increase dramatically, while <code>aoj11</code> shows a dramatic decrease. This suggests that high values of the index indicate not being particularly concerned about crime and violence; we’ll have to reverse the scale.</p>
 <p>Now, in each row of predict_data2, all values are those that will give a lower score, except for one.</p>
-<p>Now you can see that all of the scores are reasonably close to the minimum value stored in minmax. <img src="Building_indices_files/figure-html/unnamed-chunk-48-1.png" width="700" style="display: block; margin: auto;"></p>
+<p>Now you can see that all of the scores are reasonably close to the minimum value stored in minmax. <img src="Building_indices_files/figure-html/unnamed-chunk-49-1.png" width="700" style="display: block; margin: auto;"></p>
 <p>All variables seem to have an effect, with a somewhat smaller one for <code>fear10</code> (avoided walking through dangerous areas), and larger ones for the <code>diso</code> variables and <code>vic1exta</code> (frequency of victimization)</p>
-<p><img src="Building_indices_files/figure-html/unnamed-chunk-49-1.png" width="700" style="display: block; margin: auto;"></p>
+<p><img src="Building_indices_files/figure-html/unnamed-chunk-50-1.png" width="700" style="display: block; margin: auto;"></p>
 <p>Finally, check these values against the comments in <code>make_indices.R</code> to be sure we’re calculating the same index:</p>
 <pre><code>#&gt;          0%         25%         50%         75%        100% 
 #&gt; -2.70032557 -0.72584645  0.09710501  0.77728462  1.67932735</code></pre>
@@ -604,36 +607,36 @@
 <div id="principal-componnent-analysis-without-imputation-4" class="section level3">
 <h3 class="hasAnchor">
 <a href="#principal-componnent-analysis-without-imputation-4" class="anchor"></a>Principal Componnent Analysis without imputation</h3>
-<p><img src="Building_indices_files/figure-html/unnamed-chunk-57-1.png" width="700" style="display: block; margin: auto;"></p>
+<p><img src="Building_indices_files/figure-html/unnamed-chunk-58-1.png" width="700" style="display: block; margin: auto;"></p>
 <p>52% of total variance winds up in the first component.</p>
 </div>
 <div id="missing-values-imputation-3" class="section level3">
 <h3 class="hasAnchor">
 <a href="#missing-values-imputation-3" class="anchor"></a>Missing values imputation</h3>
-<p><img src="Building_indices_files/figure-html/unnamed-chunk-58-1.png" width="700" style="display: block; margin: auto;"></p>
+<p><img src="Building_indices_files/figure-html/unnamed-chunk-59-1.png" width="700" style="display: block; margin: auto;"></p>
 <p>None of the variables have more than 20% missing; most everyone has an opinion about the police (<code>honqt5</code>) and fewer have one about the Institute for Access to Public Information (<code>honqt11</code>).</p>
 <p>Now calculate PCA for each of the imputed datasets.</p>
-<p><img src="Building_indices_files/figure-html/unnamed-chunk-59-1.png" width="700" style="display: block; margin: auto;"></p>
-<p>Imputation decreased the fraction of variance in the first component slightly to 52% – still pretty good.</p>
 <p><img src="Building_indices_files/figure-html/unnamed-chunk-60-1.png" width="700" style="display: block; margin: auto;"></p>
+<p>Imputation decreased the fraction of variance in the first component slightly to 52% – still pretty good.</p>
+<p><img src="Building_indices_files/figure-html/unnamed-chunk-61-1.png" width="700" style="display: block; margin: auto;"></p>
 </div>
 <div id="scatterplot-matrix-4" class="section level3">
 <h3 class="hasAnchor">
 <a href="#scatterplot-matrix-4" class="anchor"></a>Scatterplot matrix</h3>
 <p>PC1 is a little bit “stripy”, but still shows a decent distribution.</p>
-<p><img src="Building_indices_files/figure-html/unnamed-chunk-61-1.png" width="700" style="display: block; margin: auto;"></p>
+<p><img src="Building_indices_files/figure-html/unnamed-chunk-62-1.png" width="700" style="display: block; margin: auto;"></p>
 <p>Correlations between imputed datasets are high; distributions look good.</p>
 </div>
 <div id="influence-of-indicator-4" class="section level3">
 <h3 class="hasAnchor">
 <a href="#influence-of-indicator-4" class="anchor"></a>Influence of indicator</h3>
-<p><img src="Building_indices_files/figure-html/unnamed-chunk-62-1.png" width="960" style="display: block; margin: auto;"></p>
+<p><img src="Building_indices_files/figure-html/unnamed-chunk-63-1.png" width="960" style="display: block; margin: auto;"></p>
 <p>All values increase (toward less transparency) as the index increases – need to flip sign below.</p>
 <p>Now, in each row of predict_data2, all values are those that will give a lower score, except for one.</p>
-<p>Now you can see that all of the scores are reasonably close to the minimum value stored in minmax. <img src="Building_indices_files/figure-html/unnamed-chunk-66-1.png" width="700" style="display: block; margin: auto;"></p>
+<p>Now you can see that all of the scores are reasonably close to the minimum value stored in minmax. <img src="Building_indices_files/figure-html/unnamed-chunk-67-1.png" width="700" style="display: block; margin: auto;"></p>
 <p>All variables have a nearly equal effect.</p>
-<p><img src="Building_indices_files/figure-html/unnamed-chunk-67-1.png" width="700" style="display: block; margin: auto;"></p>
 <p><img src="Building_indices_files/figure-html/unnamed-chunk-68-1.png" width="700" style="display: block; margin: auto;"></p>
+<p><img src="Building_indices_files/figure-html/unnamed-chunk-69-1.png" width="700" style="display: block; margin: auto;"></p>
 <p>Test significance of correlations between the index and the component variables using linear regression.</p>
 <pre><code>#&gt;                                                                                                                                                                                                                                                         honqt1 
 #&gt; 0.000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000012866746451298175113825478749774798 
@@ -705,7 +708,7 @@
 <div id="principal-componnent-analysis-without-imputation-5" class="section level3">
 <h3 class="hasAnchor">
 <a href="#principal-componnent-analysis-without-imputation-5" class="anchor"></a>Principal Componnent Analysis without imputation</h3>
-<p><img src="Building_indices_files/figure-html/unnamed-chunk-71-1.png" width="700" style="display: block; margin: auto;"></p>
+<p><img src="Building_indices_files/figure-html/unnamed-chunk-72-1.png" width="700" style="display: block; margin: auto;"></p>
 <pre><code>#&gt; Importance of components:
 #&gt;                           PC1     PC2     PC3     PC4     PC5     PC6     PC7
 #&gt; Standard deviation     4.7039 2.03156 1.81745 1.69101 1.69012 1.51693 1.48483
@@ -724,9 +727,9 @@
 <div id="missing-values-imputation-4" class="section level3">
 <h3 class="hasAnchor">
 <a href="#missing-values-imputation-4" class="anchor"></a>Missing values imputation</h3>
-<p><img src="Building_indices_files/figure-html/unnamed-chunk-72-1.png" width="700" style="display: block; margin: auto;"></p>
-<p>None of the variables stand out as needing really dramatic levels of imputation.</p>
 <p><img src="Building_indices_files/figure-html/unnamed-chunk-73-1.png" width="700" style="display: block; margin: auto;"></p>
+<p>None of the variables stand out as needing really dramatic levels of imputation.</p>
+<p><img src="Building_indices_files/figure-html/unnamed-chunk-74-1.png" width="700" style="display: block; margin: auto;"></p>
 <pre><code>#&gt; Importance of components:
 #&gt;                           PC1     PC2     PC3     PC4     PC5     PC6     PC7
 #&gt; Standard deviation     4.7346 2.05134 1.83378 1.72003 1.68853 1.53611 1.49190
@@ -741,21 +744,21 @@
 #&gt; Proportion of Variance 0.02456 0.02438 0.0178
 #&gt; Cumulative Proportion  0.95782 0.98220 1.0000</code></pre>
 <p>Following imputation, 39.8% of variance remained concentrated in the first principal component.</p>
-<p><img src="Building_indices_files/figure-html/unnamed-chunk-74-1.png" width="700" style="display: block; margin: auto;"></p>
+<p><img src="Building_indices_files/figure-html/unnamed-chunk-75-1.png" width="700" style="display: block; margin: auto;"></p>
 </div>
 <div id="scatterplot-matrix-5" class="section level3">
 <h3 class="hasAnchor">
 <a href="#scatterplot-matrix-5" class="anchor"></a>Scatterplot matrix</h3>
 <p>The distribution along PC1 seems smooth, indicating that this isn’t dominated by a single variable.</p>
-<p><img src="Building_indices_files/figure-html/unnamed-chunk-75-1.png" width="700" style="display: block; margin: auto;"></p>
+<p><img src="Building_indices_files/figure-html/unnamed-chunk-76-1.png" width="700" style="display: block; margin: auto;"></p>
 <p>Correlations between imputations are high; distributions are well-behaved.</p>
 </div>
 <div id="influence-of-indicator-5" class="section level3">
 <h3 class="hasAnchor">
 <a href="#influence-of-indicator-5" class="anchor"></a>Influence of indicator</h3>
-<p><img src="Building_indices_files/figure-html/unnamed-chunk-76-1.png" width="960" style="display: block; margin: auto;"></p>
+<p><img src="Building_indices_files/figure-html/unnamed-chunk-77-1.png" width="960" style="display: block; margin: auto;"></p>
 <p>All variables tend to increase with PC1; recall that higher values indicate more trust in government institutions. Our index is pointing in the right direction.</p>
-<p><img src="Building_indices_files/figure-html/unnamed-chunk-77-1.png" width="700" style="display: block; margin: auto;"></p>
+<p><img src="Building_indices_files/figure-html/unnamed-chunk-78-1.png" width="700" style="display: block; margin: auto;"></p>
 <p>All variables seem to have a significant impact on the score. Because all variables take on multiple values, we can obtain p-values froml linear regression.</p>
 <pre><code>#&gt;                                                                                                                                                                                                                                                                                                                       b1 
 #&gt; 0.0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000621855 
@@ -810,7 +813,7 @@
 #&gt; Residual standard error: 1.6 on 4487 degrees of freedom
 #&gt; Multiple R-squared:  0.2189, Adjusted R-squared:  0.2188 
 #&gt; F-statistic:  1258 on 1 and 4487 DF,  p-value: &lt; 0.00000000000000022</code></pre>
-<p><img src="Building_indices_files/figure-html/unnamed-chunk-79-1.png" width="700" style="display: block; margin: auto;"></p>
+<p><img src="Building_indices_files/figure-html/unnamed-chunk-80-1.png" width="700" style="display: block; margin: auto;"></p>
 <p>Finally, check these values against the comments in <code>make_indices.R</code> to be sure we’re calculating the same index:</p>
 <pre><code>#&gt;            0%           25%           50%           75%          100% 
 #&gt; -2.6610564580 -0.7163719385  0.0002760177  0.7000412597  2.5107731561</code></pre>
@@ -861,7 +864,7 @@
 <p>If we just ignore any rows with missing values, we’ll end up with only 647 rows left – 41% of what we started with. How many values are we missing, anyway?</p>
 <pre><code>#&gt; [1] 0.04829111</code></pre>
 <p>So we’re only missing about 4% of values – it hurts my heart to throw away 59% of the data because of that. It also might introduce biases (for example if poor or rich people are more likely to not answer questions). For now, though, I’ll endure the pain and see what PCA looks like with just the complete data:</p>
-<p><img src="Building_indices_files/figure-html/unnamed-chunk-83-1.png" width="700" style="display: block; margin: auto;"></p>
+<p><img src="Building_indices_files/figure-html/unnamed-chunk-84-1.png" width="700" style="display: block; margin: auto;"></p>
 <pre><code>#&gt; Importance of components:
 #&gt;                           PC1    PC2     PC3     PC4     PC5     PC6     PC7
 #&gt; Standard deviation     5.8088 2.0978 0.73076 0.53007 0.45229 0.42231 0.40846
@@ -877,7 +880,7 @@
 #&gt; Cumulative Proportion  1.00000 1.00000000000000000000</code></pre>
 <p>83% of the variance is in the first component, which is pretty good. Note that people typically recommend using <code>scale=TRUE</code>; the reason I didn’t is because one of our variables (<code>r1</code>, TV in home) has a variance of zero in this dataset – everyone counted said “yes”. This gives us a divide-by-zero error when we scale, which is no good.</p>
 <p>We can look at a scatterplot of the first two principal components:</p>
-<p><img src="Building_indices_files/figure-html/unnamed-chunk-84-1.png" width="700" style="display: block; margin: auto;"></p>
+<p><img src="Building_indices_files/figure-html/unnamed-chunk-85-1.png" width="700" style="display: block; margin: auto;"></p>
 <p>These are the two principal components along which the variation is the most spread-out. The lattice-like pattern comes from the fact that we’re seeing a projection of variables that can only take on certain discrete values, as opposed to continuous ones. In the ideal case, most of the variance would be in the first component, but this isn’t too bad. If you want to see how some of the other dimenisions look, try changing the values 1 and 2 to others, up to 17 (which should contain the least variance).</p>
 <p>Now let’s try imputing those missing values.</p>
 <p>There are a few different multiple imputation schemes available in R, but it’s hard to find a good explanation of them. <a href="http://pj.freefaculty.org/guides/Rcourse/multipleImputation/multipleImputation-1-lecture.pdf">This one</a> is OK, for being a really long powerpoint. I’ll try doing this using the <code>mice</code> package (Multivariate Imputation by Chained Equations) and see how it does. More about MICE <a href="http://www.stefvanbuuren.nl/mi/MICE.html">here</a>.</p>
@@ -885,7 +888,7 @@
 <div id="missing-values-imputation-5" class="section level3">
 <h3 class="hasAnchor">
 <a href="#missing-values-imputation-5" class="anchor"></a>Missing values imputation</h3>
-<p><img src="Building_indices_files/figure-html/unnamed-chunk-85-1.png" width="700" style="display: block; margin: auto;"></p>
+<p><img src="Building_indices_files/figure-html/unnamed-chunk-86-1.png" width="700" style="display: block; margin: auto;"></p>
 <p>There’s a lot going on in the output here. MICE generated 5 different imputed data sets, so that we can run the same analyses on each and see how they compare. Some columns have a lot more missing cells than others – everybody knows whether they have a washing machine (<code>r6</code>), but flat-panel TVs (<code>r16</code>) caused some confusion, and a lot of people didn’t disclose their personal income (<code>q10g</code>). The PredictorMatrix at the bottom shows which variables were used to predict others. Except for <code>r6</code> and <code>r15</code>, which didn’t need predicting at all, it looks like everything was used to predict everything else.</p>
 <pre><code>#&gt; &lt; table of extent 0 &gt;</code></pre>
 <p>Fortunately, non-responses to <code>q10g</code> came from the three countries in roughly equal fractions.</p>
@@ -901,7 +904,7 @@
 <p>This family doesn’t have much stuff and their income is low, but 3 of the 5 predictions gave them a flat-panel TV. These might not be reliable predictions. The personal income (<code>q10g</code>) varies between imputed datasets, but tends to be at the low end and is probably more trustworthy.</p>
 <p>Now let’s do the PCA calculation. We’ll generate a structure called <code>pr</code> that contains the results of 5 different PCA calculations for the 5 imputed datasets.</p>
 <p>We can visualize the fraction of variance contained in each of the 17 principal components to see to what extent variance is concentrated in the first few. (Do this for just the first imputed model.)</p>
-<p><img src="Building_indices_files/figure-html/unnamed-chunk-89-1.png" width="700" style="display: block; margin: auto;"></p>
+<p><img src="Building_indices_files/figure-html/unnamed-chunk-90-1.png" width="700" style="display: block; margin: auto;"></p>
 <pre><code>#&gt; Importance of components:
 #&gt;                           PC1     PC2     PC3     PC4     PC5     PC6     PC7
 #&gt; Standard deviation     5.8632 1.98226 0.73868 0.52587 0.42772 0.40966 0.40726
@@ -916,27 +919,27 @@
 #&gt; Proportion of Variance 0.00187 0.00116
 #&gt; Cumulative Proportion  0.99884 1.00000</code></pre>
 <p>About 85% of the total variance is concentrated in the first component, roughly the same as before imputation – this means our imputation didn’t mess things up too much (not yet, at least). What if we make a scatter plot of the first two components (for just one of the imputed datasets)?</p>
-<p><img src="Building_indices_files/figure-html/unnamed-chunk-90-1.png" width="700" style="display: block; margin: auto;"></p>
+<p><img src="Building_indices_files/figure-html/unnamed-chunk-91-1.png" width="700" style="display: block; margin: auto;"></p>
 </div>
 <div id="scatterplot-matrix-6" class="section level3">
 <h3 class="hasAnchor">
 <a href="#scatterplot-matrix-6" class="anchor"></a>Scatterplot matrix</h3>
 <p>We want to be sure that all five of our imputed datasets are measuring the same thing. We can do this by plotting all of the pairwise scatterplots; R makes this easy for us, if we put them all in one data frame first.</p>
-<p><img src="Building_indices_files/figure-html/unnamed-chunk-91-1.png" width="960" style="display: block; margin: auto;"></p>
+<p><img src="Building_indices_files/figure-html/unnamed-chunk-92-1.png" width="960" style="display: block; margin: auto;"></p>
 <p>What is this showing? <code>imp1</code> through <code>imp5</code> are our five imputed datasets, and we’re looking at the first principal component from each. On the diagonal of this matrix, we see distribution plots for each of them – they all look really similar. Above the diagonal, we get pairwise correlations; for example <code>imp1</code> and <code>imp2</code> have a correlation of 0.912. All of these are fairly high. Below the diagonal, we see scatter plots for each pair of imputations. There are some disagreements, but in general they match up quite well. Averaging all five should help smooth out some of those cases where they disagree.</p>
 </div>
 <div id="influence-of-indicator-6" class="section level3">
 <h3 class="hasAnchor">
 <a href="#influence-of-indicator-6" class="anchor"></a>Influence of indicator</h3>
-<p><img src="Building_indices_files/figure-html/unnamed-chunk-92-1.png" width="960" style="display: block; margin: auto;"></p>
+<p><img src="Building_indices_files/figure-html/unnamed-chunk-93-1.png" width="960" style="display: block; margin: auto;"></p>
 <p>The <code>q10</code> variables increase dramatically from the lowest to the highest quartile, which makes sense as these are direct measures of income. The other variables all show more modest increases – rich people own more things, but a household’s assets are a function of more than just their income.</p>
 <p>We can see more details about how the top and bottom quantiles differ. For example, nearly everyone in the top 25% has a refrigerator (<code>r3</code>), a cell phone (<code>r4a</code>), indoor drinking water (<code>r12</code>), and a television (<code>r1</code>), but motorcycles (<code>r8</code>) are pretty rare. In the bottom 25%, more people have cell phones (<code>r4a</code>) than indoor bathrooms (<code>r14</code>).</p>
 <p>As another sanity check, let’s look at the distribution of values from our composite index. First, we’ll figure out what the hypothetical maximum and minimum values of the wealth index are, then we’ll plot those together with the actual density distribution.</p>
 <p>We’ll adjust the score to have a mean of 0 and standard deviation of 1. The new value will be in a column called <code>norm</code>.</p>
-<p><img src="Building_indices_files/figure-html/unnamed-chunk-93-1.png" width="700" style="display: block; margin: auto;"></p>
+<p><img src="Building_indices_files/figure-html/unnamed-chunk-94-1.png" width="700" style="display: block; margin: auto;"></p>
 <p>Our data uses the full range of possible wealth values, and tends to be somewhat bunched up at the low end.</p>
 <p>To understand our index better, we can ask how different types of responses contribute to it. In other words, how much does it add to someone’s wealth index if they have a TV, or a motorcycle, or if their income increases by one level on the 16-point scale?</p>
-<p><img src="Building_indices_files/figure-html/unnamed-chunk-94-1.png" width="700" style="display: block; margin: auto;"><img src="Building_indices_files/figure-html/unnamed-chunk-95-1.png" width="672" style="display: block; margin: auto;"></p>
+<p><img src="Building_indices_files/figure-html/unnamed-chunk-95-1.png" width="700" style="display: block; margin: auto;"><img src="Building_indices_files/figure-html/unnamed-chunk-96-1.png" width="672" style="display: block; margin: auto;"></p>
 <p>Clearly, the indicators that measure income directly have a much larger influence on our wealth index than the others. Each 1-point increase in household income (<code>q10new</code>) increases the wealth index by 0.13, while the increases based on possessions average to about 0.004. Having a microwave oven (<code>r7</code>) increases a person’s wealth index more than having a cell phone (<code>r4a</code>). Even poor people have cell phones, while microwaves tend to show a large difference between rich and poor households.</p>
 <p>How do we know whether this is really a good composite index? We’ve seen a few good signs already – it captures most of the variance in the underlying indicators, it’s robust to random variations in multiple imputation, and it’s fairly nicely-distributed. The other thing to look for is how well it does at predicting the values of the individual variables – a good wealth index should do a reasonable job of predicting how much income someone has and which things they own.</p>
 <p>First, let’s look at income (<code>q10new</code>):</p>
@@ -958,7 +961,7 @@
 #&gt; Residual standard error: 1.042 on 4128 degrees of freedom
 #&gt; Multiple R-squared:  0.9488, Adjusted R-squared:  0.9487 
 #&gt; F-statistic: 7.644e+04 on 1 and 4128 DF,  p-value: &lt; 0.00000000000000022</code></pre>
-<p><img src="Building_indices_files/figure-html/unnamed-chunk-96-1.png" width="700" style="display: block; margin: auto;"></p>
+<p><img src="Building_indices_files/figure-html/unnamed-chunk-97-1.png" width="700" style="display: block; margin: auto;"></p>
 <p>Now, what about microwave ownership (<code>r7</code>)?</p>
 <pre><code>#&gt; 
 #&gt; Call:
@@ -982,7 +985,7 @@
 #&gt; AIC: 4761.1
 #&gt; 
 #&gt; Number of Fisher Scoring iterations: 4</code></pre>
-<p><img src="Building_indices_files/figure-html/unnamed-chunk-97-1.png" width="700" style="display: block; margin: auto;"></p>
+<p><img src="Building_indices_files/figure-html/unnamed-chunk-98-1.png" width="700" style="display: block; margin: auto;"></p>
 <p>This fit isn’t quite as pretty as <code>q10new</code> was, but the summary from the logistic regression calculation tells us that our wealth index has a highly-significant impact on microwave oven ownership. We can also see on the plot that the non-owners (<code>r7</code> = 0) are bunched up at the low-wealth end of the spectrum, as we’d expect. It should be easy to modify these plots for some of the other variables; you can see which ones are well-predicted by our wealth index and which ones might not be as much.</p>
 <p>We can test this more rigorously using 2-sample t-tests:</p>
 <pre><code>#&gt;                                                                                                                                                                                                 r3 

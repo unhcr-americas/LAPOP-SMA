@@ -4,11 +4,15 @@
 \alias{multi_lines}
 \title{multi_lines}
 \usage{
-multi_lines(f)
+multi_lines(f, plotTittle = "", plotsubTittle = "")
 }
 \arguments{
 \item{f}{data frame f needs to contain a year column all other columns will
 become the names of data series that will be plotted together}
+
+\item{plotTittle}{plot title}
+
+\item{plotsubTittle}{plot title}
 }
 \description{
 ggplot2 multi lines

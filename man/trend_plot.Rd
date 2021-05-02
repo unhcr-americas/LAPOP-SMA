@@ -14,6 +14,8 @@ x = number of 1's observed that year
 n = total observations in that year}
 
 \item{plotTittle}{plot title}
+
+\item{plotsubTittle}{plot title}
 }
 \description{
 trend_plot

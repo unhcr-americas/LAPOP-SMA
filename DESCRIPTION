@@ -11,9 +11,9 @@ Description: Latin American Public Opinion Project (LAPOP) survey -http://datase
 URL: https://unhcr-americas.github.io/LAPOP-SMA/docs
 BugReports: https://github.com/unhcr-americas/LAPOP-SMA
 Depends: R (>= 3.5.0)
-import: haven, stats, filter, na.omit, tidyverse, labelled, sjmisc, assertr, janitor, rlang 
+import: haven, stats, filter, na.omit, tidyverse, labelled, sjmisc, assertr, janitor, rlang, mice 
 License: MIT + file LICENSE
 Encoding: UTF-8
-LazyData: true
+LazyData: false
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1

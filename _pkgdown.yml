@@ -37,6 +37,10 @@ reference:
       - sig_diff
       - make_codebook
       - make_idx
+      - build_analysis_package
+      - geo_variance
+      - merge_dataLAPOP
+      - merge_dicoLAPOP
   - title: Plotting function
     contents:
       - bar_plot

@@ -29,7 +29,7 @@ library(plyr)
 library(GGally)
 library(ggfortify)
 library(stargazer)
-
+library(AmericasBarometer)
 ```
 
 ## Introduction
@@ -75,6 +75,9 @@ my_data <- my_data[,order(names(my_data))] # alphabetize columns
 is.na(my_data[my_data>16]) <- TRUE
 ```
 
+```{r}
+fear_all <- make_idx(my_data ,v,sgn=-1)
+```
 
 
 ### Principal Componnent Analysis without imputation

@@ -46,6 +46,7 @@ library(knitr)
 library(rmarkdown)
 library(grid)
 library(moments)
+library(AmericasBarometer)
 
 mainDir <- getwd()
 ## If you save your analysis under vignette folder...
@@ -61,10 +62,78 @@ lapop.trends$year[lapop.trends$year=="2019"] <- "2018"
 lapop.trends$year <- as.integer(lapop.trends$year)
 lapop.trends$wave <- paste0(lapop.trends$ctrycollect, lapop.trends$year)
 
+
 ```
 
 
-```{r} 
+
+
+
+
+```{r}
+## merge back provincia & prov 
+
+lapop.trends$prov[is.na(lapop.trends$prov)] <- lapop.trends$provincia
+
+prov <- read.csv(paste0(mainDirroot, "/data/sig-prov2.csv"))
+lapop.trends <- dplyr::left_join(x= lapop.trends, y = prov, by ="prov")
+
+```
+
+```{r}
+### Build the indices
+# 1. Authoritarianism index `aut_idx` 
+aut_var <- c('dem2','dem11','jc13','jc10','jc15a')
+lapop.trends$aut_idx <- make_idx(lapop.trends,aut_var,sgn=-1) 
+
+# 2. Community Activity index `ca_idx`  
+ca_var <- c('cp5','cp7','cp8','cp13','cp20','honcp22','honcp21a')
+lapop.trends$ca_idx <- make_idx(lapop.trends,ca_var,sgn=-1)
+
+# 3. Sympathy with government critics index `crit_idx`
+crit_var <- c('d1','d2','d3','d4','e5','e15','e3','e16')
+lapop.trends$crit_idx <- make_idx(lapop.trends,crit_var,sgn=-1)
+
+# 4. Fear index `fear_idx` 
+fear_var <- c('fear10','vic1ext','vic1exta','vic1hogar','aoj11',
+                 'pese1','pese2','aoj17','diso7','diso8','diso10','diso18',
+                 'diso14','diso16','diso17','vicbar1','vicbar1f','vicbar3',
+                 'vicbar4','vicbar7','a4_crime','vic40','vic41','vic43',
+                 'vic44','vic45','fear6f','fear6e','elsdiso18',
+                 'elsdiso19')
+lapop.trends$fear_idx <- make_idx(lapop.trends,fear_var,sgn=-1) 
+
+# 5. Transparency index `transp_idx`  
+transp_var <- c('honqt1','honqt2','honqt3','honqt4',
+'honqt5','honqt6','honqt7','honqt8','honqt9','honqt10','honqt11','honqt12')
+lapop.trends$transp_idx <- make_idx(lapop.trends,transp_var,sgn=-1)
+
+# 6. Trust in Government Index `trust_idx` 
+trust_var <- c('b1','b2','b3','b4','b6','b10a','b12','b13','b18','b21','b21a',
+               'b32','b47a','n9','n11','n15','b3milx')
+lapop.trends$trust_idx <- make_idx(lapop.trends,trust_var,sgn=-1)
+
+# 7. Wealth index `wealth_idx` 
+wealth_var <- c('r3','r4','r4a','r5','r6','r7','r8','r12','r14','r15','r18','r1','r16',
+       'r26','q10new','q10g')
+lapop.trends$wealth_idx <- make_idx(lapop.trends,wealth_var,sgn=-1)
+
+
+```
+```{r}
+## Now aggregate index mean by admin 1 
+# head(lapop.trends[ , c( "adm1name" ,"iso_3166_2","aut_idx" ,"ca_idx" ,"crit_idx" ,"fear_idx" ,"transp_idx" ,"trust_idx" ,"wealth_idx" )])
+
+```
+
+
+
+
+
+```{r message=FALSE, warning=FALSE}
+
+
+
 ## getting correct district and gov from coordinates
 geofile <- rgdal::readOGR(paste0(mainDirroot,"/data/america_adm1_surv.geojson"))
 geofile$id <- geofile$pcodehcr
@@ -82,6 +151,8 @@ geofile.fort <- fortify(geofile, region = "id")
 
 ## get extend
 geofile2 <- geofile[ substr(geofile@data$adm1_code, 1,3) %in% c("SLV", "HND", "GTM"), ]
+
+## levels(as.factor(geofile2@data$adm1_code))
 bbox <- geofile2 %>%  sf::st_bbox()
 
 
@@ -98,6 +169,12 @@ geofile.fort <- fortify(geofile2, region = "id")
 
 
 ```
+
+
+
+
+
+
 
 ```{r}
 plot1 <- ggplot( ) +
@@ -119,13 +196,68 @@ plot1 <- ggplot( ) +
        caption = "") +
    unhcRstyle::unhcr_theme() +
    theme(axis.ticks=element_blank(),
-          axis.text.y=element_blank(),
+          axis.text.x =element_blank(),
+          axis.text.y =element_blank(),
           axis.line = element_blank(),
-         plot.
-          axis.title.y=element_blank())
+          axis.title.x = element_blank(),
+          axis.title.y = element_blank(),
+          panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank())
   
 plot1
 #ggpubr::ggarrange(unhcRstyle::left_align(plot1, c("caption", "subtitle", "title")), ncol = 1, nrow = 1)
 
+```
+
+```{r}
+# library(tidyverse)
+# library(sf)
+# 
+# if (!fs::dir_exists("mapdata")) {
+#   fs::dir_create("mapdata")
+#   
+#   adms <- 
+#     list(honduras = "https://data.humdata.org/dataset/bd62fb53-64d3-478f-9ca8-38e4a2de19c0/resource/34688cf1-3cad-4d51-a6b5-7726de70f4e7/download/hnd_adm_sinit_20161005_shp.zip",
+#          salvador = "https://data.humdata.org/dataset/08bfc7f6-3acc-45df-a69a-b853cf1cff05/resource/b693e3e1-f7c4-4ebe-afb7-453d62abd417/download/slv_adm_gadm_2021_shp.zip",
+#          guatemala = "https://data.humdata.org/dataset/0b20f310-7d22-479c-b7e2-e1bb9737fa72/resource/86f38f11-8062-4a09-b088-fbb581a051fd/download/gtm_adm_ocha_conred_2019_shp.zip")
+#   
+#   adms %>% walk(~httr::GET(., httr::write_disk(fs::path_temp(fs::path_file(.)), overwrite = TRUE)))
+#   
+#   adms %>% walk(~unzip(fs::path_temp(fs::path_file(.)), exdir = "mapdata", junkpaths = TRUE))
+# }
+# 
+# honduras <- st_read("mapdata/hnd_admbnda_adm1_sinit_20161005.shp")
+# elsalvador <- st_read("mapdata/slv_admbnda_adm1_gadm_20210204.shp")
+# guatemala <- st_read("mapdata/gtm_admbnda_adm1_ocha_conred_20190207.shp")
+# 
+# acled <- 
+#   list("Salvador", "Guatemala", "Honduras") %>% 
+#   map_dfr(~jsonlite::fromJSON(glue::glue("https://api.acleddata.com/acled/read?key={Sys.getenv('ACLED_API_KEY')}&email={Sys.getenv('UNHCR_ACCOUNT_EMAIL')}&country={.}&limit=0"))$data) %>% 
+#   mutate(across(c(year, latitude, longitude), as.numeric),
+#          geometry = map2(latitude, longitude, ~st_point(c(.y, .x))) %>% st_as_sfc(crs = 4326)) %>% 
+#   as_tibble()
+# 
+# acled_map <- function(place, placemap) {
+#   acled %>% 
+#     filter(event_type == "Violence against civilians", year != 2021, country == place) %>% 
+#     ggplot() +
+#     geom_hex(aes(longitude, latitude)) +
+#     scale_fill_steps(low = "white", high = "#EF4A60", name = "# of incidents") +
+#     geom_sf(data = placemap, fill = NA) +
+#     labs(x = NULL, y = NULL,
+#          title = place, subtitle = "Violence against civilians (2018-2020)",
+#          caption = "Data source: The Armed Conflict Location & Event Data Project") +
+#     guides(fill = guide_colorsteps(title.position = "top", barwidth = unit(2.5, "inches"))) +
+#     theme_minimal() +
+#     theme(legend.position = "bottom")
+# }
+# 
+# hnd <- acled_map("Honduras", honduras)
+# slv <- acled_map("El Salvador", salvador)
+# gtm <- acled_map("Guatemala", guatemala)
+# 
+# ggsave("hnd.png", hnd)
+# ggsave("slv.png", slv)
+# ggsave("gtm.png", gtm)
 ```
 

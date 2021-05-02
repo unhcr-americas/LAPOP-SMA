@@ -16,12 +16,11 @@ The scripts from those various repository were re-organized in an R package in o
 
 The main focus of the study is organized around 3 linked questions that can influence population movement mitigation program:
 
-|      Reearch      |  Programme Design         |
+|      Research      |  Programme Design         |
 |:-------------|:-------------|
 |   What influence the intention to move to another country: push & pull factor? How different measurement of perception are correlated: protection-related push factor vs economic pull factor? Are economic conditions sufficient to motivate the intention to move? | Resources allocation to protection intervention vs economic support |
-|     Can we identify displacement hot-spots? What make those hot-spots specific?  |   Geographic targeting and area-based approach for service delivery design |
 |  Are there specific profiles that are intending vs those who do not intend to move? |  Household targeting for cash intervention |
-
+|     Can we identify displacement hot-spots? What make those hot-spots specific?  |   Geographic targeting and area-based approach for service delivery design |
 
  
 ## Getting Started
@@ -45,10 +44,14 @@ Once installed, you need to download and reshape the data with
 ```{r}
 ## Load data from remote site and save them locally
 AmericasBarometer::get_dataLAPOP()
+```
 
+```{r}
 ## merge all dataset together
 AmericasBarometer::merge_dataLAPOP()
+```
 
+```{r}
 ## generate a mapping data dictionnary - also based on https://github.com/unhcr-americas/LAPOP-SMA/blob/master/data/LAPOP_Dictionnary.xlsx
 AmericasBarometer::merge_dicoLAPOP()
 ```
@@ -58,42 +61,40 @@ AmericasBarometer::merge_dicoLAPOP()
 Vignettes are R Markdown file (.rmd) that runs interactively stored int the `vignettes` folder. It does not require any additional installation, as it is a built-in function in R Studio. For an in-depth tutorial, visit this [R Notebook Guide](https://bookdown.org/yihui/rmarkdown/notebook.html). There are also [cheat sheets](https://www.rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf) available for how to use R Markdown.
 
 Once data have been downloaded, you can then knit the vignettes and the full site with
+
 ```{r}
 devtools::document()
+```
 
+
+```{r}
+## Generate data crunching vignette
+AmericasBarometer::build_analysis_package(form = "form.xlsx")
+```
+
+```{r}
 pkgdown::build_site()
 ```
 
 This will generate the full package documentation in the `docs` folder. 
 
-For the sake of analysis, __7 composite indicators__ are created.
+The final product is the [Analysis Executive summary is here](summary.html).
 
- 1. Authoritarianism index `aut_idx`  
- 2. Community Activity index `ca_idx`  
- 3. Sympathy with government critics index `crit_idx`  
- 4. Fear index `fear_idx` 
- 5. Transparency index `transp_idx`   
- 6. Trust in Government Index `trust_idx` 
- 7. Wealth index `weahlt_idx`  
+The article in the vignettes document the exploratory analysis:
 
 
-In technical terms, this implies to perform for each of those indices missing value imputation and principal component analysis. Then for each indices, a prediction model is created, spatial heterogeneity and time trends are explored.
+ * Checking survey waves content
 
-In addition the following are also available:
-
- * Calculating some high-level data quality points
- * Verify correlations between all indices
+ * Exploratory data crunching using [koboloadeR](https://unhcr.github.io/koboloadeR/docs/) & a rebuilt data dictionary
  
-Specific variable in relation with protection are detailed:
+ * Building a predictive model of intention to migrate, as well as Out of fear of being a crime victim and victim of bribery
+ 
+ * Exploring profiles of respondents that intend to migrate through Cluster Analysis
 
- * Out of fear of being a crime victim
- * Statistics on bribery
+ * Creating Composite indicators to synthetise information  (Authoritarianism index, Community Activity index, Sympathy with government critics index, Fear index, Transparency index, Trust in Government & Wealth index). In technical terms, this implies to perform for each of those indices missing value imputation and principal component analysis. Then for each indices, a prediction model is created, spatial heterogeneity and time trends are explored.
 
-Last to support both geographic and household targeting the last two analysis are performed:  
-
- * Cluster Analysis
- * Spatial heterogeneity
-
+ * Verifying correlations between all indices, creating maps of index and checking spatial heterogeneity
+ 
 
 ### Package functions
 

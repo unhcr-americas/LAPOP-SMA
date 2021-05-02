@@ -38,6 +38,7 @@ library(stargazer)
 library(lubridate)
 library(VennDiagram)
 library(RColorBrewer)
+library(AmericasBarometer)
 #source('../utils/make_trends.R')
 
 mainDir <- getwd()

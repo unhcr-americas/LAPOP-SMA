@@ -13,6 +13,9 @@
     <loc>https://unhcr-americas.github.io/LAPOP-SMA/docs//reference/binom.low.html</loc>
   </url>
   <url>
+    <loc>https://unhcr-americas.github.io/LAPOP-SMA/docs//reference/build_analysis_package.html</loc>
+  </url>
+  <url>
     <loc>https://unhcr-americas.github.io/LAPOP-SMA/docs//reference/cor_data_bin.html</loc>
   </url>
   <url>
@@ -20,6 +23,9 @@
   </url>
   <url>
     <loc>https://unhcr-americas.github.io/LAPOP-SMA/docs//reference/fixdata.html</loc>
+  </url>
+  <url>
+    <loc>https://unhcr-americas.github.io/LAPOP-SMA/docs//reference/geo_variance.html</loc>
   </url>
   <url>
     <loc>https://unhcr-americas.github.io/LAPOP-SMA/docs//reference/get_dataLAPOP.html</loc>
@@ -35,6 +41,12 @@
   </url>
   <url>
     <loc>https://unhcr-americas.github.io/LAPOP-SMA/docs//reference/make_idx.html</loc>
+  </url>
+  <url>
+    <loc>https://unhcr-americas.github.io/LAPOP-SMA/docs//reference/merge_dataLAPOP.html</loc>
+  </url>
+  <url>
+    <loc>https://unhcr-americas.github.io/LAPOP-SMA/docs//reference/merge_dicoLAPOP.html</loc>
   </url>
   <url>
     <loc>https://unhcr-americas.github.io/LAPOP-SMA/docs//reference/multi_lines.html</loc>
@@ -59,6 +71,12 @@
   </url>
   <url>
     <loc>https://unhcr-americas.github.io/LAPOP-SMA/docs//articles/Explaining_risk_bribes.html</loc>
+  </url>
+  <url>
+    <loc>https://unhcr-americas.github.io/LAPOP-SMA/docs//articles/Hot_Spot_analysis.html</loc>
+  </url>
+  <url>
+    <loc>https://unhcr-americas.github.io/LAPOP-SMA/docs//articles/PCA_Factor_Analysis.html</loc>
   </url>
   <url>
     <loc>https://unhcr-americas.github.io/LAPOP-SMA/docs//articles/Profiling_Intended_Migrant.html</loc>

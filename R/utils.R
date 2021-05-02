@@ -230,19 +230,54 @@ make_idx <- function(data,
                      sgn=1,
                      scale=FALSE,
                      seed=12345) {
+ 
+  # data <- lapop.2014.all
+  # vars <- fear_common
+  # sgn <- 1
+  # scale <- FALSE
+  # seed <- 12345
+    
+  
+  common <- Reduce(intersect,list(names(data),vars) )
+  
+  if(length(common) != length(vars)) {  
+    cat(paste0("Not all variables for the index are present in the dataset.\n Only the following were retained:", common,"\n")) } 
+     else {  cat(paste0("All variables for the index are present in the dataset"))}
 
-  my_data <- data[,vars]
+  my_data <- data[,common]
+  
+  ## clean the NA
   is.na(my_data[my_data>800000]) <- TRUE
-  my_data <- my_data[,order(names(my_data))] # alphabetize columns
-  my_imp <- mice(my_data,printFlag=F,seed=seed)
+  
+  # alphabetize columns
+  my_data <- my_data[,order(names(my_data))] 
+  
+  ## Input missing value
+  my_imp <- mice::mice(my_data,printFlag=F,seed=seed)
+  cat(paste0("Inputed missing percent values: ", data.frame(nmis=my_imp$nmis/nrow(my_data),var=names(my_imp$nmis)), "\n"))
+
+  ## Apply a principal component Analysis
   my_pr <- lapply(1:5,function(x) 
     prcomp(complete(my_imp,x),scale=scale,center=TRUE))
+  
+  
+  cat(paste0("The first componnent retained ", 
+             summary(prcomp(complete(my_imp),scale=scale,center=TRUE))$importance[2,1]*100,
+             "% of the variance.\n"))
+  
+
+  
+  ## Retain only first axis to get the coefficient
   all_pc1 <- data.frame(llply(1:5, function(i) my_pr[[i]]$x[,1]))
+  
+  ## Calculate index
   for (i in 2:ncol(all_pc1)) {  
     if (cor(all_pc1[,1],all_pc1[,i]) < 0) {
       all_pc1[,i] <- -1 * all_pc1[,i]
     }
+  
   }
+  ## Now normalize the result
   avg <- rowMeans(all_pc1)
   scale(sgn*avg)
 }
@@ -684,15 +719,34 @@ lm_plot <- function(x,orig,title,p_max=0.01,text=NULL,offsets=NULL,flip=NULL,
   plotme # return this so I can re-use it below
 }
 
-
-geo_variance <- function(data,x,make_plot=FALSE,xlab='Value') {
+#' geo_variance
+#' 
+#' ggplot2 object with results of a regression
+#' @md
+#' @param data data
+#' @param x must be the output from a multiple regression on MICE output
+#' @param make_plot bollean
+#' @param xlab plot title
+#' @examples
+#' \dontrun{
+#' 
+#' }
+#' @export
+geo_variance <- function(data,
+                         x,
+                         make_plot=FALSE,
+                         xlab='Value') {
   tmp <- my_geo
   tmp$muni_uniq <- paste(tmp$pais_text,tmp$muni_text,sep='_')  
   tmp$x <- x
   tmp$x[tmp$x > 800000] <- NA
   muni_avg <- ddply(tmp,~muni_uniq,summarize,x=mean(x,na.rm=TRUE))  
   tmp$muni_avg <- muni_avg$x[match(tmp$muni_uniq,muni_avg$muni_uniq)] 
+  
+  ## Perform a regression
   my_lm <- lm(data=tmp,x ~ muni_avg)
+  
+  ## Display a plot...
   if (make_plot==TRUE) {
     tmp <- na.omit(tmp)
     p <- ggplot(tmp,aes(x=x,y=muni_avg)) +
@@ -707,6 +761,8 @@ geo_variance <- function(data,x,make_plot=FALSE,xlab='Value') {
       theme(text=element_text(size=20))
     print(p)
   }
+  
+  ## Show summary of regression...
   summary(my_lm)$r.squared
 }
 
