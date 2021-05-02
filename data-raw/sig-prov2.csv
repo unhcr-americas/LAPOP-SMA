@@ -1,0 +1,73 @@
+pais,prov,pais_text,adm1name,iso_3166_2
+3,1,El Salvador,Ahuachapan,SV-AH
+3,2,El Salvador,Santa Ana,SV-SA
+3,3,El Salvador,Sonsonate,SV-SO
+3,4,El Salvador,Chalatenango,SV-CH
+3,5,El Salvador,La Libertad,SV-LI
+3,6,El Salvador,San Salvador,SV-SS
+3,7,El Salvador,Cuscatlan,SV-CU
+3,8,El Salvador,La Paz,SV-PA
+3,9,El Salvador,Cabañas,SV-CA
+3,10,El Salvador,San Vicente,SV-SV
+3,11,El Salvador,Usulutan,SV-US
+3,12,El Salvador,San Miguel,SV-SM
+3,13,El Salvador,Morazan,SV-MO
+3,14,El Salvador,La Union,SV-UN
+2,201,Guatemala, Guatemala,GT-GU
+2,202,Guatemala, El Progreso,GT-PR
+2,203,Guatemala, Sacatepéquez,GT-SA
+2,204,Guatemala, Chimaltenango,GT-CM
+2,205,Guatemala, Escuintla,GT-ES
+2,206,Guatemala, Santa Rosa,GT-SR
+2,207,Guatemala, Sololá,GT-SO
+2,208,Guatemala, Totonicapán,GT-TO
+2,209,Guatemala, Quetzaltenango,GT-QZ
+2,210,Guatemala, Suchitepéquez,GT-SU
+2,211,Guatemala, Retalhuleu,GT-RE
+2,212,Guatemala, San Marcos,GT-SM
+2,213,Guatemala, Huehuetenango,GT-HU
+2,214,Guatemala, Quiché,GT-QC
+2,215,Guatemala, Baja Verapaz,GT-BV
+2,216,Guatemala, Alta Verapaz,GT-AV
+2,217,Guatemala, Petén,GT-PE
+2,218,Guatemala, Izabal,GT-IZ
+2,219,Guatemala,Zacapa,GT-ZA
+2,220,Guatemala, Chiquimula,GT-CQ
+2,221,Guatemala, Jalapa,GT-JA
+2,222,Guatemala, Jutiapa,GT-JU
+3,301,El Salvador,Ahuachapan,SV-AH
+3,302,El Salvador,Santa Ana,SV-SA
+3,303,El Salvador,Sonsonate,SV-SO
+3,304,El Salvador,Chalatenango,SV-CH
+3,305,El Salvador,La Libertad,SV-LI
+3,306,El Salvador,San Salvador,SV-SS
+3,307,El Salvador,Cuscatlan,SV-CU
+3,308,El Salvador,La Paz,SV-PA
+3,309,El Salvador,Cabañas,SV-CA
+3,310,El Salvador,San Vicente,SV-SV
+3,311,El Salvador,Usulutan,SV-US
+3,312,El Salvador,San Miguel,SV-SM
+3,313,El Salvador,Morazan,SV-MO
+3,314,El Salvador,La Union,SV-UN
+4,401,Honduras,Francisco Morazán,HN-FM
+4,402,Honduras,Comayagua,HN-CM
+4,403,Honduras,La Paz,HN-LP
+4,404,Honduras,Cortés,HN-CR
+4,405,Honduras,Atlántida,HN-AT
+4,406,Honduras,Colón,HN-CL
+4,407,Honduras,Yoro,HN-YO
+4,408,Honduras,Islas de la Bahía,HN-IB
+4,409,Honduras,Copán,HN-CP
+4,410,Honduras,Intibucá,HN-IN
+4,411,Honduras,Lempira,HN-LE
+4,412,Honduras,Ocotepeque,HN-OC
+4,413,Honduras,Santa Bárbara,HN-SB
+4,414,Honduras,NA,NA
+4,415,Honduras,NA,NA
+4,416,Honduras,NA,NA
+4,417,Honduras,NA,NA
+4,418,Honduras,El Paraíso,HN-EP
+4,419,Honduras,Olancho,HN-OL
+4,420,Honduras,Gracias a Dios,HN-GD
+4,421,Honduras,Choluteca,HN-CH
+4,422,Honduras,Valle,HN-VA

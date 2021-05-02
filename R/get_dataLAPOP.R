@@ -256,7 +256,9 @@ merge_dataLAPOP <- function( ){
  ## save in raw-data folder
  if(!dir.exists("data")) dir.create("data") 
  write.csv(lapop.trend.inter, "data/dataLAPOPinter.csv", row.names = FALSE)
- write.csv(lapop.trend, "data/dataLAPOP.csv", row.names = FALSE)
+ 
+ ## save for data crucnhing
+ write.csv(lapop.trend, "data-raw/MainDataFrame.csv", row.names = FALSE)
  
 }
 
