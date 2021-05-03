@@ -54,7 +54,7 @@ srcs <-
 data <- srcs %>% map_dfr(compose(as_factor, read_dta))
 
 
-dico <- read.csv(paste0(mainDirroot, "/data/dataLAPOPdico.csv"), stringsAsFactors = TRUE)
+#dico <- read.csv(paste0(mainDirroot, "/data/dataLAPOPdico.csv"), stringsAsFactors = TRUE)
 
 # lapop.2019.GTM <- data$guatemala
 # lapop.2018.SLV <- data$elsalvador
@@ -107,10 +107,12 @@ __Push factors__ are those associated with the area of origin, while __Pull fact
 |      Reasons      |  Pull factors         |  Push factors         |
 |:-------------|:-------------|:-------------|
 |      Economic      |  More jobs, Better jobs, Higher wages, The promise of a “better life”        |  Overpopulation, Few jobs,  Low wages         |
-|      Social      |  Principles of religious tolerance        |  Intolerance towards a certain cultural group, Active political or religious persecution,  violence          |
+|      Social      |  Principles of religious tolerance        |  Intolerance towards a certain cultural group, Active political or religious persecution,  violence, family reunification          |
 |      Physical      |  Attractive environments, such as mountains, seasides...   |  Climate change, Natural disasters       |
 
-Public policy aiming at the limitation of Population movement shall be designed to in relation with the composition of the different types of push factors that generate them:
+Public policy aiming at the limitation of Population movement can address both pull and push factors. Pull factors are mostly constrained by reducing access to the country.
+
+For of push factors, it is rather program than policies that needs to be designed in relation with the composition of the different types  that generate them:
 
  * Intervention in relation with __development and poverty alleviation__ will mostly address economic push factor
  
@@ -121,9 +123,7 @@ Public policy aiming at the limitation of Population movement shall be designed 
 In addition of the environmental factors, intention and decision to migrate are influenced by specific profiles (for instance, age, marital status, education, personal network...). 
 
 
-
-
-
+An important question, when designing such program is related to resources allocation: how to balance efforts between the different types of intervention.
 
 ## Predicting Intentions
 
@@ -157,15 +157,15 @@ mdata <-
                         TRUE ~ "Outside the labor force") %>% 
               fct_relevel("Employed", after = Inf),
             ## perc_econ = soct2, 
-            remittances_or_assistnace = q10a == "Sí" | wf1 == "Sí",
             wealth_percentile = q10new, 
             # usa_contact = q10cus == "Sí",
-            usa_contact_freq = q16 == "Todos los días" | q16 == "Una o dos veces a la semana" | q16 == "Una o dos veces por mes",
             
             food_insecure = fs2 == "Sí",
             social_media_user = smedia1 == "Sí" | smedia7 == "Sí",
             
             ## Push factor
+            usa_contact_freq = q16 == "Todos los días" | q16 == "Una o dos veces a la semana" | q16 == "Una o dos veces por mes",
+            remittances_or_assistnace = q10a == "Sí" | wf1 == "Sí",
             perc_safety = pese2,
             # perc_trust = it1 == "Algo confiable" | it1 == "Muy confiable",
             # perc_natural_disaster = drk1, perc_env_severity = env2b,
