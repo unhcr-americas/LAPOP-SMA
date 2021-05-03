@@ -12,7 +12,6 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
-
 knitr::opts_chunk$set(fig.width = 8, fig.height = 6)
 ```
 
