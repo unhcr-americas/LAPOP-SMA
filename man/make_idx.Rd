@@ -4,7 +4,14 @@
 \alias{make_idx}
 \title{make_idx}
 \usage{
-make_idx(data, vars, sgn = 1, scale = FALSE, seed = 12345)
+make_idx(
+  data,
+  vars,
+  sgn = 1,
+  scale = FALSE,
+  seed = 12345,
+  diplaymessage = "FALSE"
+)
 }
 \arguments{
 \item{data}{Given dataset containing variables}
@@ -17,6 +24,8 @@ component after multiple imputation.}
 \item{scale}{Scale - Set scale=TRUE to use scaling during the PCA calculation}
 
 \item{seed}{for reproducibility}
+
+\item{diplaymessage}{diplay message TRUE OR FALSE}
 }
 \description{
 Functions we need to construct indices

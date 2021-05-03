@@ -29,31 +29,29 @@ library(RColorBrewer)
 
 library(tidyverse)
 library(ggthemes)
-library(ggrepel)
+#library(ggrepel)
 library(viridis)
-library(RColorBrewer)
 library(extrafont)
 library(corrplot)
 library(corrgram)
-library(lsr)
-library(reshape2)
-library(OpenStreetMap)
+#library(lsr)
+#library(reshape2)
+#library(OpenStreetMap)
+library(sf)
 library(sp)
-library(ggmap)
 library(rgdal)
 library(scales)
 library(knitr)
 library(rmarkdown)
 library(grid)
-library(moments)
-library(AmericasBarometer)
+library(moments) 
 
 mainDir <- getwd()
 ## If you save your analysis under vignette folder...
 mainDirroot <- substring(mainDir, 0 , nchar(mainDir) - 10)
 
 
-lapop.trends <- read.csv(paste0(mainDirroot, "/data/dataLAPOP.csv"))
+lapop.trends <- read.csv(paste0(mainDirroot, "/data-raw/MainDataFrame.csv"))
 
 #table(lapop.trends$year, useNA= "ifany") 
 ## let's put 2019 & 2018 together
@@ -75,12 +73,12 @@ lapop.trends$wave <- paste0(lapop.trends$ctrycollect, lapop.trends$year)
 
 lapop.trends$prov[is.na(lapop.trends$prov)] <- lapop.trends$provincia
 
-prov <- read.csv(paste0(mainDirroot, "/data/sig-prov2.csv"))
+prov <- read.csv(paste0(mainDirroot, "/data-raw/sig-prov2.csv"))
 lapop.trends <- dplyr::left_join(x= lapop.trends, y = prov, by ="prov")
 
 ```
 
-```{r}
+```{r message=FALSE, warning=FALSE}
 ### Build the indices
 # 1. Authoritarianism index `aut_idx` 
 aut_var <- c('dem2','dem11','jc13','jc10','jc15a')
@@ -123,7 +121,18 @@ lapop.trends$wealth_idx <- make_idx(lapop.trends,wealth_var,sgn=-1)
 ```{r}
 ## Now aggregate index mean by admin 1 
 # head(lapop.trends[ , c( "adm1name" ,"iso_3166_2","aut_idx" ,"ca_idx" ,"crit_idx" ,"fear_idx" ,"transp_idx" ,"trust_idx" ,"wealth_idx" )])
-
+# Create subset of file with observation and selected variables & remove duplicated rows based on IDH
+lapop.trends.map <- lapop.trends[ , c(  "iso_3166_2","aut_idx" ,"ca_idx" ,"crit_idx" ,"fear_idx" ,"transp_idx" ,"trust_idx" ,"wealth_idx" )]
+  
+ 
+  ## Aggregate numeric value  based on mean ####
+lapop.trends.map2 <- lapop.trends.map %>%
+    dplyr::group_by(iso_3166_2) %>%
+    dplyr::summarise_all(dplyr::funs(mean(., na.rm = TRUE))) %>%
+    dplyr::mutate_if(is.numeric, dplyr::funs(round(., 2)))
+  
+lapop.trends.map2 <- as.data.frame(lapop.trends.map2)
+head(lapop.trends.map2)
 ```
 
 
@@ -135,12 +144,10 @@ lapop.trends$wealth_idx <- make_idx(lapop.trends,wealth_var,sgn=-1)
 
 
 ## getting correct district and gov from coordinates
-geofile <- rgdal::readOGR(paste0(mainDirroot,"/data/america_adm1_surv.geojson"))
+geofile <- rgdal::readOGR(paste0(mainDirroot,"/data-raw/america_adm1_surv.geojson"))
 geofile$id <- geofile$pcodehcr
 
 
-## Fortify
-geofile.fort <- fortify(geofile, region = "id")
  
 #geofile.map.fort <- dplyr::left_join( x = MainDataFrameMap, y = geofile.fort, by = "id")
 
@@ -152,12 +159,14 @@ geofile.fort <- fortify(geofile, region = "id")
 ## get extend
 geofile2 <- geofile[ substr(geofile@data$adm1_code, 1,3) %in% c("SLV", "HND", "GTM"), ]
 
-## levels(as.factor(geofile2@data$adm1_code))
-bbox <- geofile2 %>%  sf::st_bbox()
-
-
 ## Fortify
-geofile.fort <- fortify(geofile2, region = "id")
+geofile.fort <- fortify(geofile2, region = "iso_3166_2")
+lapop.trends.map2$id <- lapop.trends.map2$iso_3166_2
+geofile.map.fort <- dplyr::left_join( x = lapop.trends.map2, y = geofile.fort, by = "id")
+
+## levels(as.factor(geofile2@data$adm1_code))
+#bbox <- geofile2 %>%  sf::st_bbox()
+
 
 
 # ## Map background
@@ -172,14 +181,13 @@ geofile.fort <- fortify(geofile2, region = "id")
 
 
 
-
-
+# 1. Authoritarianism index  
 
 
 ```{r}
 plot1 <- ggplot( ) +
-  geom_polygon(data = geofile.fort,
-               aes(x = long, y = lat, # fill = monit.progres_groupsize, 
+  geom_polygon(data = geofile.map.fort,
+               aes(x = long, y = lat,  fill = aut_idx, 
                    group = group
                    ),
                colour = "white", alpha = 0.7 ) +
@@ -190,9 +198,226 @@ plot1 <- ggplot( ) +
                       guide = guide_legend( direction = "horizontal", label.position = "bottom",
                                             keyheight = unit(2, units = "mm"),  keywidth = unit(length(labels)*10, units = "mm"),
                                             title.position = 'top',  title.hjust = 0.5, label.hjust = 1, nrow = 1, byrow = T, reverse = T )) +
-  labs(title = "Tet Map: El Salvador, Hunduras & Guatemala" , 
+  labs(title = "Average Authoritarianism index value  " , 
        x = NULL, y = NULL,
-       subtitle = "Displaying index value..",
+       subtitle = "El Salvador, Hunduras & Guatemala",
+       caption = "") +
+   unhcRstyle::unhcr_theme() +
+   theme(axis.ticks=element_blank(),
+          axis.text.x =element_blank(),
+          axis.text.y =element_blank(),
+          axis.line = element_blank(),
+          axis.title.x = element_blank(),
+          axis.title.y = element_blank(),
+          panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank())
+  
+plot1
+#ggpubr::ggarrange(unhcRstyle::left_align(plot1, c("caption", "subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+# 2. Community Activity index 
+
+
+```{r}
+plot1 <- ggplot( ) +
+  geom_polygon(data = geofile.map.fort,
+               aes(x = long, y = lat,  fill = ca_idx, 
+                   group = group
+                   ),
+               colour = "white", alpha = 0.7 ) +
+  coord_equal() +
+  theme_map() +
+  scale_fill_viridis(
+                      name = "Average value",
+                      guide = guide_legend( direction = "horizontal", label.position = "bottom",
+                                            keyheight = unit(2, units = "mm"),  keywidth = unit(length(labels)*10, units = "mm"),
+                                            title.position = 'top',  title.hjust = 0.5, label.hjust = 1, nrow = 1, byrow = T, reverse = T )) +
+  labs(title = "Average Community Activity index value  " , 
+       x = NULL, y = NULL,
+       subtitle = "El Salvador, Hunduras & Guatemala",
+       caption = "") +
+   unhcRstyle::unhcr_theme() +
+   theme(axis.ticks=element_blank(),
+          axis.text.x =element_blank(),
+          axis.text.y =element_blank(),
+          axis.line = element_blank(),
+          axis.title.x = element_blank(),
+          axis.title.y = element_blank(),
+          panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank())
+  
+plot1
+#ggpubr::ggarrange(unhcRstyle::left_align(plot1, c("caption", "subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+
+# 3. Sympathy with government critics index 
+
+```{r}
+plot1 <- ggplot( ) +
+  geom_polygon(data = geofile.map.fort,
+               aes(x = long, y = lat,  fill = crit_idx, 
+                   group = group
+                   ),
+               colour = "white", alpha = 0.7 ) +
+  coord_equal() +
+  theme_map() +
+  scale_fill_viridis(
+                      name = "Average value",
+                      guide = guide_legend( direction = "horizontal", label.position = "bottom",
+                                            keyheight = unit(2, units = "mm"),  keywidth = unit(length(labels)*10, units = "mm"),
+                                            title.position = 'top',  title.hjust = 0.5, label.hjust = 1, nrow = 1, byrow = T, reverse = T )) +
+  labs(title = "Average Sympathy with government critics value  " , 
+       x = NULL, y = NULL,
+       subtitle = "El Salvador, Hunduras & Guatemala",
+       caption = "") +
+   unhcRstyle::unhcr_theme() +
+   theme(axis.ticks=element_blank(),
+          axis.text.x =element_blank(),
+          axis.text.y =element_blank(),
+          axis.line = element_blank(),
+          axis.title.x = element_blank(),
+          axis.title.y = element_blank(),
+          panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank())
+  
+plot1
+#ggpubr::ggarrange(unhcRstyle::left_align(plot1, c("caption", "subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+# 4. Fear index 
+
+
+```{r}
+plot1 <- ggplot( ) +
+  geom_polygon(data = geofile.map.fort,
+               aes(x = long, y = lat,  fill = fear_idx, 
+                   group = group
+                   ),
+               colour = "white", alpha = 0.7 ) +
+  coord_equal() +
+  theme_map() +
+  scale_fill_viridis(
+                      name = "Average value",
+                      guide = guide_legend( direction = "horizontal", label.position = "bottom",
+                                            keyheight = unit(2, units = "mm"),  keywidth = unit(length(labels)*10, units = "mm"),
+                                            title.position = 'top',  title.hjust = 0.5, label.hjust = 1, nrow = 1, byrow = T, reverse = T )) +
+  labs(title = "Average Fear index value  " , 
+       x = NULL, y = NULL,
+       subtitle = "El Salvador, Hunduras & Guatemala",
+       caption = "") +
+   unhcRstyle::unhcr_theme() +
+   theme(axis.ticks=element_blank(),
+          axis.text.x =element_blank(),
+          axis.text.y =element_blank(),
+          axis.line = element_blank(),
+          axis.title.x = element_blank(),
+          axis.title.y = element_blank(),
+          panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank())
+  
+plot1
+#ggpubr::ggarrange(unhcRstyle::left_align(plot1, c("caption", "subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+# 5. Transparency index 
+
+
+
+```{r}
+plot1 <- ggplot( ) +
+  geom_polygon(data = geofile.map.fort,
+               aes(x = long, y = lat,  fill = transp_idx, 
+                   group = group
+                   ),
+               colour = "white", alpha = 0.7 ) +
+  coord_equal() +
+  theme_map() +
+  scale_fill_viridis(
+                      name = "Average value",
+                      guide = guide_legend( direction = "horizontal", label.position = "bottom",
+                                            keyheight = unit(2, units = "mm"),  keywidth = unit(length(labels)*10, units = "mm"),
+                                            title.position = 'top',  title.hjust = 0.5, label.hjust = 1, nrow = 1, byrow = T, reverse = T )) +
+  labs(title = "Average Transparency index value  " , 
+       x = NULL, y = NULL,
+       subtitle = "El Salvador, Hunduras & Guatemala",
+       caption = "") +
+   unhcRstyle::unhcr_theme() +
+   theme(axis.ticks=element_blank(),
+          axis.text.x =element_blank(),
+          axis.text.y =element_blank(),
+          axis.line = element_blank(),
+          axis.title.x = element_blank(),
+          axis.title.y = element_blank(),
+          panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank())
+  
+plot1
+#ggpubr::ggarrange(unhcRstyle::left_align(plot1, c("caption", "subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+# 6. Trust in Government Index 
+
+```{r}
+plot1 <- ggplot( ) +
+  geom_polygon(data = geofile.map.fort,
+               aes(x = long, y = lat,  fill = trust_idx, 
+                   group = group
+                   ),
+               colour = "white", alpha = 0.7 ) +
+  coord_equal() +
+  theme_map() +
+  scale_fill_viridis(
+                      name = "Average value",
+                      guide = guide_legend( direction = "horizontal", label.position = "bottom",
+                                            keyheight = unit(2, units = "mm"),  keywidth = unit(length(labels)*10, units = "mm"),
+                                            title.position = 'top',  title.hjust = 0.5, label.hjust = 1, nrow = 1, byrow = T, reverse = T )) +
+  labs(title = "Average Trust index value  " , 
+       x = NULL, y = NULL,
+       subtitle = "El Salvador, Hunduras & Guatemala",
+       caption = "") +
+   unhcRstyle::unhcr_theme() +
+   theme(axis.ticks=element_blank(),
+          axis.text.x =element_blank(),
+          axis.text.y =element_blank(),
+          axis.line = element_blank(),
+          axis.title.x = element_blank(),
+          axis.title.y = element_blank(),
+          panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank())
+  
+plot1
+#ggpubr::ggarrange(unhcRstyle::left_align(plot1, c("caption", "subtitle", "title")), ncol = 1, nrow = 1)
+
+```
+
+ 
+
+# 7. Wealth index  
+
+```{r}
+plot1 <- ggplot( ) +
+  geom_polygon(data = geofile.map.fort,
+               aes(x = long, y = lat,  fill = wealth_idx, 
+                   group = group
+                   ),
+               colour = "white", alpha = 0.7 ) +
+  coord_equal() +
+  theme_map() +
+  scale_fill_viridis(
+                      name = "Average value",
+                      guide = guide_legend( direction = "horizontal", label.position = "bottom",
+                                            keyheight = unit(2, units = "mm"),  keywidth = unit(length(labels)*10, units = "mm"),
+                                            title.position = 'top',  title.hjust = 0.5, label.hjust = 1, nrow = 1, byrow = T, reverse = T )) +
+  labs(title = "Average Wealth index value  " , 
+       x = NULL, y = NULL,
+       subtitle = "El Salvador, Hunduras & Guatemala",
        caption = "") +
    unhcRstyle::unhcr_theme() +
    theme(axis.ticks=element_blank(),

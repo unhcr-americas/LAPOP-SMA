@@ -31,26 +31,6 @@ library(readxl)
 ```
 
 
-## Factors influencing population movement.
-
-__Push factors__ are those associated with the area of origin, while __Pull factors__ are those that are associated with the area of destination.
-
-|      Reasons      |  Pull factors         |  Push factors         |
-|:-------------|:-------------|:-------------|
-|      Economic      |  More jobs, Better jobs, Higher wages, The promise of a “better life”        |  Overpopulation, Few jobs,  Low wages         |
-|      Social      |  Principles of religious tolerance        |  Intolerance towards a certain cultural group, Active religious persecution         |
-|      Physical      |  Attractive environments, such as mountains, seasides and warm climates   |  Climate change, Natural disasters       |
-
-Public policy aiming at the limitation of Population movement shall be designed to in relation with the composition of the different types of push factors that generate them:
-
- * Intervention in relation with development and poverty alleviation will mostly address economic push factor
- 
- * Intervention in relation with international protection  will focus on social push factors
- 
- * Intervention in relation with resilience and sustainability will address physical push factors
- 
-
-
 ```{r getdata}
 
 set.seed(12345)
@@ -120,6 +100,30 @@ ridit <- function(x) {
 ```
 
  
+## Factors influencing population movement.
+
+__Push factors__ are those associated with the area of origin, while __Pull factors__ are those that are associated with the area of destination.
+
+|      Reasons      |  Pull factors         |  Push factors         |
+|:-------------|:-------------|:-------------|
+|      Economic      |  More jobs, Better jobs, Higher wages, The promise of a “better life”        |  Overpopulation, Few jobs,  Low wages         |
+|      Social      |  Principles of religious tolerance        |  Intolerance towards a certain cultural group, Active political or religious persecution,  violence          |
+|      Physical      |  Attractive environments, such as mountains, seasides...   |  Climate change, Natural disasters       |
+
+Public policy aiming at the limitation of Population movement shall be designed to in relation with the composition of the different types of push factors that generate them:
+
+ * Intervention in relation with __development and poverty alleviation__ will mostly address economic push factor
+ 
+ * Intervention in relation with __protection__  will focus on social push factors
+ 
+ * Intervention in relation with __resilience and sustainability__ will address physical push factors
+ 
+In addition of the environmental factors, intention and decision to migrate are influenced by specific profiles (for instance, age, marital status, education, personal network...). 
+
+
+
+
+
 
 ## Predicting Intentions
 

@@ -219,6 +219,7 @@ fixdata <- function(x) {
 #' 
 #' @param scale Scale - Set scale=TRUE to use scaling during the PCA calculation
 #' @param seed for reproducibility
+#' @param diplaymessage diplay message TRUE OR FALSE
 #' 
 #' @examples
 #' \dontrun{
@@ -229,7 +230,8 @@ make_idx <- function(data,
                      vars,
                      sgn=1,
                      scale=FALSE,
-                     seed=12345) {
+                     seed=12345,
+                     diplaymessage = "FALSE") {
  
   # data <- lapop.2014.all
   # vars <- fear_common
@@ -240,10 +242,11 @@ make_idx <- function(data,
   
   common <- Reduce(intersect,list(names(data),vars) )
   
-  if(length(common) != length(vars)) {  
-    cat(paste0("Not all variables for the index are present in the dataset.\n Only the following were retained:", common,"\n")) } 
-     else {  cat(paste0("All variables for the index are present in the dataset"))}
-
+  if(diplaymessage == "TRUE") {
+    if(length(common) != length(vars)) {  
+      cat(paste0("Not all variables for the index are present in the dataset.\n Only the following were retained:", common,"\n")) } 
+       else {  cat(paste0("All variables for the index are present in the dataset"))}
+  }
   my_data <- data[,common]
   
   ## clean the NA
@@ -254,17 +257,21 @@ make_idx <- function(data,
   
   ## Input missing value
   my_imp <- mice::mice(my_data,printFlag=F,seed=seed)
-  cat(paste0("Inputed missing percent values: ", data.frame(nmis=my_imp$nmis/nrow(my_data),var=names(my_imp$nmis)), "\n"))
 
+  
+  if(diplaymessage == "TRUE") {
+   cat(paste0("Inputed missing percent values: ", data.frame(nmis=my_imp$nmis/nrow(my_data),var=names(my_imp$nmis)), "\n"))
+  }
   ## Apply a principal component Analysis
   my_pr <- lapply(1:5,function(x) 
     prcomp(complete(my_imp,x),scale=scale,center=TRUE))
   
   
+  if(diplaymessage == "TRUE") {
   cat(paste0("The first componnent retained ", 
              summary(prcomp(complete(my_imp),scale=scale,center=TRUE))$importance[2,1]*100,
              "% of the variance.\n"))
-  
+  }
 
   
   ## Retain only first axis to get the coefficient
