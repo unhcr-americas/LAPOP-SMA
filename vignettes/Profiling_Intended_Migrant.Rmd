@@ -57,7 +57,7 @@ srcs <-
 data <- srcs %>% map_dfr(compose(as_factor, read_dta))
 
 
-dico <- read.csv(paste0(mainDirroot, "/data/dataLAPOPdico.csv"), stringsAsFactors = TRUE)
+#dico <- read.csv(paste0(mainDirroot, "/data/dataLAPOPdico.csv"), stringsAsFactors = TRUE)
 
 # lapop.2019.GTM <- data$guatemala
 # lapop.2018.SLV <- data$elsalvador
