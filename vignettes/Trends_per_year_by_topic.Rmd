@@ -32,7 +32,7 @@ mainDir <- getwd()
 mainDirroot <- substring(mainDir, 0 , nchar(mainDir) - 10)
 
 
-lapop.trends <- read.csv(paste0(mainDirroot, "/data/dataLAPOP.csv"))
+lapop.trends <- read.csv(paste0(mainDirroot, "/data-raw/MainDataFrame.csv"))
 
 #table(lapop.trends$year, useNA= "ifany") 
 ## let's put 2019 & 2018 together
@@ -40,7 +40,8 @@ lapop.trends <- read.csv(paste0(mainDirroot, "/data/dataLAPOP.csv"))
 lapop.trends$year[lapop.trends$year=="2019"] <- "2018"
 lapop.trends$year <- as.integer(lapop.trends$year)
 lapop.trends$wave <- paste0(lapop.trends$ctrycollect, lapop.trends$year)
-
+# levels(as.factor(lapop.trends$wave))
+#write.csv(paste0(mainDirroot, "/data-raw/MainDataFrame.csv"), row.names = FALSE)
 ```
 
 

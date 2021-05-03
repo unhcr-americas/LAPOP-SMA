@@ -36,11 +36,11 @@ library(AmericasBarometer)
 
 An initial step in the analysis consist in the creation a series of indices to better understand different group of variables together.
 
-Those indices can be built with principal component analyis and require the imputation of missing values.
+Those indices can be built with principal component analysis and require the imputation of missing values.
 
 We'll load all three 2014 datasets and construct a data frame containing the columns we want.
 
-```{r}
+```{r fig.width=8}
 mainDir <- getwd()
 ## If you save your analysis under vignette folder...
 mainDirroot <- substring(mainDir, 0 , nchar(mainDir) - 10)
