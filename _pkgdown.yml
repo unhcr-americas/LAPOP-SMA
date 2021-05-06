@@ -11,6 +11,10 @@ navbar:
     menu:
      - text: Survey wave content
        href: articles/Survey_wave_content.html
+     - text: Crunching Report
+       href: articles/Crunch-report.html 
+     - text: Root Causes
+       href: articles/Root_Causes.html 
      - text: Trends per year by topic
        href: articles/Trends_per_year_by_topic.html   
      - text: Explaining_Intention_Migrate

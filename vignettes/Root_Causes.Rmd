@@ -1,8 +1,8 @@
 ---
-title: "Insecurity"
+title: "Root Causes"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{insecurity}
+  %\VignetteIndexEntry{Root Causes}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

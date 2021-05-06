@@ -10,10 +10,10 @@ articles:
   Hot_Spot_analysis: Hot_Spot_analysis.html
   PCA_Factor_Analysis: PCA_Factor_Analysis.html
   Profiling_Intended_Migrant: Profiling_Intended_Migrant.html
+  Root_Causes: Root_Causes.html
   Survey_wave_content: Survey_wave_content.html
   Trends_per_year_by_topic: Trends_per_year_by_topic.html
-  insecurity: insecurity.html
-last_built: 2021-05-06T20:43Z
+last_built: 2021-05-06T21:08Z
 urls:
   reference: https://unhcr-americas.github.io/LAPOP-SMA/docs//reference
   article: https://unhcr-americas.github.io/LAPOP-SMA/docs//articles
