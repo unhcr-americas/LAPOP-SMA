@@ -61,10 +61,10 @@
     <loc>https://unhcr-americas.github.io/LAPOP-SMA/docs//reference/trend_plot.html</loc>
   </url>
   <url>
-    <loc>https://unhcr-americas.github.io/LAPOP-SMA/docs//articles/1-crunch-report.html</loc>
+    <loc>https://unhcr-americas.github.io/LAPOP-SMA/docs//articles/Building_indices.html</loc>
   </url>
   <url>
-    <loc>https://unhcr-americas.github.io/LAPOP-SMA/docs//articles/Building_indices.html</loc>
+    <loc>https://unhcr-americas.github.io/LAPOP-SMA/docs//articles/Crunch-report.html</loc>
   </url>
   <url>
     <loc>https://unhcr-americas.github.io/LAPOP-SMA/docs//articles/Explaining_Intention_Migrate.html</loc>
@@ -89,5 +89,8 @@
   </url>
   <url>
     <loc>https://unhcr-americas.github.io/LAPOP-SMA/docs//articles/Trends_per_year_by_topic.html</loc>
+  </url>
+  <url>
+    <loc>https://unhcr-americas.github.io/LAPOP-SMA/docs//articles/insecurity.html</loc>
   </url>
 </urlset>

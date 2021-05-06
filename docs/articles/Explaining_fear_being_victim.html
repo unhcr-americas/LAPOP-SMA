@@ -164,12 +164,12 @@
 <p>Where do the people who have made these changes live? I’m going to map this out using the Google Charts API, which looks like the easiest way to make interactive maps in R. For now, we’ll map results by department, which are encoded in the <code>prov</code> indicator. These numeric values need to be translated into <a href="https://en.wikipedia.org/wiki/ISO_3166-2:HN#II-3">ISO-3116-2 region codes</a>.</p>
 <p>Now, let’s make our map:</p>
 <!-- GeoChart generated in R 4.0.3 by googleVis 0.6.10 package -->
-<!-- Mon May  3 01:01:52 2021 -->
+<!-- Thu May  6 15:54:53 2021 -->
 <!-- jsHeader -->
 <script type="text/javascript">
  
 // jsData 
-function gvisDataGeoChartID21bcd4605fa09 () {
+function gvisDataGeoChartID11a6f41f1ba67 () {
 var data = new google.visualization.DataTable();
 var datajson =
 [
@@ -272,8 +272,8 @@ return(data);
 }
  
 // jsDrawChart
-function drawChartGeoChartID21bcd4605fa09() {
-var data = gvisDataGeoChartID21bcd4605fa09();
+function drawChartGeoChartID11a6f41f1ba67() {
+var data = gvisDataGeoChartID11a6f41f1ba67();
 var options = {};
 options["width"] = 556;
 options["height"] = 347;
@@ -282,7 +282,7 @@ options["resolution"] = "provinces";
 options["colorAxis"] = {minValue: 0,  colors: ['#FFFFFF', '#2B65EC']};
 
     var chart = new google.visualization.GeoChart(
-    document.getElementById('GeoChartID21bcd4605fa09')
+    document.getElementById('GeoChartID11a6f41f1ba67')
     );
     chart.draw(data,options);
     
@@ -306,9 +306,9 @@ if (newPackage)
   pkgs.push(chartid);
   
 // Add the drawChart function to the global list of callbacks
-callbacks.push(drawChartGeoChartID21bcd4605fa09);
+callbacks.push(drawChartGeoChartID11a6f41f1ba67);
 })();
-function displayChartGeoChartID21bcd4605fa09() {
+function displayChartGeoChartID11a6f41f1ba67() {
   var pkgs = window.__gvisPackages = window.__gvisPackages || [];
   var callbacks = window.__gvisCallbacks = window.__gvisCallbacks || [];
   window.clearTimeout(window.__gvisLoad);
@@ -329,7 +329,7 @@ callbacks.shift()();
 }
  
 // jsFooter
-</script><!-- jsChart --><script type="text/javascript" src="https://www.google.com/jsapi?callback=displayChartGeoChartID21bcd4605fa09"></script><!-- divChart --><div id="GeoChartID21bcd4605fa09" style="width: 556; height: 347;">
+</script><!-- jsChart --><script type="text/javascript" src="https://www.google.com/jsapi?callback=displayChartGeoChartID11a6f41f1ba67"></script><!-- divChart --><div id="GeoChartID11a6f41f1ba67" style="width: 556; height: 347;">
 
 </div>
 <p>So this is OK – it tells us which departments showed the largest and smallest average values for <code>vic40</code>. Hover over the map with your mouse to see department names and average values. Another way of visualizing this that might be useful is to figure out which departments showed values of <code>vic40</code> that are significantly above-average (according to an exact Fisher test) and highlight those.</p>

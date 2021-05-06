@@ -16,6 +16,6 @@ you can adjust the function below and add as many output format as required
 }
 \examples{
 \dontrun{
-build_analysis_package("form.xlsx")
+build_analysis_package(form = "form.xlsx")
 }
 }

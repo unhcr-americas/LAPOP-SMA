@@ -2,8 +2,8 @@ pandoc: 2.7.3
 pkgdown: 1.6.1
 pkgdown_sha: ~
 articles:
-  1-crunch-report: 1-crunch-report.html
   Building_indices: Building_indices.html
+  Crunch-report: Crunch-report.html
   Explaining_Intention_Migrate: Explaining_Intention_Migrate.html
   Explaining_fear_being_victim: Explaining_fear_being_victim.html
   Explaining_risk_bribes: Explaining_risk_bribes.html
@@ -12,7 +12,8 @@ articles:
   Profiling_Intended_Migrant: Profiling_Intended_Migrant.html
   Survey_wave_content: Survey_wave_content.html
   Trends_per_year_by_topic: Trends_per_year_by_topic.html
-last_built: 2021-05-03T05:50Z
+  insecurity: insecurity.html
+last_built: 2021-05-06T20:43Z
 urls:
   reference: https://unhcr-americas.github.io/LAPOP-SMA/docs//reference
   article: https://unhcr-americas.github.io/LAPOP-SMA/docs//articles

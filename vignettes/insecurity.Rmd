@@ -10,12 +10,12 @@ vignette: >
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  warning = FALSE, 
+  message = FALSE
 )
 knitr::opts_chunk$set(fig.width = 8, fig.height = 6)
-```
-
-```{r setup}
+ 
 library(AmericasBarometer)
 library(tidyverse)
 library(tidymodels)
@@ -153,5 +153,5 @@ pdata %>%
   facet_wrap(vars(pais)) +
   unhcRstyle::unhcr_theme() +
   labs(x = "Expectation of Life Loss due to Natural Disaster", y = "% of population",
-       title = "40% of the population think it is very likely that they or a family member\nwill be affected by natural disaster in the next 25 years")
+       title = "40% of the population think it is very likely that they or a family \nmember will be affected by natural disaster in the next 25 years")
 ```
