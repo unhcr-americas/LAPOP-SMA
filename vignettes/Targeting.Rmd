@@ -9,7 +9,7 @@ vignette: >
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
-knitr::opts_chunk$set(fig.width = 5.5, fig.height = 4, fig.align = "center", dev = "ragg_png", fig.retina = 2)
+knitr::opts_chunk$set(fig.width = 6.875, fig.height = 5, fig.align = "center", dev = "ragg_png", fig.retina = 2)
 ```
 
 ```{r setup}
@@ -39,7 +39,17 @@ data <-
 ```
 
 ```{r misc}
+# inverse of the Box-Cox transform
 invBoxCox <- function(x, lambda) { if (lambda == 0) exp(x) else (lambda*x + 1)^(1/lambda) }
+
+# utility function to extract the best cutoff threshold from a regression model for a given poverty line
+optimum_threshold <- function(.x, truth, estimate, cutoff) {
+  .x %>% 
+    mutate(poor = as_factor({{truth}} < {{cutoff}})) %>% 
+    roc_curve(poor, {{estimate}}) %>% 
+    arrange(desc(sensitivity+specificity)) %>% 
+    head(1)
+}
 ```
 
 # Introduction
@@ -233,23 +243,29 @@ From the above plot we could see that there are a few data points in the dataset
 
 # Predictive Performance
 
-
-
-# Conclusions
-
-
-
-
+Ultimately, any assessment of a PMT model should rest above all on its ability to correctly identify poor households. According to the last official data from 2014, [almost 60% of the population were living below the national poverty line](https://databank.worldbank.org/data/download/poverty/987B9C90-CB9F-4D93-AE8C-750588BF00QA/SM2020/Global_POVEQ_GTM.pdf). Since that figure has not been updated in a long time, we'll just use the 60th income percentile as a relative poverty line for assessing the performance of the PMT.
 
 ```{r fit}
-mdata <- mdata %>% mutate(pred_pcinc = predict(m) %>% invBoxCox(lambda = rec %>% tidy(1) %>% pull(value)))
+# extract poverty predictions
+mdata <- mdata %>% mutate(pred_pcinc = predict(m) %>% invBoxCox(lambda = tidy(rec, 1)$value))
 
-pline <- quantile(mdata$pcinc, .4)
-thresh <- pline
+# poverty line at 60th percentile of the income distribution
+pline <- quantile(mdata$pcinc, .6)
+# adjust cut-off threshold to optimize predictive performance
+thresh <- optimum_threshold(mdata, pcinc, pred_pcinc, pline)$.threshold
 
-mdata <- mdata %>% mutate(class = case_when((pcinc > pline) & (pred_pcinc < thresh) ~ "Inclusion error",
-                                            (pcinc < pline) & (pred_pcinc > thresh) ~ "Exclusion error"))
+# convert continuous per-capita measures to binary poverty indicators
+mdata <- mdata %>% mutate(poor = as_factor(pcinc < pline), pred_poor = as_factor(pred_pcinc < thresh))
 
+# label cases that are incorrectly classified
+mdata <- 
+  mdata %>% 
+  mutate(class = case_when(poor != "TRUE" & pred_poor == "TRUE" ~ 
+                             glue::glue("Inclusion error\n({scales::label_percent(accuracy = .01)(1-spec_vec(mdata$poor, mdata$pred_poor))})"),
+                           poor == "TRUE" & pred_poor != "TRUE" ~ 
+                             glue::glue("Exclusion error\n({scales::label_percent(accuracy = .01)(1-sens_vec(mdata$poor, mdata$pred_poor))})")))
+
+# plot true vs. estimated values
 mdata %>% 
   ggplot() + 
   geom_point(aes(log(pcinc), log(pred_pcinc)), data = function(x) {filter(x, is.na(class))}) + 
@@ -258,50 +274,47 @@ mdata %>%
   geom_hline(yintercept = log(thresh), linetype = 2) +
   geom_abline(intercept = log(thresh/pline), size = 1) + 
   scale_color_manual(values = c("#EF4A60", "#00B398")) +
-  annotate("text", label = glue::glue("inclusion error\n({scales::label_percent(accuracy = .01)(mean((mdata$pcinc > pline) & (mdata$pred_pcinc < thresh)))})"), 
-           x = max(log(mdata$pcinc)), y = min(log(mdata$pred_pcinc)), 
-           hjust = 1, vjust = 0) +
-  annotate("text", label = glue::glue("exclusion error\n({scales::label_percent(accuracy = .01)(mean((mdata$pcinc < pline) & (mdata$pred_pcinc > thresh)))})"), 
-           x = min(log(mdata$pcinc)), y = max(log(mdata$pred_pcinc)), 
-           hjust = 0) +
   coord_fixed() +
-  labs(x = "income per capita\nlog(observed)", y = "income per capita\nlog(predicted)",
+  labs(x = "income per capita\nlog(actual)", y = "income per capita\nlog(predicted)",
        color = NULL,
-       title = "PMT Model",
-       subtitle = "Model Fit",
-       caption = glue::glue("R-squared = {round(rsq_vec(augment(m)$pcinc, augment(m)$.fitted), 3)}",
-                            "RMSE = {round(rmse_vec(augment(m)$pcinc, augment(m)$.fitted), 3)}",
+       title = "PMT Model Fit",
+       subtitle = "Actual vs. Predicted",
+       caption = glue::glue("R-squared = {round(rsq_vec(mdata$pcinc, mdata$pred_pcinc), 3)}",
+                            "RMSE = {round(rmse_vec(mdata$pcinc, mdata$pred_pcinc), 3)}",
+                            "Accuracy = {scales::label_percent(accuracy = .01)(accuracy_vec(mdata$poor, mdata$pred_poor))}",
                             .sep = "\n")) +
   theme_minimal(base_family = "Lato") +
   theme(legend.position = "top")
 ```
 
-```{r thresh_opt}
-tradeoffs <- 
-  mdata %>% 
-  distinct(pcinc) %>% 
-  arrange(pcinc) %>% 
-  head(-1) %>% 
-  tail(-1) %>% 
-  mutate(vals = map(pcinc, ~optimum_threshold(mdata, pcinc, pred_pcinc, .))) %>%
-  unnest(vals)
+As could be seen from the plot, the model exhibits reasonable performance on par with most PMTs employed in governmental social safety nets.  A better understanding of the model's predictive performance could be reached by looking at how inclusion/exclusion errors vary as the cut-off threshold (=poverty line) moves along the spectrum of wealth percentiles.
 
-tradeoffs %>% #
-  transmute(pcinc_percentile = percent_rank(pcinc),
-            # .threshold = map_dbl(.threshold, ~mean(.>=pcinc)),
+```{r alternatives}
+# prepare a data-frame of performance measures at different cut-off points
+tradeoffs <-
+  unique(mdata$pcinc) %>% sort() %>% tail(-1) %>% 
+  map_dfr(~optimum_threshold(mdata, pcinc, pred_pcinc, cutoff = .))
+
+# visualize the alternatives curves
+tradeoffs %>% 
+  transmute(pcinc_percentile = percent_rank(.threshold),
             coverage = sensitivity,
-            leakage = 1-specificity) %>% 
-  pivot_longer(-pcinc_percentile, names_to = "measure", values_to = "value") %>% 
+            leakage = 1-specificity) %>%
+  pivot_longer(-pcinc_percentile, names_to = "measure", values_to = "value") %>%
   ggplot() +
-  geom_smooth(aes(pcinc_percentile, value, color = measure), span = .75) +
-  geom_vline(xintercept = .4) +
-  geom_abline() +
-  annotate("text", x = .4, y = 1, label = "National Poverty Line", hjust = -.05) +
+  geom_smooth(aes(pcinc_percentile, value, color = measure)) +
+  geom_vline(xintercept = .6) +
+  annotate("text", x = .6, y = 1, label = "National Poverty Line", hjust = -.05) +
   scale_x_continuous(labels = scales::label_percent()) +
   scale_y_continuous(labels = scales::label_percent()) +
   coord_fixed(xlim = c(0,1), ylim = c(0,1)) +
-  labs(x = "wealth percentile", y = "% of population", color = NULL) +
-  theme_minimal() +
+  labs(x = "wealth percentile", y = "% of population", color = NULL,
+       title = "PMT Model Performance",
+       subtitle = "Across alternative relative poverty lines") +
+  theme_minimal(base_family = "Lato") +
   theme(legend.position = "right")
 ```
 
+# Discussion
+
+When used to target people living below the national poverty line, the model arrives at the wrong conclusion for 1 in every 5 persons. Lowering the eligibility cut-off line to focus on the poorer quantiles of the population degrades model performance even further. Does that mean that the PMT is not a valid targeting option in this setting? The answer is not so clear-cut. On the one hand, the dataset used for model building lacked sufficient covariates and didn't allow for the inclusion of demographic variables into the model which greatly restricted its predictive power. Meantime, the choice of linear regression was always going to give better results for households towards the mean of the income distribution rather than those on either tail. If the objective was to target, say, the poorest 20% then alternative modeling techniques (such as quantile regression or up/down-sampling) would've given better results. More importantly, while the error margin of the model may be perceived as unusually high, it is better to have a model with a quantifiable error rate (albeit high), than to resort to the common ad hoc targeting approaches for which no error estimates could be meaningfully derived.
