@@ -1,5 +1,5 @@
 ---
-title: "Proxy-Means Testing for CBI Targeting in Guatemala"
+title: "Proxy-Means Testing for Assistance Targeting in Guatemala"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Targeting}
@@ -11,6 +11,37 @@ vignette: >
 knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
 knitr::opts_chunk$set(fig.width = 6.875, fig.height = 5, fig.align = "center", dev = "ragg_png", fig.retina = 2)
 ```
+
+
+
+# Introduction
+
+_add some background on the scale-up in guatemala here_.
+
+# Background to Proxy-Means Testing (PMT)
+
+The targeting of assistance in humanitarian settings has traditionally relied on various approaches that are lacking in theoretical justification and rigorous validation such as targeting based on categorical profiles (older people, persons with disabilities, etc...), community-assisted targeting which is susceptible to elite capture, geographic targeting, and ad hoc scorecards among others.
+
+Proxy-means testing, on the other hand, is a statistically-sound approach grounded in regression analysis which has gained a strong following among development practitioners.
+
+In PMTs, vulnerability is assumed to be a directly measurable construct such as per-capita household income or expenditure and a statistical model is built to estimate this measure based on easily observable household characteristics (like location, the household's demographic composition, and ownership of common assets). Uptake of PMTs in humanitarian contexts in the past was held back by the shortage of household survey data with sufficient covariates and detailed measures of income/expenditure to allow for constructing these kinds of models. The recent drive for surveys on forcibly displaced populations over the past few years, however, is slowly changing the data landscape in a way that makes it increasingly feasible to transition from ad hoc targeting approaches to more rigorous alternatives like PMTs.
+
+# Methodical Limitations
+
+The biggest challenge facing the construction of a PMT for Guatemala is the absence of a recent poverty survey, where [the last one dates to 2014](https://www.ine.gob.gt/ine/pobreza-menu/). As such, the second-best option was to use data from the [Latin America Public Opinion Poll Project (LAPOP)'s AmericasBarometer survey](https://www.vanderbilt.edu/lapop/) for building the model. While the survey was not designed as a household budget survey to capture detailed household income/expenditure data, it remains the only up-to-date nationally representative household survey in Guatemala.
+
+Downsides to using this dataset for building a PMT:
+
+* The survey tool asks a one-shot question about overall household monthly income. This is known to result in less accurate estimates than when respondents are asked for detailed breakdowns by income source.
+* The survey samples a random adult from the household so that the results could be generalized to the overall adult population in the country. Considering the random selection of respondents, the selected individual may not be the best-informed person to respond to the questoin on overall household income.
+* Moreover, since the survey does not collect household roster data or information on a reference person, individual level variables (such as the head of household's age, gender, and marital status or even the average age or education level of household members) couldn't be used when constructing the model thereby weakening its explanatory power.
+* Similarly, as the survey was originally designed to measure political attitudes and opinions, it is limited in terms of covariates that could be used to explain household welfare.
+* Finally, because the sample size is restricted to about 1,500 respondents per country, that limits the applicable modeling techniques to simple linear models while excluding more data-hungry algorithmic modeling approaches like random forests and gradient boosting.
+
+Nonetheless, despite these challenges, the performance of the model so constructed from this dataset was reasonably satisfactory enough to warrant further consideration.
+
+## Preparing the data
+
 
 ```{r setup}
 library(AmericasBarometer)
@@ -52,31 +83,6 @@ optimum_threshold <- function(.x, truth, estimate, cutoff) {
 }
 ```
 
-# Introduction
-
-_add some background on the scale-up in guatemala here_.
-
-# Background to Proxy-Means Testing (PMT)
-
-The targeting of assistance in humanitarian settings has traditionally relied on various approaches that are lacking in theoretical justification and rigorous validation such as targeting based on categorical profiles (older people, persons with disabilities, etc...), community-assisted targeting which is susceptible to elite capture, geographic targeting, and ad hoc scorecards among others. Proxy-means testing, on the other hand, is a statistically-sound approach grounded in regression analysis which has gained a strong following among development practitioners.
-
-In PMTs, vulnerability is assumed to be a directly measurable construct such as per-capita household income or expenditure and a statistical model is built to estimate this measure based on easily observable household characteristics (like location, the household's demographic composition, and ownership of common assets). Uptake of PMTs in humanitarian contexts in the past was held back by the shortage of household survey data with sufficient covariates and detailed measures of income/expenditure to allow for constructing these kinds of models. The recent drive for surveys on forcibly displaced populations over the past few years, however, is slowly changing the data landscape in a way that makes it increasingly feasible to transition from ad hoc targeting approaches to more rigorous alternatives like PMTs.
-
-# Methodical Limitations
-
-The biggest challenge facing the construction of a PMT for Guatemala is the absence of a recent poverty survey, where [the last one dates to 2014](https://www.ine.gob.gt/ine/pobreza-menu/). As such, the second-best option was to use data from the [Latin America Public Opinion Poll Project (LAPOP)'s AmericasBarometer survey](https://www.vanderbilt.edu/lapop/) for building the model. While the survey was not designed as a household budget survey to capture detailed household income/expenditure data, it remains the only up-to-date nationally representative household survey in Guatemala.
-
-Downsides to using this dataset for building a PMT:
-
-* The survey tool asks a one-shot question about overall household monthly income. This is known to result in less accurate estimates than when respondents are asked for detailed breakdowns by income source.
-* The survey samples a random adult from the household so that the results could be generalized to the overall adult population in the country. Considering the random selection of respondents, the selected individual may not be the best-informed person to respond to the questoin on overall household income.
-* Moreover, since the survey does not collect household roster data or information on a reference person, individual level variables (such as the head of household's age, gender, and marital status or even the average age or education level of household members) couldn't be used when constructing the model thereby weakening its explanatory power.
-* Similarly, as the survey was originally designed to measure political attitudes and opinions, it is limited in terms of covariates that could be used to explain household welfare.
-* Finally, because the sample size is restricted to about 1,500 respondents per country, that limits the applicable modeling techniques to simple linear models while excluding more data-hungry algorithmic modeling approaches like random forests and gradient boosting.
-
-Nonetheless, despite these challenges, the performance of the model so constructed from this dataset was reasonably satisfactory enough to warrant further consideration.
-
-# Model & Diagnostics
 
 ```{r mdata}
 mdata <- 
@@ -121,6 +127,10 @@ mdata <-
 # remove observations with missing income data
 mdata <- mdata %>% filter(!is.na(pcinc))
 ```
+
+
+# Model & Diagnostics
+
 
 Survey respondents were asked to report aggregate household income through a multiple-choice question where they had to choose from one of 17 staggered income brackets. Respondents who declined to answer the question, or who said that they didn't know the answer, as well as those who reported zero income were all removed from the sample. Of the `r nrow(data)` respondents in the sample, only `r nrow(mdata)` were retained for modeling purposes after removing the aforementioned respondents.
 

@@ -18,12 +18,45 @@ options(scipen = 999) # turn-off scientific notation like 1e+48
 
 The main focus of the study is organized around 3 linked questions that can influence population movement mitigation program:
 
- 1. What influence the intention to move to another country: push & pull factor? How different measurement of perception are correlated: protection-related push factor vs economic pull factor? Are economic conditions sufficient to motivate the intention to move? Resources allocation to protection intervention vs economic support
+|      Research      |  Programme Design         |
+|:-------------|:-------------|
+|   What influence the intention to move to another country: push & pull factor? How different measurement of perception are correlated: protection-related push factor vs economic pull factor? Are economic conditions sufficient to motivate the intention to move? | Resources allocation to protection intervention vs economic support |
+|  Are there specific profiles that are intending vs those who do not intend to move? |  Household targeting for cash intervention |
+|     Can we identify displacement hot-spots? What make those hot-spots specific?  |   Geographic targeting and area-based approach for service delivery design |
 
- 2. Can we identify displacement hot-spots? What make those hospots specific? Geographic targeting and area-based approach for service delivery design
 
- 3. Are there specific profiles that are intending vs those who do not intend to move? Household targeting for cash intervention
+## Factors influencing population movement.
 
+__Push factors__ are those associated with the area of origin, while __Pull factors__ are those that are associated with the area of destination.
+
+|      Reasons      |  Pull factors         |  Push factors         |
+|:-------------|:-------------|:-------------|
+|      Economic      |  More jobs, Better jobs, Higher wages, The promise of a “better life”        |  Overpopulation, Few jobs,  Low wages         |
+|      Social      |  Principles of religious tolerance        |  Intolerance towards a certain cultural group, Active political or religious persecution,  violence, family reunification          |
+|      Physical      |  Attractive environments, such as mountains, seasides...   |  Climate change, Natural disasters       |
+
+Public policy aiming at the limitation of Population movement can address both pull and push factors. Pull factors are mostly constrained by reducing access to the country.
+
+For of push factors, it is rather program than policies that needs to be designed in relation with the composition of the different types  that generate them:
+
+ * Intervention in relation with __development and poverty alleviation__ will mostly address economic push factor
+ 
+ * Intervention in relation with __protection__  will focus on social push factors
+ 
+ * Intervention in relation with __resilience and sustainability__ will address physical push factors
+ 
+In addition of the environmental factors, intention and decision to migrate are influenced by specific profiles (for instance, age, marital status, education, personal network...). 
+
+
+An important question, when designing such program is related to resources allocation: how to balance efforts between the different types of intervention.
+
+## 
+
+## Profiles
+
+## Hotspots
+
+## Dataset 
 The analysis is based on longitudinal analysis of [Latin American Public Opinion Project (LAPOP)](http://datasets.americasbarometer.org/database/index.php) survey from 2004 to 2018 (_i.e. 8 survey dataset per country_). The [AmericasBarometer](https://www.vanderbilt.edu/lapop/about-americasbarometer.php) is a periodic study of 34 countries in the Western Hemisphere, with stratified nationally representative samples drawn in each country, a common questionnaire core, and country-specific modules. It is the only scientifically rigorous comparative survey of democratic values and behaviors that covers all independent countries in North, Central, and South America, as well as a significant number of countries in the Caribbean. The Americas Barometer measures attitudes, evaluations, experiences, and behavior in the Americas using national probability samples of voting-age adults. Standardizing methods and a common core questionnaire permit valid comparisons across countries and over time on topics including the economy, rule of law, state capacity, trust in institutions, individual values, corruption, security, and more.
 
 Each country survey is implemented based on a national probability design. In some cases, oversamples are collected to allow precise analysis of opinion within sub-national regions. 
